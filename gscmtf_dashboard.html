@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GSCMTF | US-OCHA Global Supply Chain Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
   :root {
     --fao-dark: #005A8E;
@@ -30,7 +31,7 @@
   /* ── PASSWORD GATE ── */
   #pw-gate {
     position: fixed; inset: 0; z-index: 9999;
-    background: linear-gradient(135deg, #003F6B 0%, #005A8E 50%, #0099CC 100%);
+    background: #ffffff;
     display: flex; align-items: center; justify-content: center;
     flex-direction: column; gap: 0;
   }
@@ -74,7 +75,7 @@
     display: none;
   }
   #pw-footer {
-    margin-top: 28px; font-size: 0.75rem; color: rgba(255,255,255,0.55);
+    margin-top: 28px; font-size: 0.75rem; color: rgba(0,0,0,0.35);
     text-align: center;
   }
 
@@ -375,6 +376,93 @@
   .spacer-12 { height: 12px; }
   .chip { display: inline-block; background: var(--fao-light); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; color: var(--fao-dark); }
   .divider-h { border: none; border-top: 1px solid #EAF0F6; margin: 16px 0; }
+
+  /* ── MAP ── */
+  #world-map { height: 420px; border-radius: var(--radius); margin: 0 0 24px; border: 1px solid #E0E8F0; }
+  .map-legend { display:flex; gap:16px; flex-wrap:wrap; padding:10px 16px; background:#F4F7FA; border-radius:0 0 var(--radius) var(--radius); border:1px solid #E0E8F0; border-top:none; margin-bottom:24px; font-size:12px; }
+  .ml-item { display:flex; align-items:center; gap:6px; }
+  .ml-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+
+  /* ── COMMENTS ── */
+  .comments-area { width:100%; min-height:100px; padding:12px; border:1px solid #CBD5E0; border-radius:8px; font-family:'Segoe UI',Arial,sans-serif; font-size:13px; color:var(--text); resize:vertical; background:#FFFEF9; }
+  .comments-area:focus { outline:none; border-color:#0099CC; }
+  .save-note { font-size:11px; color:#888; margin-top:4px; }
+
+  /* ── LAST UPDATE ── */
+  .last-update-badge { display:inline-flex; align-items:center; gap:6px; background:#F0F7FF; border:1px solid #C8DFF5; border-radius:20px; padding:3px 12px; font-size:11px; color:#005A8E; margin-left:8px; }
+
+  /* ── PROJECT STATUS BADGE ── */
+  .badge.approved { background:#E8F5E9; color:#2E7D32; }
+  .badge.draft { background:#FFF8E1; color:#F57F17; }
+  .badge.pending { background:#FFF3E0; color:#E65100; }
+
+  /* ── DISTRIBUTION MODEL ── */
+  .dist-model-box { background:#F0F7FF; border-left:3px solid #0099CC; padding:10px 14px; border-radius:0 8px 8px 0; font-size:13px; margin-top:8px; }
+
+  /* ── EXPORT BTN ── */
+  .export-btn { display:inline-flex; align-items:center; gap:6px; background:#005A8E; color:#fff; border:none; border-radius:6px; padding:8px 16px; font-size:12px; cursor:pointer; margin-left:auto; }
+  .export-btn:hover { background:#0099CC; }
+
+  /* ── PRINT ── */
+  @media print {
+    #pw-gate, #header, #sidebar, .export-btn, .breadcrumb { display:none !important; }
+    #main { margin:0 !important; }
+    .page { display:block !important; }
+    .page:not(.active) { display:none !important; }
+    body { background:#fff; }
+  }
+
+
+  /* ── APPROVAL DROPDOWN ── */
+  .approval-trigger { cursor:pointer; position:relative; display:inline-block; }
+  .approval-trigger .badge { border-bottom:1px dashed currentColor; }
+  .approval-panel {
+    display:none; position:absolute; top:calc(100% + 6px); left:0;
+    background:#fff; border:1px solid #C8DDF5; border-radius:10px;
+    box-shadow:0 8px 32px rgba(0,90,142,0.18); z-index:2000;
+    min-width:580px; max-width:92vw; padding:0; overflow:hidden;
+  }
+  .approval-panel.open { display:block; }
+  .ap-header { background:#005A8E; color:#fff; padding:10px 16px; font-size:13px; font-weight:600; }
+  .ap-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .ap-table th { background:#F0F7FF; color:#005A8E; font-weight:600; padding:8px 12px; text-align:left; border-bottom:1px solid #C8DDF5; }
+  .ap-table td { padding:8px 12px; border-bottom:1px solid #EAF0F6; vertical-align:top; }
+  .ap-table tr:last-child td { border-bottom:none; }
+  .ap-table tr:hover td { background:#FAFCFF; }
+  .ap-notes-input { width:100%; border:none; background:transparent; font-size:12px; color:#1C2D3E; font-family:'Segoe UI',Arial,sans-serif; resize:none; min-height:28px; padding:0; }
+  .ap-notes-input:focus { outline:none; background:#FFF9F0; border-radius:4px; padding:2px 4px; }
+  .ap-notes-input::placeholder { color:#AAB5C0; font-style:italic; }
+  .ap-footer { padding:8px 12px; background:#F8FAFC; font-size:10px; color:#888; border-top:1px solid #EAF0F6; }
+  .badge.ap-approved { background:#E8F5E9; color:#2E7D32; }
+  .badge.ap-pending  { background:#FFF3E0; color:#E65100; }
+  .badge.ap-draft    { background:#FFF8E1; color:#F57F17; }
+
+
+  /* ── DEMAND TABLE ── */
+  .demand-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .demand-table th { background:#005A8E; color:#fff; padding:10px 14px; text-align:right; font-weight:600; white-space:nowrap; }
+  .demand-table th:first-child { text-align:left; }
+  .demand-table td { padding:9px 14px; border-bottom:1px solid #EAF0F6; text-align:right; }
+  .demand-table td:first-child { text-align:left; font-weight:500; }
+  .demand-table tr:hover td { background:#F4F9FF; }
+  .demand-table .total-row td { background:#F0F7FF; font-weight:700; border-top:2px solid #0099CC; color:#005A8E; }
+  .demand-table .unit-row th { background:#0099CC; font-size:11px; font-weight:400; padding:4px 14px; }
+
+
+  /* ── PROCUREMENT CHART ── */
+  #proc-chart-wrap { position:relative; height:380px; margin-bottom:0; }
+  #proc-drilldown {
+    display:none; border-top:2px solid #E0E8F0; padding:20px;
+    background:#FAFCFF; border-radius:0 0 var(--radius) var(--radius);
+  }
+  #proc-drilldown.open { display:block; }
+  #proc-drilldown-title { font-weight:700; color:#005A8E; font-size:14px; margin-bottom:12px; }
+  #proc-drilldown-chart-wrap { position:relative; height:220px; }
+  .budget-compare { display:flex; align-items:center; gap:8px; font-size:11px; padding:6px 0; }
+  .budget-compare .bc-label { color:#5A6A7A; min-width:120px; }
+  .bc-over  { color:#E74C3C; font-weight:700; }
+  .bc-under { color:#27AE60; font-weight:700; }
+
 </style>
 </head>
 <body>
@@ -418,13 +506,7 @@
   </div>
   <div class="nav-section">Countries (9)</div>
   <div id="country-nav-items"></div>
-  <div class="nav-section" style="margin-top:8px;">Support</div>
-  <div class="nav-item" onclick="alert('CSLO Control Tower — coming soon')">
-    <span class="flag">📡</span> Control Tower
-  </div>
-  <div class="nav-item" onclick="alert('KPI Dashboard — coming soon')">
-    <span class="flag">📊</span> KPI Dashboard
-  </div>
+
 </div>
 
 <!-- ═══════════════════════════════════════ MAIN ═══════════════════════════════════════ -->
@@ -463,6 +545,15 @@
     <div class="section-title"><span class="dot"></span> Country Portfolio — Quick Status</div>
     <div class="country-grid" id="landing-country-grid"></div>
 
+    <div class="section-title"><span class="dot" style="background:#0099CC"></span> Global Programme Map</div>
+    <div id="world-map"></div>
+    <div class="map-legend">
+      <span style="font-weight:600;color:#5A6A7A;margin-right:4px;">Status:</span>
+      <div class="ml-item"><div class="ml-dot" style="background:#27AE60"></div>On Track</div>
+      <div class="ml-item"><div class="ml-dot" style="background:#F39C12"></div>At Risk</div>
+      <div class="ml-item"><div class="ml-dot" style="background:#E74C3C"></div>Delayed</div>
+      <div class="ml-item"><div class="ml-dot" style="background:#888"></div>Not Started</div>
+    </div>
     <div class="page-footer" style="margin-top:24px;">
       <span><b>Implementing Entity:</b> FAO / CSLO (Supply Chain Orchestration Unit)</span>
       <span><b>Donor:</b> United States Government via US-OCHA</span>
@@ -535,6 +626,45 @@
       </div>
     </div>
 
+
+
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-header">
+        <div><div class="card-title">Demand Overview by Country</div><div class="card-subtitle">Planned quantities per product category</div></div>
+      </div>
+      <div class="table-wrap">
+        <table class="demand-table" id="demand-table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>Seeds (MT)</th>
+              <th>Fertilizer (MT)</th>
+              <th>Machinery (Units)</th>
+              <th>Vaccines (Doses)</th>
+              <th>TOTAL</th>
+            </tr>
+          </thead>
+          <tbody id="demand-table-body"></tbody>
+          <tfoot id="demand-table-foot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Procurement Pipeline by Country</div>
+          <div class="card-subtitle">Proportional breakdown of procurement stages per country (% of total) — click a bar to see commodity detail</div>
+        </div>
+      </div>
+      <div id="proc-chart-wrap"><canvas id="chart-proc-main"></canvas></div>
+      <div id="proc-drilldown">
+        <div id="proc-drilldown-title"></div>
+        <div id="proc-drilldown-chart-wrap"><canvas id="chart-proc-drill"></canvas></div>
+        <div id="proc-budget-compare"></div>
+      </div>
+    </div>
+
     <div class="page-footer">
       <span><b>Data as of:</b> 01 April 2026</span>
       <span><b>Source:</b> CSLO Control Tower — Manual input tracker</span>
@@ -556,6 +686,70 @@ const countries =
 [
   {
     "id": "bangladesh",
+    "procurement": {
+      "total": 1210000,
+      "byStage": {
+            "toBePRed": 97000,
+            "PRed": 145000,
+            "POed": 302000,
+            "deliveredToFAO": 448000,
+            "distributed": 218000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 48000,
+                  "PRed": 72000,
+                  "POed": 150000,
+                  "deliveredToFAO": 222000,
+                  "distributed": 108000
+            },
+            "fertilizer": {
+                  "toBePRed": 27000,
+                  "PRed": 41000,
+                  "POed": 85000,
+                  "deliveredToFAO": 126000,
+                  "distributed": 61000
+            },
+            "machinery": {
+                  "toBePRed": 14000,
+                  "PRed": 22000,
+                  "POed": 45000,
+                  "deliveredToFAO": 67000,
+                  "distributed": 32000
+            },
+            "vaccines": {
+                  "toBePRed": 7000,
+                  "PRed": 11000,
+                  "POed": 22000,
+                  "deliveredToFAO": 33000,
+                  "distributed": 16000
+            }
+      }
+},
+    "demand": {"seeds": 1200, "fertilizer": 850, "machinery": 12, "vaccines": 45000},
+    "projectStatus": "Approved",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO Bangladesh",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Approved",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Approved",
+            "owner": "Logistics Officer — FAO Bangladesh",
+            "notes": ""
+      }
+],
+    "distributionModel": "FAO Fully Owned",
+    "lastUpdated": "01 Apr 2026",
     "name": "Bangladesh",
     "flag": "🇧🇩",
     "region": "Asia",
@@ -641,6 +835,70 @@ const countries =
   },
   {
     "id": "chad",
+    "procurement": {
+      "total": 824000,
+      "byStage": {
+            "toBePRed": 198000,
+            "PRed": 247000,
+            "POed": 181000,
+            "deliveredToFAO": 140000,
+            "distributed": 58000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 96000,
+                  "PRed": 120000,
+                  "POed": 88000,
+                  "deliveredToFAO": 68000,
+                  "distributed": 28000
+            },
+            "fertilizer": {
+                  "toBePRed": 58000,
+                  "PRed": 72000,
+                  "POed": 53000,
+                  "deliveredToFAO": 41000,
+                  "distributed": 17000
+            },
+            "machinery": {
+                  "toBePRed": 29000,
+                  "PRed": 36000,
+                  "POed": 26000,
+                  "deliveredToFAO": 20000,
+                  "distributed": 8000
+            },
+            "vaccines": {
+                  "toBePRed": 15000,
+                  "PRed": 19000,
+                  "POed": 14000,
+                  "deliveredToFAO": 11000,
+                  "distributed": 4000
+            }
+      }
+},
+    "demand": {"seeds": 800, "fertilizer": 600, "machinery": 8, "vaccines": 32000},
+    "projectStatus": "Draft",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO Chad",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Pending Approval",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Draft",
+            "owner": "Logistics Officer — FAO Chad",
+            "notes": ""
+      }
+],
+    "distributionModel": "Partial FAO Intervention",
+    "lastUpdated": "01 Apr 2026",
     "name": "Chad",
     "flag": "🇹🇩",
     "region": "West Africa",
@@ -732,6 +990,70 @@ const countries =
   },
   {
     "id": "colombia",
+    "procurement": {
+      "total": 663000,
+      "byStage": {
+            "toBePRed": 66000,
+            "PRed": 93000,
+            "POed": 179000,
+            "deliveredToFAO": 199000,
+            "distributed": 126000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 32000,
+                  "PRed": 46000,
+                  "POed": 88000,
+                  "deliveredToFAO": 98000,
+                  "distributed": 62000
+            },
+            "fertilizer": {
+                  "toBePRed": 19000,
+                  "PRed": 27000,
+                  "POed": 52000,
+                  "deliveredToFAO": 58000,
+                  "distributed": 36000
+            },
+            "machinery": {
+                  "toBePRed": 9000,
+                  "PRed": 13000,
+                  "POed": 24000,
+                  "deliveredToFAO": 27000,
+                  "distributed": 17000
+            },
+            "vaccines": {
+                  "toBePRed": 6000,
+                  "PRed": 8000,
+                  "POed": 15000,
+                  "deliveredToFAO": 17000,
+                  "distributed": 11000
+            }
+      }
+},
+    "demand": {"seeds": 650, "fertilizer": 480, "machinery": 6, "vaccines": 28000},
+    "projectStatus": "Approved",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO Colombia",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Approved",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Approved",
+            "owner": "Logistics Officer — FAO Colombia",
+            "notes": ""
+      }
+],
+    "distributionModel": "FAO Fully Owned",
+    "lastUpdated": "28 Mar 2026",
     "name": "Colombia",
     "flag": "🇨🇴",
     "region": "Latin America",
@@ -817,6 +1139,70 @@ const countries =
   },
   {
     "id": "drc",
+    "procurement": {
+      "total": 1794000,
+      "byStage": {
+            "toBePRed": 395000,
+            "PRed": 502000,
+            "POed": 448000,
+            "deliveredToFAO": 305000,
+            "distributed": 144000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 198000,
+                  "PRed": 252000,
+                  "POed": 225000,
+                  "deliveredToFAO": 153000,
+                  "distributed": 72000
+            },
+            "fertilizer": {
+                  "toBePRed": 106000,
+                  "PRed": 134000,
+                  "POed": 120000,
+                  "deliveredToFAO": 82000,
+                  "distributed": 38000
+            },
+            "machinery": {
+                  "toBePRed": 59000,
+                  "PRed": 76000,
+                  "POed": 68000,
+                  "deliveredToFAO": 46000,
+                  "distributed": 22000
+            },
+            "vaccines": {
+                  "toBePRed": 32000,
+                  "PRed": 40000,
+                  "POed": 36000,
+                  "deliveredToFAO": 24000,
+                  "distributed": 12000
+            }
+      }
+},
+    "demand": {"seeds": 1800, "fertilizer": 1200, "machinery": 18, "vaccines": 72000},
+    "projectStatus": "Pending Approval",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO DRC",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Pending Approval",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Pending Approval",
+            "owner": "Logistics Officer — FAO DRC",
+            "notes": ""
+      }
+],
+    "distributionModel": "Partial FAO Intervention",
+    "lastUpdated": "29 Mar 2026",
     "name": "DRC",
     "flag": "🇨🇩",
     "region": "Central Africa",
@@ -910,6 +1296,70 @@ const countries =
   },
   {
     "id": "ethiopia",
+    "procurement": {
+      "total": 1595000,
+      "byStage": {
+            "toBePRed": 112000,
+            "PRed": 191000,
+            "POed": 399000,
+            "deliveredToFAO": 606000,
+            "distributed": 287000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 56000,
+                  "PRed": 96000,
+                  "POed": 200000,
+                  "deliveredToFAO": 304000,
+                  "distributed": 144000
+            },
+            "fertilizer": {
+                  "toBePRed": 31000,
+                  "PRed": 53000,
+                  "POed": 110000,
+                  "deliveredToFAO": 167000,
+                  "distributed": 79000
+            },
+            "machinery": {
+                  "toBePRed": 16000,
+                  "PRed": 27000,
+                  "POed": 56000,
+                  "deliveredToFAO": 86000,
+                  "distributed": 40000
+            },
+            "vaccines": {
+                  "toBePRed": 9000,
+                  "PRed": 16000,
+                  "POed": 32000,
+                  "deliveredToFAO": 49000,
+                  "distributed": 23000
+            }
+      }
+},
+    "demand": {"seeds": 1600, "fertilizer": 1100, "machinery": 15, "vaccines": 65000},
+    "projectStatus": "Approved",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO Ethiopia",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Approved",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Approved",
+            "owner": "Logistics Officer — FAO Ethiopia",
+            "notes": ""
+      }
+],
+    "distributionModel": "FAO Fully Owned",
+    "lastUpdated": "31 Mar 2026",
     "name": "Ethiopia",
     "flag": "🇪🇹",
     "region": "East Africa",
@@ -997,6 +1447,70 @@ const countries =
   },
   {
     "id": "haiti",
+    "procurement": {
+      "total": 758000,
+      "byStage": {
+            "toBePRed": 182000,
+            "PRed": 220000,
+            "POed": 197000,
+            "deliveredToFAO": 121000,
+            "distributed": 38000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 90000,
+                  "PRed": 109000,
+                  "POed": 98000,
+                  "deliveredToFAO": 60000,
+                  "distributed": 19000
+            },
+            "fertilizer": {
+                  "toBePRed": 50000,
+                  "PRed": 60000,
+                  "POed": 54000,
+                  "deliveredToFAO": 33000,
+                  "distributed": 10000
+            },
+            "machinery": {
+                  "toBePRed": 25000,
+                  "PRed": 30000,
+                  "POed": 27000,
+                  "deliveredToFAO": 17000,
+                  "distributed": 5000
+            },
+            "vaccines": {
+                  "toBePRed": 17000,
+                  "PRed": 20000,
+                  "POed": 18000,
+                  "deliveredToFAO": 11000,
+                  "distributed": 4000
+            }
+      }
+},
+    "demand": {"seeds": 750, "fertilizer": 520, "machinery": 7, "vaccines": 35000},
+    "projectStatus": "Draft",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO Haiti",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Pending Approval",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Draft",
+            "owner": "Logistics Officer — FAO Haiti",
+            "notes": ""
+      }
+],
+    "distributionModel": "Partial FAO Intervention",
+    "lastUpdated": "25 Mar 2026",
     "name": "Haiti",
     "flag": "🇭🇹",
     "region": "Caribbean",
@@ -1088,6 +1602,70 @@ const countries =
   },
   {
     "id": "honduras",
+    "procurement": {
+      "total": 546000,
+      "byStage": {
+            "toBePRed": 49000,
+            "PRed": 82000,
+            "POed": 147000,
+            "deliveredToFAO": 169000,
+            "distributed": 98000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 25000,
+                  "PRed": 41000,
+                  "POed": 74000,
+                  "deliveredToFAO": 85000,
+                  "distributed": 50000
+            },
+            "fertilizer": {
+                  "toBePRed": 14000,
+                  "PRed": 23000,
+                  "POed": 41000,
+                  "deliveredToFAO": 47000,
+                  "distributed": 27000
+            },
+            "machinery": {
+                  "toBePRed": 7000,
+                  "PRed": 11000,
+                  "POed": 20000,
+                  "deliveredToFAO": 23000,
+                  "distributed": 14000
+            },
+            "vaccines": {
+                  "toBePRed": 4000,
+                  "PRed": 7000,
+                  "POed": 12000,
+                  "deliveredToFAO": 14000,
+                  "distributed": 8000
+            }
+      }
+},
+    "demand": {"seeds": 550, "fertilizer": 380, "machinery": 5, "vaccines": 22000},
+    "projectStatus": "Approved",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO Honduras",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Approved",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Approved",
+            "owner": "Logistics Officer — FAO Honduras",
+            "notes": ""
+      }
+],
+    "distributionModel": "FAO Fully Owned",
+    "lastUpdated": "30 Mar 2026",
     "name": "Honduras",
     "flag": "🇭🇳",
     "region": "Central America",
@@ -1173,6 +1751,70 @@ const countries =
   },
   {
     "id": "myanmar",
+    "procurement": {
+      "total": 1108000,
+      "byStage": {
+            "toBePRed": 255000,
+            "PRed": 299000,
+            "POed": 277000,
+            "deliveredToFAO": 177000,
+            "distributed": 100000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 126000,
+                  "PRed": 148000,
+                  "POed": 138000,
+                  "deliveredToFAO": 88000,
+                  "distributed": 50000
+            },
+            "fertilizer": {
+                  "toBePRed": 72000,
+                  "PRed": 84000,
+                  "POed": 78000,
+                  "deliveredToFAO": 50000,
+                  "distributed": 28000
+            },
+            "machinery": {
+                  "toBePRed": 34000,
+                  "PRed": 40000,
+                  "POed": 38000,
+                  "deliveredToFAO": 24000,
+                  "distributed": 14000
+            },
+            "vaccines": {
+                  "toBePRed": 22000,
+                  "PRed": 26000,
+                  "POed": 24000,
+                  "deliveredToFAO": 15000,
+                  "distributed": 9000
+            }
+      }
+},
+    "demand": {"seeds": 1100, "fertilizer": 780, "machinery": 10, "vaccines": 48000},
+    "projectStatus": "Draft",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO Myanmar",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Pending Approval",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Draft",
+            "owner": "Logistics Officer — FAO Myanmar",
+            "notes": ""
+      }
+],
+    "distributionModel": "Direct Supplier to Partner",
+    "lastUpdated": "27 Mar 2026",
     "name": "Myanmar",
     "flag": "🇲🇲",
     "region": "South-East Asia",
@@ -1266,6 +1908,70 @@ const countries =
   },
   {
     "id": "syria",
+    "procurement": {
+      "total": 1985000,
+      "byStage": {
+            "toBePRed": 119000,
+            "PRed": 198000,
+            "POed": 496000,
+            "deliveredToFAO": 794000,
+            "distributed": 377000
+      },
+      "byCommodity": {
+            "seeds": {
+                  "toBePRed": 58000,
+                  "PRed": 98000,
+                  "POed": 244000,
+                  "deliveredToFAO": 390000,
+                  "distributed": 185000
+            },
+            "fertilizer": {
+                  "toBePRed": 32000,
+                  "PRed": 54000,
+                  "POed": 135000,
+                  "deliveredToFAO": 216000,
+                  "distributed": 103000
+            },
+            "machinery": {
+                  "toBePRed": 18000,
+                  "PRed": 30000,
+                  "POed": 75000,
+                  "deliveredToFAO": 120000,
+                  "distributed": 57000
+            },
+            "vaccines": {
+                  "toBePRed": 10000,
+                  "PRed": 17000,
+                  "POed": 42000,
+                  "deliveredToFAO": 68000,
+                  "distributed": 32000
+            }
+      }
+},
+    "demand": {"seeds": 1950, "fertilizer": 1350, "machinery": 20, "vaccines": 85000},
+    "projectStatus": "Approved",
+    "approvalPlans": [
+      {
+            "plan": "Demand Plan",
+            "status": "Approved",
+            "owner": "Country Director — FAO Syria",
+            "notes": ""
+      },
+      {
+            "plan": "Procurement Plan",
+            "status": "Approved",
+            "owner": "Procurement Officer — CSLO",
+            "notes": ""
+      },
+      {
+            "plan": "Distribution Plan",
+            "status": "Approved",
+            "owner": "Logistics Officer — FAO Syria",
+            "notes": ""
+      }
+],
+    "distributionModel": "Partial FAO Intervention",
+    "lastUpdated": "02 Apr 2026",
     "name": "Syria",
     "flag": "🇸🇾",
     "region": "Middle East",
@@ -1397,15 +2103,19 @@ function fmt(n) { return new Intl.NumberFormat('en-US').format(n); }
 function fmtM(n) { return '$' + (n/1000000).toFixed(1) + 'M'; }
 function pct(a, b) { return b ? Math.round((a/b)*100) : 0; }
 function statusLabel(s) {
-  return { 'on-track': 'On Track', 'at-risk': 'At Risk', 'delayed': 'Delayed' }[s] || s;
+  return { 'on-track': 'On Track', 'at-risk': 'At Risk', 'delayed': 'Delayed', 'critical': 'Critical', 'not-started': 'Not Started' }[s] || s;
 }
 function statusColor(s) {
-  return { 'on-track': '#27AE60', 'at-risk': '#F39C12', 'delayed': '#E74C3C' }[s] || '#888';
+  return { 'on-track': '#27AE60', 'at-risk': '#F39C12', 'delayed': '#E74C3C', 'critical': '#C0392B', 'not-started': '#888' }[s] || '#888';
 }
+function projectStatusClass(s) {
+  return { 'Approved': 'approved', 'Draft': 'draft', 'Pending Approval': 'pending', 'Other': 'other' }[s] || 'other';
+}
+function projectStatusLabel(s) { return s || '—'; }
 function progressFillClass(s) {
   return { 'on-track': 'green', 'at-risk': 'warning', 'delayed': 'danger' }[s] || 'blue';
 }
-function totalOrders(o) { return o.pending + o.confirmed + o.inProduction + o.shipped + o.delivered; }
+function totalOrders(o) { return o.pending + o.confirmed + o.shipped + o.delivered; }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // BUILD SIDEBAR COUNTRY LINKS
@@ -1498,12 +2208,12 @@ function buildGlobal() {
   `;
 
   // Pipeline aggregation
-  let pEnd=0,pCon=0,pPro=0,pShi=0,pDel=0;
-  countries.forEach(c => { const o=c.sc.orders; pEnd+=o.pending; pCon+=o.confirmed; pPro+=o.inProduction; pShi+=o.shipped; pDel+=o.delivered; });
-  const pTotal = pEnd+pCon+pPro+pShi+pDel;
+  let pEnd=0,pCon=0,pShi=0,pDel=0;
+  countries.forEach(c => { const o=c.sc.orders; pEnd+=o.pending; pCon+=o.confirmed; pShi+=o.shipped; pDel+=o.delivered; });
+  const pTotal = pEnd+pCon+pShi+pDel;
   document.getElementById('global-pipeline').innerHTML = `
     <div class="pipeline">
-      ${[['Pending','#95A5A6',pEnd],['Confirmed','#3498DB',pCon],['In Production','#F39C12',pPro],['Shipped','#9B59B6',pShi],['Delivered','#27AE60',pDel]]
+      ${[['Pending','#95A5A6',pEnd],['Confirmed','#3498DB',pCon],['Shipped','#9B59B6',pShi],['Delivered','#27AE60',pDel]]
         .map(([l,c,v]) => `<div class="pipe-step"><div class="pipe-num">${v}</div><div class="pipe-label">${l}</div><div class="pipe-bar" style="background:${c}"></div></div>`).join('')}
     </div>
     <div style="font-size:11px;color:#7F8C8D;text-align:center;margin-top:8px;">Total: ${pTotal} orders across all countries</div>
@@ -1535,8 +2245,199 @@ function buildGlobal() {
       <td>${totalOrders(c.sc.orders)}</td>
       <td>${fmt(invTotal)} MT</td>
       <td>${c.sc.kpis.onTimeDelivery}%</td>
+      <td style="font-size:11px;color:#888">${c.lastUpdated || '—'}</td>
     </tr>`;
   }).join('');
+
+  // ── DEMAND TABLE ──
+  var dSeeds=0, dFert=0, dMach=0, dVacc=0;
+  var demandRows = countries.map(function(c) {
+    var d = c.demand || {seeds:0, fertilizer:0, machinery:0, vaccines:0};
+    dSeeds += d.seeds||0; dFert += d.fertilizer||0; dMach += d.machinery||0; dVacc += d.vaccines||0;
+    var rowTotal = (d.seeds||0) + (d.fertilizer||0) + (d.machinery||0) + (d.vaccines||0);
+    return '<tr>' +
+      '<td>' + c.flag + ' ' + c.name + '</td>' +
+      '<td>' + (d.seeds||0).toLocaleString() + '</td>' +
+      '<td>' + (d.fertilizer||0).toLocaleString() + '</td>' +
+      '<td>' + (d.machinery||0).toLocaleString() + '</td>' +
+      '<td>' + (d.vaccines||0).toLocaleString() + '</td>' +
+      '<td><b>' + rowTotal.toLocaleString() + '</b></td>' +
+    '</tr>';
+  });
+  var demandBody = document.getElementById('demand-table-body');
+  if (demandBody) demandBody.innerHTML = demandRows.join('');
+  var grandTotal = dSeeds + dFert + dMach + dVacc;
+  var demandFoot = document.getElementById('demand-table-foot');
+  if (demandFoot) demandFoot.innerHTML =
+    '<tr class="total-row">' +
+      '<td>TOTAL</td>' +
+      '<td>' + dSeeds.toLocaleString() + '</td>' +
+      '<td>' + dFert.toLocaleString() + '</td>' +
+      '<td>' + dMach.toLocaleString() + '</td>' +
+      '<td>' + dVacc.toLocaleString() + '</td>' +
+      '<td>' + grandTotal.toLocaleString() + '</td>' +
+    '</tr>';
+}
+
+
+// ── PROCUREMENT PIPELINE CHART ────────────────────────────────────
+var _procDrillChart = null;
+
+function renderProcChart() {
+  var ctx = document.getElementById('chart-proc-main');
+  if (!ctx) return;
+
+  var STAGES     = ['To be PR\'d','PR\'d','PO\'d','Delivered to FAO','Distributed'];
+  var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
+  var COLORS     = ['#BDC3C7','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var labels     = countries.map(function(c){ return c.flag+' '+c.name; });
+
+  // Calculate 100% stacked data
+  var totals = countries.map(function(c){
+    if (!c.procurement || !c.procurement.byStage) return 1;
+    return STAGE_KEYS.reduce(function(s,k){ return s + (c.procurement.byStage[k]||0); }, 0) || 1;
+  });
+  var datasets = STAGE_KEYS.map(function(key, i) {
+    return {
+      label: STAGES[i],
+      data: countries.map(function(c, ci){
+        var raw = (c.procurement&&c.procurement.byStage&&c.procurement.byStage[key])||0;
+        return Math.round(raw / totals[ci] * 100);
+      }),
+      backgroundColor: COLORS[i],
+      borderWidth: 0
+    };
+  });
+
+  // No budget line on % chart (budget comparison shown in tooltip and drill-down)
+  var budgetPlugin = { id:'budgetLine' };
+
+  var procChart = new Chart(ctx, {
+    type: 'bar',
+    plugins: [budgetPlugin],
+    data: { labels: labels, datasets: datasets },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      onClick: function(evt, elements) {
+        if (!elements || !elements.length) return;
+        var idx = elements[0].index;
+        openProcDrilldown(idx);
+      },
+      plugins: {
+        legend: { position:'bottom', labels:{ font:{size:11}, boxWidth:12 } },
+        tooltip: {
+          callbacks: {
+            title: function(items){ return items[0].label; },
+            label: function(item){
+              var idx = item.dataIndex;
+              var c = countries[idx];
+              var key = STAGE_KEYS[item.datasetIndex];
+              var raw = (c.procurement&&c.procurement.byStage&&c.procurement.byStage[key])||0;
+              return ' '+item.dataset.label+': '+item.raw+'%  ($'+raw.toLocaleString()+')';
+            },
+            afterBody: function(items) {
+              var idx = items[0].dataIndex;
+              var c = countries[idx];
+              var budget = c.programmatic.budget.total;
+              var procTotal = c.procurement ? c.procurement.total : 0;
+              var diff = procTotal - budget;
+              var pct = budget > 0 ? Math.abs(diff/budget*100).toFixed(0) : 0;
+              var sign = diff > 0 ? '▲ '+pct+'% over budget' : '▼ '+pct+'% under budget';
+              return ['─────────────────','Budget: $'+budget.toLocaleString(),'Total Procurement: $'+procTotal.toLocaleString(), sign];
+            }
+          }
+        }
+      },
+      scales: {
+        x: { stacked:true, display:false, max:100 },
+        y: { stacked:true, ticks:{ font:{size:12} } }
+      }
+    }
+  });
+}
+
+function openProcDrilldown(countryIndex) {
+  var c = countries[countryIndex];
+  var panel = document.getElementById('proc-drilldown');
+  var title = document.getElementById('proc-drilldown-title');
+
+  // Toggle off if same country clicked again
+  if (panel.classList.contains('open') && panel.dataset.country === c.id) {
+    panel.classList.remove('open');
+    panel.dataset.country = '';
+    return;
+  }
+  panel.dataset.country = c.id;
+  panel.classList.add('open');
+  title.innerHTML = c.flag+' '+c.name+' — Procurement by Commodity <span style="font-weight:400;font-size:12px;color:#5A6A7A">(click bar again to close)</span>';
+
+  // Budget comparison
+  var budget = c.programmatic.budget.total;
+  var procTotal = c.procurement ? c.procurement.total : 0;
+  var diff = procTotal - budget;
+  var pct = budget > 0 ? Math.abs(diff/budget*100).toFixed(1) : 0;
+  var compareHtml = '<div class="budget-compare"><span class="bc-label">Budget total:</span><b>$'+budget.toLocaleString()+'</b></div>' +
+    '<div class="budget-compare"><span class="bc-label">Planned procurement:</span><b>$'+procTotal.toLocaleString()+'</b>' +
+    '<span style="margin-left:12px" class="'+(diff>0?'bc-over':'bc-under')+'">'+(diff>0?'▲':'▼')+' $'+Math.abs(diff).toLocaleString()+' ('+pct+'% '+(diff>0?'over':'under')+' budget)</span></div>';
+  document.getElementById('proc-budget-compare').innerHTML = compareHtml;
+
+  // Destroy previous drill chart
+  if (_procDrillChart) { _procDrillChart.destroy(); _procDrillChart = null; }
+
+  var STAGES     = ['To be PR\'d','PR\'d','PO\'d','Delivered to FAO','Distributed'];
+  var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
+  var COLORS     = ['#BDC3C7','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var COMM_LABELS = ['Seeds','Fertilizer','Machinery','Vaccines'];
+  var COMM_KEYS   = ['seeds','fertilizer','machinery','vaccines'];
+
+  var byCom = (c.procurement && c.procurement.byCommodity) || {};
+
+  // Calculate per-commodity totals for 100% stacking
+  var commTotals = COMM_KEYS.map(function(ck) {
+    return STAGE_KEYS.reduce(function(s, key) {
+      return s + ((byCom[ck] && byCom[ck][key]) || 0);
+    }, 0) || 1;
+  });
+
+  var drillDatasets = STAGE_KEYS.map(function(key, i) {
+    return {
+      label: STAGES[i],
+      data: COMM_KEYS.map(function(ck, ci) {
+        var raw = (byCom[ck] && byCom[ck][key]) || 0;
+        return Math.round(raw / commTotals[ci] * 100);
+      }),
+      backgroundColor: COLORS[i],
+      borderWidth: 0
+    };
+  });
+
+  var dCtx = document.getElementById('chart-proc-drill');
+  _procDrillChart = new Chart(dCtx, {
+    type: 'bar',
+    data: { labels: COMM_LABELS, datasets: drillDatasets },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display:false },
+        tooltip: { callbacks: {
+          label: function(item) {
+            var ck = COMM_KEYS[item.dataIndex];
+            var key = STAGE_KEYS[item.datasetIndex];
+            var raw = (byCom[ck] && byCom[ck][key]) || 0;
+            return ' ' + item.dataset.label + ': ' + item.raw + '%  ($' + raw.toLocaleString() + ')';
+          }
+        }}
+      },
+      scales: {
+        x: { stacked:true, display:false, max:100 },
+        y: { stacked:true, ticks:{ font:{size:12} } }
+      }
+    }
+  });
 }
 
 function renderGlobalCharts() {
@@ -1631,8 +2532,35 @@ function buildCountryPages() {
             <div class="ch-meta-item"><div class="cm-val">${fmt(p.beneficiaries.target)}</div><div class="cm-lbl">Target Beneficiaries</div></div>
             <div class="ch-meta-item"><div class="cm-val">${p.distributions.totalMonths} months</div><div class="cm-lbl">Distribution Period</div></div>
             <div class="ch-meta-item"><div class="cm-val">${p.startDate} → ${p.endDate}</div><div class="cm-lbl">Project Timeline</div></div>
-            <div class="ch-meta-item"><div class="cm-val"><span class="badge ${c.status}">${statusLabel(c.status)}</span></div><div class="cm-lbl">Project Status</div></div>
+            <div class="ch-meta-item"><div class="cm-val"><span class="badge ${c.status}">${statusLabel(c.status)}</span></div><div class="cm-lbl">Operational Status</div></div>
+            <div class="ch-meta-item">
+              <div class="cm-val">
+                <div class="approval-trigger" id="apt-${c.id}" onclick="toggleApproval('${c.id}',event)">
+                  <span class="badge ${projectStatusClass(c.projectStatus)}">${projectStatusLabel(c.projectStatus)} ▾</span>
+                  <div class="approval-panel" id="ap-${c.id}" onclick="event.stopPropagation()">
+                    <div class="ap-header">📋 SC Approval Plans — ${c.name}</div>
+                    <table class="ap-table">
+                      <thead><tr><th>Plan</th><th>Status</th><th>Owner</th><th>Notes</th></tr></thead>
+                      <tbody>${(c.approvalPlans||[]).map((pl,i) => `
+                        <tr>
+                          <td><b>${pl.plan}</b></td>
+                          <td><span class="badge ap-${pl.status.toLowerCase().split(' ')[0]}">${pl.status}</span></td>
+                          <td style="color:#5A6A7A;font-size:11px">${pl.owner}</td>
+                          <td><textarea class="ap-notes-input" rows="1" placeholder="Add notes..." onchange="saveApNote('${c.id}',${i},this.value)">${pl.notes||''}</textarea></td>
+                        </tr>`).join('')}
+                      </tbody>
+                    </table>
+                    <div class="ap-footer">💡 Notes are saved for this browser session. Click outside to close.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cm-lbl">Project Status</div>
+            </div>
+            <div class="ch-meta-item"><div class="cm-val">${c.lastUpdated || '—'} <span class="last-update-badge">🕐 Last updated</span></div><div class="cm-lbl">Data Updated</div></div>
           </div>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="export-btn" onclick="window.print()">🖨️ Export / Print Report</button>
         </div>
       </div>
 
@@ -1723,6 +2651,9 @@ function buildCountryPages() {
           <hr class="divider-h">
           <div class="card-title" style="font-size:12px;margin-bottom:8px;">Commodities Distributed</div>
           <div class="items-list">${itemsHtml}</div>
+          <hr class="divider-h">
+          <div class="card-title" style="font-size:12px;margin-bottom:6px;">Distribution Model</div>
+          <div class="dist-model-box">🚚 ${c.distributionModel || '—'}</div>
         </div>
       </div>
 
@@ -1750,29 +2681,26 @@ function buildCountryPages() {
         <div class="card">
           <div class="card-header"><div><div class="card-title">Order Pipeline</div><div class="card-subtitle">Total: ${allOrds} orders</div></div></div>
           <div class="pipeline">
-            ${[['Pending','#95A5A6',sc.orders.pending],['Confirmed','#3498DB',sc.orders.confirmed],['In Prod.','#F39C12',sc.orders.inProduction],['Shipped','#9B59B6',sc.orders.shipped],['Delivered','#27AE60',sc.orders.delivered]]
+            ${[['Pending','#95A5A6',sc.orders.pending],['Confirmed','#3498DB',sc.orders.confirmed],['Shipped','#9B59B6',sc.orders.shipped],['Delivered','#27AE60',sc.orders.delivered]]
               .map(([l,col,v]) => `<div class="pipe-step"><div class="pipe-num">${v}</div><div class="pipe-label">${l}</div><div class="pipe-bar" style="background:${col}"></div></div>`).join('')}
           </div>
           <div class="chart-container" style="height:160px;margin-top:16px;"><canvas id="chart-${c.id}-orders"></canvas></div>
         </div>
         <div class="card">
-          <div class="card-header"><div><div class="card-title">Inventory Status</div><div class="card-subtitle">${c.sc.inventory.unit} — Warehouse capacity utilization</div></div></div>
+          <div class="card-header"><div><div class="card-title">Inventory Status</div><div class="card-subtitle">${c.sc.inventory.unit}</div></div></div>
           <div class="kpi-row" style="margin-bottom:12px;">
             <div class="kpi-mini"><div class="km-val">${fmt(sc.inventory.onHand)}</div><div class="km-lbl">On Hand (MT)</div></div>
             <div class="kpi-mini"><div class="km-val">${fmt(sc.inventory.inTransit)}</div><div class="km-lbl">In Transit (MT)</div></div>
-            <div class="kpi-mini"><div class="km-val">${fmt(sc.inventory.capacity)}</div><div class="km-lbl">Capacity (MT)</div></div>
-            <div class="kpi-mini"><div class="km-val">${capPct}%</div><div class="km-lbl">Cap. Used</div></div>
+            <div class="kpi-mini"><div class="km-val">${fmt(sc.inventory.onHand + sc.inventory.inTransit)}</div><div class="km-lbl">Total (MT)</div></div>
           </div>
           <div class="inv-bar-wrap">
             <div class="inv-bar">
-              <div class="inv-seg" style="width:${pct(sc.inventory.onHand, sc.inventory.capacity)}%;background:#0099CC;">${sc.inventory.onHand > 50 ? sc.inventory.onHand+'MT' : ''}</div>
-              <div class="inv-seg" style="width:${pct(sc.inventory.inTransit, sc.inventory.capacity)}%;background:#7EC8E3;">${sc.inventory.inTransit > 30 ? sc.inventory.inTransit+'MT' : ''}</div>
-              <div class="inv-seg" style="width:${100 - capPct}%;background:#E8EDF2;"></div>
+              <div class="inv-seg" style="width:${pct(sc.inventory.onHand, sc.inventory.onHand+sc.inventory.inTransit+1)}%;background:#0099CC;">${sc.inventory.onHand > 50 ? sc.inventory.onHand+'MT' : ''}</div>
+              <div class="inv-seg" style="width:${pct(sc.inventory.inTransit, sc.inventory.onHand+sc.inventory.inTransit+1)}%;background:#7EC8E3;">${sc.inventory.inTransit > 30 ? sc.inventory.inTransit+'MT' : ''}</div>
             </div>
             <div class="inv-legend">
               <div class="il-item"><div class="il-dot" style="background:#0099CC"></div>On Hand</div>
               <div class="il-item"><div class="il-dot" style="background:#7EC8E3"></div>In Transit</div>
-              <div class="il-item"><div class="il-dot" style="background:#E8EDF2"></div>Available Capacity</div>
             </div>
           </div>
           <hr class="divider-h">
@@ -1809,10 +2737,6 @@ function buildCountryPages() {
             <div class="progress-bar"><div class="progress-fill ${sc.kpis.onTimeDelivery>=75?'green':sc.kpis.onTimeDelivery>=50?'warning':'danger'}" style="width:${sc.kpis.onTimeDelivery}%"></div></div>
           </div>
           <div class="progress-row">
-            <div class="progress-label"><span>Warehouse Capacity Utilization</span><span class="pct">${capPct}%</span></div>
-            <div class="progress-bar"><div class="progress-fill ${capPct>90?'danger':capPct>70?'warning':'blue'}" style="width:${capPct}%"></div></div>
-          </div>
-          <div class="progress-row">
             <div class="progress-label"><span>Distribution Progress</span><span class="pct">${distPct}%</span></div>
             <div class="progress-bar"><div class="progress-fill blue" style="width:${distPct}%"></div></div>
           </div>
@@ -1835,16 +2759,25 @@ function buildCountryPages() {
         ${risksHtml}
       </div>
 
+      <!-- Comments -->
+      <div class="section-title" style="margin-top:4px;"><span class="dot" style="background:#7F8C8D"></span> Coordinator Notes</div>
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header"><div><div class="card-title">Free-text Comments & Updates</div><div class="card-subtitle">For coordinator use — notes saved during this session</div></div></div>
+        <textarea class="comments-area" id="comments-${c.id}" placeholder="Enter any programme updates, observations, or action items here..."></textarea>
+        <div class="save-note">💡 Notes are saved for this browser session only. Copy important notes before closing.</div>
+      </div>
+
       <div class="page-footer">
         <span><b>FAO Office:</b> ${p.faoOffice}</span>
         <span><b>Project Officer:</b> ${p.projectOfficer}</span>
         <span><b>Next Distribution:</b> ${p.distributions.nextDist}</span>
-        <span><b>Data as of:</b> 01 April 2026</span>
+        <span><b>Last Data Update:</b> ${c.lastUpdated || '—'}</span>
       </div>
     </div>`;
 
     container.innerHTML += html;
   });
+  renderProcChart();
 }
 
 function renderCountryCharts(c) {
@@ -1875,9 +2808,9 @@ function renderCountryCharts(c) {
     new Chart(oCtx.getContext('2d'), {
       type: 'bar',
       data: {
-        labels: ['Pending', 'Confirmed', 'In Production', 'Shipped', 'Delivered'],
-        datasets: [{ data: [o.pending, o.confirmed, o.inProduction, o.shipped, o.delivered],
-          backgroundColor: ['#95A5A6','#3498DB','#F39C12','#9B59B6','#27AE60'], borderRadius: 6, borderSkipped: false }]
+        labels: ['Pending', 'Confirmed', 'Shipped', 'Delivered'],
+        datasets: [{ data: [o.pending, o.confirmed, o.shipped, o.delivered],
+          backgroundColor: ['#95A5A6','#3498DB','#9B59B6','#27AE60'], borderRadius: 6, borderSkipped: false }]
       },
       options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y',
         plugins: { legend: { display: false } },
@@ -1894,6 +2827,36 @@ buildSidebar();
 buildLanding();
 buildGlobal();
 buildCountryPages();
+restoreApNotes();
+
+
+// ── APPROVAL PLAN DROPDOWN ───────────────────────────────────────
+function toggleApproval(countryId, e) {
+  e.stopPropagation();
+  var panel = document.getElementById('ap-' + countryId);
+  var isOpen = panel.classList.contains('open');
+  document.querySelectorAll('.approval-panel.open').forEach(function(p){ p.classList.remove('open'); });
+  if (!isOpen) panel.classList.add('open');
+}
+document.addEventListener('click', function() {
+  document.querySelectorAll('.approval-panel.open').forEach(function(p){ p.classList.remove('open'); });
+});
+function saveApNote(countryId, planIndex, value) {
+  try { sessionStorage.setItem('apnote_'+countryId+'_'+planIndex, value); } catch(e){}
+}
+function restoreApNotes() {
+  try {
+    for (var i=0; i<sessionStorage.length; i++) {
+      var key = sessionStorage.key(i);
+      if (!key || !key.startsWith('apnote_')) continue;
+      var parts = key.split('_');
+      var cid = parts[1], idx = parseInt(parts[2]);
+      var val = sessionStorage.getItem(key);
+      var rows = document.querySelectorAll('#ap-'+cid+' .ap-notes-input');
+      if (rows[idx]) rows[idx].value = val;
+    }
+  } catch(e){}
+}
 
 // ── PASSWORD GATE LOGIC ──
 (function() {
@@ -1935,6 +2898,44 @@ buildCountryPages();
   // Focus input on load
   document.getElementById("pw-input").focus();
 })();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// ── WORLD MAP ────────────────────────────────────────────────────
+var _map = null;
+function initMap() {
+  if (_map) return;
+  if (!document.getElementById('world-map')) return;
+  _map = L.map('world-map', { zoomControl: true, scrollWheelZoom: false }).setView([15, 20], 2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors', maxZoom: 6, minZoom: 1
+  }).addTo(_map);
+  const coords = {
+    bangladesh:[23.68,90.36], chad:[15.45,18.73], colombia:[4.57,-74.30],
+    drc:[-4.04,21.76], ethiopia:[9.15,40.49], haiti:[18.97,-72.29],
+    honduras:[15.20,-86.24], myanmar:[21.92,95.96], syria:[34.80,38.99]
+  };
+  const colors = { 'on-track':'#27AE60','at-risk':'#F39C12','delayed':'#E74C3C','not-started':'#888','critical':'#C0392B' };
+  countries.forEach(c => {
+    const latlng = coords[c.id];
+    if (!latlng) return;
+    const col = colors[c.status] || '#888';
+    const circle = L.circleMarker(latlng, {
+      radius:14, fillColor:col, color:'#fff', weight:2, fillOpacity:0.9
+    }).addTo(_map);
+    circle.bindPopup(`<b>${c.flag} ${c.name}</b><br>Status: <b>${c.status.replace('-',' ')}</b><br>Budget: ${(c.programmatic.budget.total/1000000).toFixed(1)}M USD<br>Beneficiaries: ${c.programmatic.beneficiaries.target.toLocaleString()}<br><a href="#" onclick="showPage('${c.id}');return false;">View details →</a>`);
+    circle.bindTooltip(`${c.flag} ${c.name}`, {permanent:false, direction:'top'});
+  });
+  setTimeout(()=>_map.invalidateSize(),200);
+}
+// Init map when landing page shown
+const _origShowPage = showPage;
+window.showPage = function(id) {
+  _origShowPage(id);
+  if (id === 'landing') setTimeout(initMap, 100);
+};
+setTimeout(initMap, 500);
 </script>
 </body>
 </html>
