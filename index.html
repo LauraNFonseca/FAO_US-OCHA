@@ -2233,6 +2233,17 @@ function sortPortfolio(key) {
   renderPortfolioTable();
 }
 
+function calcProjectMonths(startDate, endDate) {
+  var months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  var startParts = startDate.split(' ');
+  var endParts = endDate.split(' ');
+  var startM = months[startParts[0]];
+  var startY = parseInt(startParts[1]);
+  var endM = months[endParts[0]];
+  var endY = parseInt(endParts[1]);
+  return (endY - startY) * 12 + (endM - startM) + 1;
+}
+
 function renderPortfolioTable() {
   var sorted = countries.slice();
   if (_portSortKey) {
@@ -2292,7 +2303,7 @@ function renderPortfolioTable() {
         '<div class="pt-budget-sub">' + benePct + '% reached (' + fmt(p.beneficiaries.reached) + ')</div>' +
         '<div class="pt-bar"><div class="pt-bar-fill" style="width:' + Math.min(benePct,100) + '%;background:#27AE60;height:100%;border-radius:3px;"></div></div>' +
       '</td>' +
-      '<td style="text-align:center;font-weight:700;font-size:15px;color:#005A8E;">' + p.distributions.totalMonths + '</td>' +
+      '<td style="text-align:center;font-weight:700;font-size:15px;color:#005A8E;">' + calcProjectMonths(p.startDate, p.endDate) + '</td>' +
     '</tr>';
   }).join('');
 }
