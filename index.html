@@ -18,7 +18,7 @@
     --danger: #E74C3C;
     --neutral: #7F8C8D;
     --bg: #F4F7FA;
-    --sidebar-w: 260px;
+    --sidebar-w: 180px;
     --header-h: 64px;
     --shadow: 0 2px 12px rgba(0,90,142,0.10);
     --radius: 10px;
@@ -36,13 +36,14 @@
     flex-direction: column; gap: 0;
   }
   #pw-box {
-    background: #fff;
-    padding: 0; width: 320px; max-width: 92vw;
+    background: #fff; border-radius:16px;
+    padding: 44px 40px 36px; width: 400px; max-width: 94vw;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
     text-align: center;
   }
-  #pw-box .pw-logo { display: none; }
-  #pw-box h2 { display: none; }
-  #pw-box p { display: none; }
+  #pw-box .pw-logo { display: flex; justify-content:center; margin-bottom:18px; }
+  #pw-box h2 { display:block; color:#005A8E; font-size:1.2rem; font-weight:700; margin-bottom:6px; }
+  #pw-box p { display:block; color:#5A6A7A; font-size:0.83rem; margin-bottom:24px; line-height:1.5; }
   #pw-input {
     width: 100%; padding: 12px 16px; border-radius: 8px;
     border: 2px solid #CBD5E0; font-size: 1rem;
@@ -105,7 +106,7 @@
     letter-spacing: 1.2px; text-transform: uppercase; }
   .nav-item {
     display: flex; align-items: center; gap: 10px;
-    padding: 9px 20px; cursor: pointer; font-size: 13.5px;
+    padding: 8px 14px; cursor: pointer; font-size: 12.5px;
     color: var(--text); transition: all 0.15s; border-left: 3px solid transparent;
     text-decoration: none;
   }
@@ -367,7 +368,7 @@
   /* ── MAP ── */
   #world-map { height: 420px; border-radius: var(--radius); margin: 0 0 24px; border: 1px solid #E0E8F0; }
   .map-legend { display:flex; gap:16px; flex-wrap:wrap; padding:10px 16px; background:#F4F7FA; border-radius:0 0 var(--radius) var(--radius); border:1px solid #E0E8F0; border-top:none; margin-bottom:24px; font-size:12px; }
-  .ml-item { display:flex; align-items:center; gap:6px; }
+  .ml-item { display:flex; align-items:center; gap:6px; color:#ddd; }
   .ml-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
 
   /* ── COMMENTS ── */
@@ -450,6 +451,68 @@
   .bc-over  { color:#E74C3C; font-weight:700; }
   .bc-under { color:#27AE60; font-weight:700; }
 
+
+  /* ── HERO-MAP ROW ── */
+  .hero-map-row {
+    display:flex; gap:0; margin-bottom:28px;
+    border-radius:14px; overflow:hidden;
+    box-shadow:0 4px 24px rgba(0,90,142,0.14);
+  }
+  .hero-map-row .hero {
+    flex:1.1; margin-bottom:0; border-radius:0; box-shadow:none;
+  }
+  .hero-map-panel {
+    flex:0.9; min-width:320px; display:flex; flex-direction:column;
+    background:#001F35;
+  }
+  .hero-map-panel #world-map {
+    flex:none; height:280px;
+    border-radius:0; margin:0; border:none; display:block;
+  }
+  .hero-map-panel .map-legend {
+    border-radius:0; margin:0; border:none;
+    border-top:1px solid #003D61; background:#001F35;
+    color:#ccc;
+  }
+  @media (max-width:900px) {
+    .hero-map-row { flex-direction:column; }
+    .hero-map-panel { min-width:0; }
+    .hero-map-panel #world-map { min-height:220px; }
+  }
+
+  /* ── PORTFOLIO TABLE ── */
+  #portfolio-table { border-collapse:collapse; font-size:13px; }
+  #portfolio-table th.th-sortable:hover { background:#D6EAF8; cursor:pointer; }
+  #portfolio-table th.th-sortable { user-select:none; }
+  .sort-icon { font-size:10px; color:#0099CC; }
+  .portfolio-row { cursor:pointer; transition:background 0.15s; }
+  .portfolio-row:hover td { background:#F0F7FF !important; }
+  .pt-country { display:flex; align-items:center; gap:10px; }
+  .pt-flag { font-size:22px; }
+  .pt-name { font-weight:700; color:#005A8E; }
+  .pt-region { font-size:11px; color:#888; }
+  .pt-budget-wrap { min-width:160px; }
+  .pt-budget-val { font-size:13px; font-weight:700; color:#005A8E; }
+  .pt-budget-sub { font-size:11px; color:#888; margin-top:1px; }
+  .pt-bar { height:6px; background:#E8EDF2; border-radius:3px; overflow:hidden; margin-top:4px; }
+  .pt-bar-fill { height:100%; border-radius:3px; }
+
+  /* ── DEMAND EXPANDABLE ── */
+  .demand-parent-th {
+    cursor:pointer; user-select:none; white-space:nowrap;
+    position:relative;
+  }
+  .demand-parent-th:hover { background:#0099CC !important; }
+  .d-exp-icon { font-size:10px; margin-left:4px; color:rgba(255,255,255,0.8); }
+  .demand-sub-th { background:#C8E6F5 !important; color:#005A8E !important; font-size:11px; font-weight:600; }
+  .demand-sub-td { background:#EBF6FD; font-size:12px; color:#1C2D3E; }
+  .demand-parent-td-exp { background:#D6EFF9 !important; font-weight:700; }
+
+  /* ── PROCUREMENT LEGEND ── */
+  .proc-legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:#1C2D3E; }
+  .proc-legend-dot { width:14px; height:14px; border-radius:3px; flex-shrink:0; }
+
+
 </style>
 </head>
 <body>
@@ -457,20 +520,55 @@
 <!-- ═══════════════════════════════════════ PASSWORD GATE ═══════════════════════════════════════ -->
 <div id="pw-gate">
   <div id="pw-box">
-    <div class="pw-logo">🌐</div>
-    <h2>GSCMTF Dashboard</h2>
-    <p>US-OCHA Global Supply Chain Monitoring<br>Enter your access password to continue</p>
+    <div class="pw-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="72" height="72">
+  <circle cx="100" cy="100" r="96" fill="white" stroke="#5B8DB8" stroke-width="7"/>
+  <!-- F A O text -->
+  <text x="38" y="110" font-family="Arial Black,sans-serif" font-size="46" font-weight="900" fill="#5B8DB8">F</text>
+  <text x="79" y="72" font-family="Arial Black,sans-serif" font-size="46" font-weight="900" fill="#5B8DB8">A</text>
+  <text x="130" y="110" font-family="Arial Black,sans-serif" font-size="46" font-weight="900" fill="#5B8DB8">O</text>
+  <!-- wheat stalk stem -->
+  <line x1="100" y1="80" x2="100" y2="150" stroke="#5B8DB8" stroke-width="5" stroke-linecap="round"/>
+  <!-- grain head -->
+  <ellipse cx="100" cy="108" rx="13" ry="20" fill="none" stroke="#5B8DB8" stroke-width="4"/>
+  <!-- water drop -->
+  <path d="M100 82 C97 87 93 92 93 96 C93 99.3 96.1 102 100 102 C103.9 102 107 99.3 107 96 C107 92 103 87 100 82Z" fill="#5B8DB8"/>
+  <!-- left leaves -->
+  <path d="M100 118 Q86 112 82 104" stroke="#5B8DB8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M100 126 Q84 122 80 114" stroke="#5B8DB8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <!-- right leaves -->
+  <path d="M100 118 Q114 112 118 104" stroke="#5B8DB8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M100 126 Q116 122 120 114" stroke="#5B8DB8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <!-- FIAT PANIS -->
+  <text x="100" y="175" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#5B8DB8" text-anchor="middle" letter-spacing="4">FIAT PANIS</text>
+</svg></div>
+    <h2>Supply Chain Management Control Tower</h2>
+    <p>A Supply chain orchestration tool to support the US-OCHA projects.<br>Please enter your password, and click on the button <b>"Access Control Tower"</b>.</p>
     <input id="pw-input" type="password" placeholder="Password" autocomplete="off" />
     <div id="pw-error">Incorrect password. Please try again.</div>
-    <button id="pw-btn" onclick="checkPassword()">Access Dashboard</button>
+    <button id="pw-btn" onclick="checkPassword()">Access Control Tower</button>
   </div>
   <div id="pw-footer">FAO — Food and Agriculture Organization of the United Nations</div>
 </div>
 
 <!-- ═══════════════════════════════════════ HEADER ═══════════════════════════════════════ -->
 <div id="header">
-  <a class="logo" href="#" onclick="showPage('landing'); return false;">
-    <div class="logo-emblem">FAO</div>
+  <a class="logo" href="#" onclick="showPage('global'); return false;">
+    <div class="logo-emblem" style="background:white;padding:2px;overflow:visible;width:44px;height:44px;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="40" height="40">
+        <circle cx="100" cy="100" r="96" fill="white" stroke="#5B8DB8" stroke-width="7"/>
+        <text x="36" y="112" font-family="Arial Black,sans-serif" font-size="48" font-weight="900" fill="#5B8DB8">F</text>
+        <text x="77" y="72" font-family="Arial Black,sans-serif" font-size="48" font-weight="900" fill="#5B8DB8">A</text>
+        <text x="128" y="112" font-family="Arial Black,sans-serif" font-size="48" font-weight="900" fill="#5B8DB8">O</text>
+        <line x1="100" y1="80" x2="100" y2="150" stroke="#5B8DB8" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="100" cy="108" rx="13" ry="20" fill="none" stroke="#5B8DB8" stroke-width="4"/>
+        <path d="M100 82 C97 87 93 92 93 96 C93 99.3 96.1 102 100 102 C103.9 102 107 99.3 107 96 C107 92 103 87 100 82Z" fill="#5B8DB8"/>
+        <path d="M100 118 Q86 112 82 104" stroke="#5B8DB8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M100 126 Q84 122 80 114" stroke="#5B8DB8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M100 118 Q114 112 118 104" stroke="#5B8DB8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M100 126 Q116 122 120 114" stroke="#5B8DB8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <text x="100" y="175" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#5B8DB8" text-anchor="middle" letter-spacing="4">FIAT PANIS</text>
+      </svg>
+    </div>
     <div class="logo-text">
       <div class="org">Food and Agriculture Organization</div>
       <div class="proj">GSCMTF — US-OCHA Global Project</div>
@@ -485,10 +583,7 @@
 <!-- ═══════════════════════════════════════ SIDEBAR ═══════════════════════════════════════ -->
 <div id="sidebar">
   <div class="nav-section">Navigation</div>
-  <div class="nav-item active" id="nav-landing" onclick="showPage('landing')">
-    <span class="flag">🏠</span> Home
-  </div>
-  <div class="nav-item" id="nav-global" onclick="showPage('global')">
+  <div class="nav-item active" id="nav-global" onclick="showPage('global')">
     <span class="flag">🌍</span> Global Overview
   </div>
   <div class="nav-section">Countries (9)</div>
@@ -499,136 +594,91 @@
 <!-- ═══════════════════════════════════════ MAIN ═══════════════════════════════════════ -->
 <div id="main">
 
-  <!-- ── LANDING PAGE ── -->
-  <div id="page-landing" class="page active">
-    <div class="hero">
-      <div class="hero-badge">🌍 GSCMTF — Operational Dashboard</div>
-      <h1>Global Supply Chain Management Task Force</h1>
-      <p>Cross-functional supply chain oversight for the US-OCHA funded global humanitarian project, implemented by FAO across 9 priority countries. Managed by the Supply Chain Orchestration Unit (CSLO).</p>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hs-val" id="hero-budget">$0M</div>
-          <div class="hs-lbl">Total Budget</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hs-val" id="hero-benes">0M</div>
-          <div class="hs-lbl">Target Beneficiaries</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hs-val">9 <span>Countries</span></div>
-          <div class="hs-lbl">Supported</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hs-val" id="hero-orders">0</div>
-          <div class="hs-lbl">Active Orders</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hs-val" id="hero-status">—</div>
-          <div class="hs-lbl">On Track</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-title"><span class="dot"></span> Country Portfolio — Quick Status</div>
-    <div class="country-grid" id="landing-country-grid"></div>
-
-    <div class="section-title"><span class="dot" style="background:#0099CC"></span> Global Programme Map</div>
-    <div id="world-map"></div>
-    <div class="map-legend">
-      <span style="font-weight:600;color:#5A6A7A;margin-right:4px;">Status:</span>
-      <div class="ml-item"><div class="ml-dot" style="background:#27AE60"></div>On Track</div>
-      <div class="ml-item"><div class="ml-dot" style="background:#F39C12"></div>At Risk</div>
-      <div class="ml-item"><div class="ml-dot" style="background:#E74C3C"></div>Delayed</div>
-      <div class="ml-item"><div class="ml-dot" style="background:#888"></div>Not Started</div>
-    </div>
-    <div class="page-footer" style="margin-top:24px;">
-      <span><b>Implementing Entity:</b> FAO / CSLO (Supply Chain Orchestration Unit)</span>
-      <span><b>Donor:</b> United States Government via US-OCHA</span>
-      <span><b>Scope:</b> Planning · Procurement · Logistics · Inventory · Last Mile · HR · Budget</span>
-    </div>
-  </div>
-
   <!-- ── GLOBAL OVERVIEW PAGE ── -->
-  <div id="page-global" class="page">
-    <div class="page-header">
-      <div class="breadcrumb"><span onclick="showPage('landing')">Home</span> → Global Overview</div>
-      <h1>Global Supply Chain Overview</h1>
-      <p>Consolidated view across all 9 countries — programmatic and supply chain performance</p>
-    </div>
+  <div id="page-global" class="page active">
 
-    <div class="kpi-grid" id="global-kpi-grid"></div>
-
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">Budget Utilization by Country</div><div class="card-subtitle">Spent vs Total Budget (USD)</div></div>
+    <!-- 1. Hero + Map side by side -->
+    <div class="hero-map-row">
+      <div class="hero">
+        <div class="hero-badge">🌍 GSCMTF — Operational Dashboard</div>
+        <h1>Global Supply Chain Management Task Force</h1>
+        <p>Cross-functional supply chain oversight for the US-OCHA funded global humanitarian project, implemented by FAO across 9 priority countries. Managed by the Supply Chain Orchestration Unit (CSLO).</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="hs-val" id="hero-budget">$0M</div><div class="hs-lbl">Total Budget</div></div>
+          <div class="hero-stat"><div class="hs-val" id="hero-benes">0M</div><div class="hs-lbl">Target Beneficiaries</div></div>
+          <div class="hero-stat"><div class="hs-val">9 <span>Countries</span></div><div class="hs-lbl">Supported</div></div>
+          <div class="hero-stat"><div class="hs-val" id="hero-proj-status" style="font-size:18px;line-height:1.3;">—</div><div class="hs-lbl">Project Status</div></div>
+          <div class="hero-stat"><div class="hs-val" id="hero-status">—</div><div class="hs-lbl">On Track</div></div>
         </div>
-        <div class="chart-container tall"><canvas id="chart-global-budget"></canvas></div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">Beneficiary Reach by Country</div><div class="card-subtitle">Reached vs Target</div></div>
+      <div class="hero-map-panel">
+        <div id="world-map"></div>
+        <div class="map-legend">
+          <span style="font-weight:600;color:#5A6A7A;margin-right:4px;">Status:</span>
+          <div class="ml-item"><div class="ml-dot" style="background:#27AE60"></div>On Track</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#F39C12"></div>At Risk</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#E74C3C"></div>Delayed</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#888"></div>Not Started</div>
+          <div class="ml-item" style="margin-left:auto;font-size:11px;color:#888;">● Bubble size = budget</div>
         </div>
-        <div class="chart-container tall"><canvas id="chart-global-benes"></canvas></div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">Order Pipeline — Global</div><div class="card-subtitle">All countries aggregated</div></div>
-        </div>
-        <div id="global-pipeline"></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">Country Status Summary</div></div>
-        </div>
-        <div id="global-status-breakdown"></div>
-        <div class="chart-container" style="height:180px;margin-top:12px;"><canvas id="chart-global-status"></canvas></div>
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:24px;">
+    <!-- 2. Country Portfolio Table -->
+    <div class="card" style="margin-bottom:24px;overflow:visible;">
       <div class="card-header">
-        <div class="card-title">Country Performance Matrix</div>
+        <div>
+          <div class="card-title">Country Portfolio</div>
+          <div class="card-subtitle">Click a column header to sort &nbsp;·&nbsp; Click a row to open the country page &nbsp;·&nbsp; Click the status badge to view approval plans</div>
+        </div>
       </div>
-      <div class="table-wrap">
-        <table>
+      <div class="table-wrap" style="overflow:visible;">
+        <table id="portfolio-table">
           <thead>
             <tr>
-              <th>Country</th>
-              <th>Status</th>
-              <th>Budget Total</th>
-              <th>Budget Utilized</th>
-              <th>Beneficiaries (Target)</th>
-              <th>Beneficiaries (Reached)</th>
-              <th>Orders (Active)</th>
-              <th>Inventory (MT)</th>
-              <th>On-Time Delivery</th>
+              <th class="th-sortable" onclick="sortPortfolio('name')">Country <span class="sort-icon" id="si-name">↕</span></th>
+              <th style="min-width:200px;">Project Summary</th>
+              <th class="th-sortable" onclick="sortPortfolio('status')" style="white-space:nowrap;">Project Status <span class="sort-icon" id="si-status">↕</span></th>
+              <th class="th-sortable" onclick="sortPortfolio('budget')" style="min-width:180px;white-space:nowrap;">Budget <span class="sort-icon" id="si-budget">↕</span></th>
+              <th class="th-sortable" onclick="sortPortfolio('beneficiaries')" style="min-width:180px;white-space:nowrap;">Beneficiaries <span class="sort-icon" id="si-beneficiaries">↕</span></th>
+              <th class="th-sortable" onclick="sortPortfolio('period')" style="white-space:nowrap;">Period (mo.) <span class="sort-icon" id="si-period">↕</span></th>
             </tr>
           </thead>
-          <tbody id="global-country-table"></tbody>
+          <tbody id="portfolio-tbody"></tbody>
         </table>
       </div>
     </div>
 
-
-
+    <!-- 3. Demand Overview (expandable columns) -->
     <div class="card" style="margin-bottom:24px;">
       <div class="card-header">
-        <div><div class="card-title">Demand Overview by Country</div><div class="card-subtitle">Planned quantities per product category</div></div>
+        <div>
+          <div class="card-title">Demand Overview by Country</div>
+          <div class="card-subtitle">Click ▶ on any commodity column to expand sub-categories &nbsp;·&nbsp; Planned quantities</div>
+        </div>
       </div>
       <div class="table-wrap">
         <table class="demand-table" id="demand-table">
           <thead>
             <tr>
-              <th>Country</th>
-              <th>Seeds (MT)</th>
-              <th>Fertilizer (MT)</th>
-              <th>Machinery (Units)</th>
-              <th>Vaccines (Doses)</th>
-              <th>TOTAL</th>
+              <th rowspan="1" style="text-align:left;vertical-align:middle;">Country</th>
+              <th class="demand-parent-th" onclick="toggleDemandExpand('seeds')">Seeds (MT) <span class="d-exp-icon" id="dexp-seeds">▶</span></th>
+              <th class="demand-sub-th" id="dsub-seeds-0" style="display:none;">Rice Seed (MT)</th>
+              <th class="demand-sub-th" id="dsub-seeds-1" style="display:none;">Wheat Seed (MT)</th>
+              <th class="demand-sub-th" id="dsub-seeds-2" style="display:none;">Legume Seed (MT)</th>
+              <th class="demand-parent-th" onclick="toggleDemandExpand('fertilizer')">Fertilizer (MT) <span class="d-exp-icon" id="dexp-fertilizer">▶</span></th>
+              <th class="demand-sub-th" id="dsub-fertilizer-0" style="display:none;">Urea (MT)</th>
+              <th class="demand-sub-th" id="dsub-fertilizer-1" style="display:none;">DAP (MT)</th>
+              <th class="demand-sub-th" id="dsub-fertilizer-2" style="display:none;">Compound NPK (MT)</th>
+              <th class="demand-parent-th" onclick="toggleDemandExpand('machinery')">Machinery (Units) <span class="d-exp-icon" id="dexp-machinery">▶</span></th>
+              <th class="demand-sub-th" id="dsub-machinery-0" style="display:none;">Tractors</th>
+              <th class="demand-sub-th" id="dsub-machinery-1" style="display:none;">Water Pumps</th>
+              <th class="demand-sub-th" id="dsub-machinery-2" style="display:none;">Threshers</th>
+              <th class="demand-parent-th" onclick="toggleDemandExpand('vaccines')">Vaccines (Doses) <span class="d-exp-icon" id="dexp-vaccines">▶</span></th>
+              <th class="demand-sub-th" id="dsub-vaccines-0" style="display:none;">FMD Vaccine</th>
+              <th class="demand-sub-th" id="dsub-vaccines-1" style="display:none;">CBPP Vaccine</th>
+              <th class="demand-sub-th" id="dsub-vaccines-2" style="display:none;">Newcastle</th>
+              <th style="text-align:right;font-weight:700;">TOTAL</th>
             </tr>
           </thead>
           <tbody id="demand-table-body"></tbody>
@@ -637,18 +687,32 @@
       </div>
     </div>
 
+    <!-- 4. Procurement Pipeline (absolute values) -->
     <div class="card" style="margin-bottom:24px;">
       <div class="card-header">
         <div>
           <div class="card-title">Procurement Pipeline by Country</div>
-          <div class="card-subtitle">Proportional breakdown of procurement stages per country (% of total) — click a bar to see commodity detail</div>
+          <div class="card-subtitle">Total value by procurement stage (USD) — click a country bar to see commodity detail</div>
         </div>
       </div>
-      <div id="proc-chart-wrap"><canvas id="chart-proc-main"></canvas></div>
+      <div id="proc-legend-row" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;padding:10px 16px;background:#F8FAFC;border-radius:8px;border:1px solid #E0E8F0;"></div>
+      <div id="proc-chart-wrap" style="position:relative;height:380px;margin-bottom:0;"><canvas id="chart-proc-main"></canvas></div>
       <div id="proc-drilldown">
         <div id="proc-drilldown-title"></div>
-        <div id="proc-drilldown-chart-wrap"><canvas id="chart-proc-drill"></canvas></div>
+        <div id="proc-drilldown-chart-wrap" style="position:relative;height:220px;"><canvas id="chart-proc-drill"></canvas></div>
         <div id="proc-budget-compare"></div>
+      </div>
+    </div>
+
+    <!-- 5+6. Budget + Beneficiaries charts -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">Budget Utilization by Country</div><div class="card-subtitle">Spent vs Total Budget (USD)</div></div></div>
+        <div class="chart-container tall"><canvas id="chart-global-budget"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">Beneficiary Reach by Country</div><div class="card-subtitle">Reached vs Target</div></div></div>
+        <div class="chart-container tall"><canvas id="chart-global-benes"></canvas></div>
       </div>
     </div>
 
@@ -2072,7 +2136,7 @@ function showPage(pageId) {
   if (nav) nav.classList.add('active');
 
   if (pageId === 'global' && !chartsRegistry['global']) {
-    setTimeout(() => renderGlobalCharts(), 50);
+    setTimeout(() => { renderGlobalCharts(); renderProcChart(); }, 80);
     chartsRegistry['global'] = true;
   }
   countries.forEach(c => {
@@ -2120,188 +2184,254 @@ function buildSidebar() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// BUILD LANDING PAGE
+// BUILD HERO STATS (Global Overview page)
 // ═══════════════════════════════════════════════════════════════════════════
-function buildLanding() {
+function buildHeroStats() {
   let totalBudget = 0, totalBenes = 0, totalOrds = 0, onTrackCount = 0;
   countries.forEach(c => {
     totalBudget += c.programmatic.budget.total;
-    totalBenes += c.programmatic.beneficiaries.target;
-    totalOrds += totalOrders(c.sc.orders);
+    totalBenes  += c.programmatic.beneficiaries.target;
+    totalOrds   += totalOrders(c.sc.orders);
     if (c.status === 'on-track') onTrackCount++;
   });
-  document.getElementById('hero-budget').textContent = fmtM(totalBudget);
-  document.getElementById('hero-benes').textContent = (totalBenes/1000000).toFixed(2) + 'M';
-  document.getElementById('hero-orders').textContent = totalOrds;
-  document.getElementById('hero-status').textContent = onTrackCount + '/9';
-
-  const grid = document.getElementById('landing-country-grid');
-  grid.innerHTML = countries.map(c => {
-    const p = c.programmatic;
-    const budgetPct = pct(p.budget.spent, p.budget.total);
-    return `
-    <div class="country-card ${c.status}" onclick="showPage('${c.id}')">
-      <div class="cc-status"><span class="badge ${c.status}">${statusLabel(c.status)}</span></div>
-      <div class="cc-flag">${c.flag}</div>
-      <div class="cc-name">${c.name}</div>
-      <div class="cc-region">${c.region}</div>
-      <div class="progress-row" style="margin:8px 0 12px;">
-        <div class="progress-label"><span>Budget utilized</span><span class="pct">${budgetPct}%</span></div>
-        <div class="progress-bar"><div class="progress-fill ${progressFillClass(c.status)}" style="width:${budgetPct}%"></div></div>
-      </div>
-      <div class="cc-stats">
-        <div class="cc-stat"><div class="cv">${fmtM(p.budget.total)}</div><div class="cl">Budget</div></div>
-        <div class="cc-stat"><div class="cv">${fmt(p.beneficiaries.target)}</div><div class="cl">Beneficiaries</div></div>
-        <div class="cc-stat"><div class="cv">${p.distributions.completedMonths}/${p.distributions.totalMonths}</div><div class="cl">Distrib. Mo.</div></div>
-      </div>
-    </div>`;
-  }).join('');
+  document.getElementById('hero-budget').textContent  = fmtM(totalBudget);
+  document.getElementById('hero-benes').textContent   = (totalBenes/1000000).toFixed(2) + 'M';
+  var nApproved = countries.filter(function(c){ return c.projectStatus === 'Approved'; }).length;
+  var nPending  = countries.filter(function(c){ return c.projectStatus === 'Pending Approval'; }).length;
+  var nDraft    = countries.filter(function(c){ return c.projectStatus === 'Draft' || !c.projectStatus; }).length;
+  document.getElementById('hero-proj-status').innerHTML =
+    '<span style="color:#A8E6B0">' + nApproved + ' ✓</span> ' +
+    '<span style="opacity:0.6;font-size:13px;">Appr</span><br>' +
+    '<span style="color:#FECB72">' + nPending + ' ⏳</span> ' +
+    '<span style="opacity:0.6;font-size:13px;">Pend</span> &nbsp;' +
+    '<span style="color:#F0A080">' + nDraft + ' ✏</span> ' +
+    '<span style="opacity:0.6;font-size:13px;">Draft</span>';
+  document.getElementById('hero-status').textContent  = onTrackCount + '/9';
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // BUILD GLOBAL PAGE
 // ═══════════════════════════════════════════════════════════════════════════
+var _portSortKey = null;
+var _portSortDir = 1;
+
 function buildGlobal() {
-  let totalBudget=0, totalSpent=0, totalBenes=0, totalReached=0;
-  let totalOrds=0, totalDelivered=0, totalInv=0;
-  let onT=0, atR=0, del=0;
+  buildHeroStats();
+  renderPortfolioTable();
+  buildExpandableDemandTable();
+}
 
-  countries.forEach(c => {
-    totalBudget += c.programmatic.budget.total;
-    totalSpent += c.programmatic.budget.spent;
-    totalBenes += c.programmatic.beneficiaries.target;
-    totalReached += c.programmatic.beneficiaries.reached;
-    const ords = c.sc.orders;
-    totalOrds += totalOrders(ords);
-    totalDelivered += ords.delivered;
-    totalInv += c.sc.inventory.onHand + c.sc.inventory.inTransit;
-    if (c.status === 'on-track') onT++;
-    else if (c.status === 'at-risk') atR++;
-    else del++;
+// ── PORTFOLIO TABLE ─────────────────────────────────────────────────────────
+function sortPortfolio(key) {
+  if (_portSortKey === key) { _portSortDir *= -1; }
+  else { _portSortKey = key; _portSortDir = 1; }
+  // update sort icons
+  ['name','status','budget','beneficiaries','period'].forEach(function(k) {
+    var el = document.getElementById('si-' + k);
+    if (el) el.textContent = k === key ? (_portSortDir === 1 ? '↓' : '↑') : '↕';
   });
+  renderPortfolioTable();
+}
 
-  const budgetPct = pct(totalSpent, totalBudget);
-  const benePct = pct(totalReached, totalBenes);
+function renderPortfolioTable() {
+  var sorted = countries.slice();
+  if (_portSortKey) {
+    sorted.sort(function(a, b) {
+      var va, vb;
+      if (_portSortKey === 'name')          { va = a.name; vb = b.name; }
+      else if (_portSortKey === 'status')   { var order = {'Approved':0,'Pending Approval':1,'Draft':2}; va = order[a.projectStatus]||3; vb = order[b.projectStatus]||3; }
+      else if (_portSortKey === 'budget')   { va = a.programmatic.budget.total; vb = b.programmatic.budget.total; }
+      else if (_portSortKey === 'beneficiaries') { va = a.programmatic.beneficiaries.target; vb = b.programmatic.beneficiaries.target; }
+      else if (_portSortKey === 'period')   { va = a.programmatic.distributions.totalMonths; vb = b.programmatic.distributions.totalMonths; }
+      if (typeof va === 'string') return _portSortDir * va.localeCompare(vb);
+      return _portSortDir * (va - vb);
+    });
+  }
 
-  document.getElementById('global-kpi-grid').innerHTML = `
-    <div class="kpi-card"><span class="icon">💰</span><div class="label">Total Project Budget</div><div class="value">${fmtM(totalBudget)}</div><div class="sub">USD — 9 countries</div></div>
-    <div class="kpi-card orange"><span class="icon">📊</span><div class="label">Budget Utilized</div><div class="value">${budgetPct}%</div><div class="sub">${fmtM(totalSpent)} spent / ${fmtM(totalBudget-totalSpent)} remaining</div></div>
-    <div class="kpi-card green"><span class="icon">👥</span><div class="label">Beneficiaries Targeted</div><div class="value">${(totalBenes/1000000).toFixed(2)}M</div><div class="sub">${fmt(totalReached)} reached (${benePct}%)</div></div>
-    <div class="kpi-card"><span class="icon">📦</span><div class="label">Total Active Orders</div><div class="value">${totalOrds}</div><div class="sub">${totalDelivered} delivered to date</div></div>
-    <div class="kpi-card green"><span class="icon">✅</span><div class="label">On Track</div><div class="value">${onT}</div><div class="sub">of 9 countries</div></div>
-    <div class="kpi-card warning"><span class="icon">⚠️</span><div class="label">At Risk</div><div class="value">${atR}</div><div class="sub">Requires attention</div></div>
-    <div class="kpi-card danger"><span class="icon">🔴</span><div class="label">Delayed</div><div class="value">${del}</div><div class="sub">Escalation needed</div></div>
-    <div class="kpi-card"><span class="icon">🏭</span><div class="label">Total Inventory</div><div class="value">${fmt(totalInv)}</div><div class="sub">MT (on-hand + in transit)</div></div>
-  `;
+  var tbody = document.getElementById('portfolio-tbody');
+  tbody.innerHTML = sorted.map(function(c) {
+    var p = c.programmatic;
+    var budgetPct = pct(p.budget.spent, p.budget.total);
+    var benePct   = pct(p.beneficiaries.reached, p.beneficiaries.target);
+    var barColor  = c.status === 'on-track' ? '#27AE60' : c.status === 'at-risk' ? '#F39C12' : '#E74C3C';
 
-  // Pipeline aggregation
-  let pEnd=0,pCon=0,pShi=0,pDel=0;
-  countries.forEach(c => { const o=c.sc.orders; pEnd+=o.pending; pCon+=o.confirmed; pShi+=o.shipped; pDel+=o.delivered; });
-  const pTotal = pEnd+pCon+pShi+pDel;
-  document.getElementById('global-pipeline').innerHTML = `
-    <div class="pipeline">
-      ${[['Pending','#95A5A6',pEnd],['Confirmed','#3498DB',pCon],['Shipped','#9B59B6',pShi],['Delivered','#27AE60',pDel]]
-        .map(([l,c,v]) => `<div class="pipe-step"><div class="pipe-num">${v}</div><div class="pipe-label">${l}</div><div class="pipe-bar" style="background:${c}"></div></div>`).join('')}
-    </div>
-    <div style="font-size:11px;color:#7F8C8D;text-align:center;margin-top:8px;">Total: ${pTotal} orders across all countries</div>
-  `;
+    // approval plans panel (same logic as country pages)
+    var plansHtml = (c.approvalPlans||[]).map(function(pl, i) {
+      var cls = pl.status === 'Approved' ? 'ap-approved' : pl.status === 'Pending Approval' ? 'ap-pending' : 'ap-draft';
+      return '<tr>' +
+        '<td><b>' + pl.plan + '</b></td>' +
+        '<td><span class="badge ' + cls + '">' + pl.status + '</span></td>' +
+        '<td style="color:#5A6A7A;font-size:11px">' + pl.owner + '</td>' +
+        '<td><textarea class="ap-notes-input" rows="1" placeholder="Add notes..." onchange="saveApNote(\'' + c.id + '\',' + i + ',this.value)">' + (pl.notes||'') + '</textarea></td>' +
+        '</tr>';
+    }).join('');
 
-  // Status breakdown
-  document.getElementById('global-status-breakdown').innerHTML = `
-    <div class="kpi-row">
-      <div class="kpi-mini"><div class="km-val" style="color:#27AE60">${onT}</div><div class="km-lbl">On Track</div></div>
-      <div class="kpi-mini"><div class="km-val" style="color:#F39C12">${atR}</div><div class="km-lbl">At Risk</div></div>
-      <div class="kpi-mini"><div class="km-val" style="color:#E74C3C">${del}</div><div class="km-lbl">Delayed</div></div>
-    </div>
-  `;
+    var overallPsc = projectStatusClass(c.projectStatus);
 
-  // Country table
-  const tbody = document.getElementById('global-country-table');
-  tbody.innerHTML = countries.map(c => {
-    const p = c.programmatic;
-    const budP = pct(p.budget.spent, p.budget.total);
-    const benP = pct(p.beneficiaries.reached, p.beneficiaries.target);
-    const invTotal = c.sc.inventory.onHand + c.sc.inventory.inTransit;
-    return `<tr class="country-row" onclick="showPage('${c.id}')">
-      <td><b>${c.flag} ${c.name}</b></td>
-      <td><span class="badge ${c.status}">${statusLabel(c.status)}</span></td>
-      <td>${fmtM(p.budget.total)}</td>
-      <td>${fmtM(p.budget.spent)} <span style="color:#888;font-size:11px;">(${budP}%)</span></td>
-      <td>${fmt(p.beneficiaries.target)}</td>
-      <td>${fmt(p.beneficiaries.reached)} <span style="color:#888;font-size:11px;">(${benP}%)</span></td>
-      <td>${totalOrders(c.sc.orders)}</td>
-      <td>${fmt(invTotal)} MT</td>
-      <td>${c.sc.kpis.onTimeDelivery}%</td>
-      <td style="font-size:11px;color:#888">${c.lastUpdated || '—'}</td>
-    </tr>`;
+    return '<tr class="portfolio-row country-row" onclick="showPage(\'' + c.id + '\')">' +
+      '<td><div class="pt-country"><span class="pt-flag">' + c.flag + '</span><div><div class="pt-name">' + c.name + '</div><div class="pt-region">' + c.region + '</div></div></div></td>' +
+      '<td style="font-size:12px;color:#5A6A7A;">TBD</td>' +
+      '<td onclick="event.stopPropagation()">' +
+        '<div class="approval-trigger" id="apt-pt-' + c.id + '" onclick="toggleApproval(\'pt-' + c.id + '\',event)">' +
+          '<span class="badge ' + overallPsc + '">' + (c.projectStatus||'—') + ' ▾</span>' +
+          '<div class="approval-panel" id="ap-pt-' + c.id + '" onclick="event.stopPropagation()">' +
+            '<div class="ap-header">📋 SC Approval Plans — ' + c.name + '</div>' +
+            '<table class="ap-table"><thead><tr><th>Plan</th><th>Status</th><th>Owner</th><th>Notes</th></tr></thead>' +
+            '<tbody>' + plansHtml + '</tbody></table>' +
+            '<div class="ap-footer">💡 Click outside to close.</div>' +
+          '</div>' +
+        '</div>' +
+      '</td>' +
+      '<td>' +
+        '<div class="pt-budget-val">' + fmtM(p.budget.total) + '</div>' +
+        '<div class="pt-budget-sub">' + budgetPct + '% utilized</div>' +
+        '<div class="pt-bar"><div class="pt-bar-fill" style="width:' + Math.min(budgetPct,100) + '%;background:' + barColor + ';height:100%;border-radius:3px;"></div></div>' +
+      '</td>' +
+      '<td>' +
+        '<div class="pt-budget-val">' + fmt(p.beneficiaries.target) + '</div>' +
+        '<div class="pt-budget-sub">' + benePct + '% reached (' + fmt(p.beneficiaries.reached) + ')</div>' +
+        '<div class="pt-bar"><div class="pt-bar-fill" style="width:' + Math.min(benePct,100) + '%;background:#27AE60;height:100%;border-radius:3px;"></div></div>' +
+      '</td>' +
+      '<td style="text-align:center;font-weight:700;font-size:15px;color:#005A8E;">' + p.distributions.totalMonths + '</td>' +
+    '</tr>';
   }).join('');
+}
 
-  // ── DEMAND TABLE ──
+// ── EXPANDABLE DEMAND TABLE ──────────────────────────────────────────────────
+var _demandExpanded = { seeds:false, fertilizer:false, machinery:false, vaccines:false };
+var DEMAND_SUB_RATIOS = {
+  seeds:      [0.45, 0.35, 0.20],
+  fertilizer: [0.40, 0.35, 0.25],
+  machinery:  [0.40, 0.35, 0.25],
+  vaccines:   [0.40, 0.35, 0.25]
+};
+var DEMAND_COMMODITY_KEYS = ['seeds','fertilizer','machinery','vaccines'];
+
+function toggleDemandExpand(col) {
+  _demandExpanded[col] = !_demandExpanded[col];
+  var icon = document.getElementById('dexp-' + col);
+  if (icon) icon.textContent = _demandExpanded[col] ? '▼' : '▶';
+  for (var i = 0; i < 3; i++) {
+    var th = document.getElementById('dsub-' + col + '-' + i);
+    if (th) th.style.display = _demandExpanded[col] ? '' : 'none';
+  }
+  // update body rows
+  buildExpandableDemandTableBody();
+}
+
+function buildExpandableDemandTable() {
+  buildExpandableDemandTableBody();
+}
+
+function buildExpandableDemandTableBody() {
   var dSeeds=0, dFert=0, dMach=0, dVacc=0;
-  var demandRows = countries.map(function(c) {
-    var d = c.demand || {seeds:0, fertilizer:0, machinery:0, vaccines:0};
+
+  var rows = countries.map(function(c) {
+    var d = c.demand || {seeds:0,fertilizer:0,machinery:0,vaccines:0};
     dSeeds += d.seeds||0; dFert += d.fertilizer||0; dMach += d.machinery||0; dVacc += d.vaccines||0;
-    var rowTotal = (d.seeds||0) + (d.fertilizer||0) + (d.machinery||0) + (d.vaccines||0);
-    return '<tr>' +
-      '<td>' + c.flag + ' ' + c.name + '</td>' +
-      '<td>' + (d.seeds||0).toLocaleString() + '</td>' +
-      '<td>' + (d.fertilizer||0).toLocaleString() + '</td>' +
-      '<td>' + (d.machinery||0).toLocaleString() + '</td>' +
-      '<td>' + (d.vaccines||0).toLocaleString() + '</td>' +
-      '<td><b>' + rowTotal.toLocaleString() + '</b></td>' +
-    '</tr>';
+    var rowTotal = (d.seeds||0)+(d.fertilizer||0)+(d.machinery||0)+(d.vaccines||0);
+
+    var cells = '<td>' + c.flag + ' ' + c.name + '</td>';
+
+    DEMAND_COMMODITY_KEYS.forEach(function(key) {
+      var val = d[key] || 0;
+      var isExp = _demandExpanded[key];
+      cells += '<td class="' + (isExp ? 'demand-parent-td-exp' : '') + '" style="text-align:right;">' + val.toLocaleString() + '</td>';
+      var ratios = DEMAND_SUB_RATIOS[key];
+      for (var i = 0; i < 3; i++) {
+        var subVal = Math.round(val * ratios[i]);
+        cells += '<td class="demand-sub-td" style="text-align:right;display:' + (isExp ? '' : 'none') + ';">' + subVal.toLocaleString() + '</td>';
+      }
+    });
+
+    cells += '<td style="text-align:right;font-weight:700;">' + rowTotal.toLocaleString() + '</td>';
+    return '<tr>' + cells + '</tr>';
   });
-  var demandBody = document.getElementById('demand-table-body');
-  if (demandBody) demandBody.innerHTML = demandRows.join('');
+
+  var tbody = document.getElementById('demand-table-body');
+  if (tbody) tbody.innerHTML = rows.join('');
+
   var grandTotal = dSeeds + dFert + dMach + dVacc;
-  var demandFoot = document.getElementById('demand-table-foot');
-  if (demandFoot) demandFoot.innerHTML =
-    '<tr class="total-row">' +
-      '<td>TOTAL</td>' +
-      '<td>' + dSeeds.toLocaleString() + '</td>' +
-      '<td>' + dFert.toLocaleString() + '</td>' +
-      '<td>' + dMach.toLocaleString() + '</td>' +
-      '<td>' + dVacc.toLocaleString() + '</td>' +
-      '<td>' + grandTotal.toLocaleString() + '</td>' +
-    '</tr>';
+  var foot = document.getElementById('demand-table-foot');
+  if (foot) {
+    var fcells = '<td>TOTAL</td>';
+    var totals = [dSeeds, dFert, dMach, dVacc];
+    DEMAND_COMMODITY_KEYS.forEach(function(key, ki) {
+      fcells += '<td style="text-align:right;">' + totals[ki].toLocaleString() + '</td>';
+      for (var i = 0; i < 3; i++) {
+        fcells += '<td class="demand-sub-td" style="text-align:right;display:' + (_demandExpanded[key] ? '' : 'none') + ';">' + Math.round(totals[ki]*DEMAND_SUB_RATIOS[key][i]).toLocaleString() + '</td>';
+      }
+    });
+    fcells += '<td style="text-align:right;">' + grandTotal.toLocaleString() + '</td>';
+    foot.innerHTML = '<tr class="total-row">' + fcells + '</tr>';
+  }
 }
 
 
-// ── PROCUREMENT PIPELINE CHART ────────────────────────────────────
+// ── PROCUREMENT PIPELINE CHART ────────────────────────────────
 var _procDrillChart = null;
 
 function renderProcChart() {
-  var ctx = document.getElementById('chart-proc-main');
-  if (!ctx) return;
+  var canvas = document.getElementById('chart-proc-main');
+  if (!canvas) return;
 
-  var STAGES     = ['To be PR\'d','PR\'d','PO\'d','Delivered to FAO','Distributed'];
+  // Destroy any existing Chart instance on this canvas
+  var existing = Chart.getChart(canvas);
+  if (existing) existing.destroy();
+
+  var STAGES     = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
   var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
-  var COLORS     = ['#BDC3C7','#F39C12','#3498DB','#7EC8E3','#27AE60'];
-  var labels     = countries.map(function(c){ return c.flag+' '+c.name; });
+  var COLORS     = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var labels     = countries.map(function(c){ return c.flag + ' ' + c.name; });
 
-  // Calculate 100% stacked data
-  var totals = countries.map(function(c){
-    if (!c.procurement || !c.procurement.byStage) return 1;
-    return STAGE_KEYS.reduce(function(s,k){ return s + (c.procurement.byStage[k]||0); }, 0) || 1;
-  });
+  // Build legend
+  var legendEl = document.getElementById('proc-legend-row');
+  if (legendEl) {
+    legendEl.innerHTML =
+      '<div style="width:100%;margin-bottom:8px;font-size:11px;color:#5A6A7A;font-style:italic;">Stages reflect the procurement lifecycle from planning (To be PRed) through contract issuance (POed) to final delivery to beneficiaries (Distributed). Click any country bar to see the commodity detail.</div>' +
+      STAGES.map(function(s,i){
+        return '<div class="proc-legend-item"><div class="proc-legend-dot" style="background:'+COLORS[i]+'"></div>'+s+'</div>';
+      }).join('');
+  }
+
+  // Build datasets with absolute USD values
   var datasets = STAGE_KEYS.map(function(key, i) {
     return {
       label: STAGES[i],
-      data: countries.map(function(c, ci){
-        var raw = (c.procurement&&c.procurement.byStage&&c.procurement.byStage[key])||0;
-        return Math.round(raw / totals[ci] * 100);
+      data: countries.map(function(c){
+        return (c.procurement && c.procurement.byStage && c.procurement.byStage[key]) || 0;
       }),
       backgroundColor: COLORS[i],
       borderWidth: 0
     };
   });
 
-  // No budget line on % chart (budget comparison shown in tooltip and drill-down)
-  var budgetPlugin = { id:'budgetLine' };
+  // Inline plugin: draw total label at end of each bar
+  var totalPlugin = {
+    id: 'procTotals',
+    afterDraw: function(chart) {
+      var ctx2 = chart.ctx;
+      var meta = chart.getDatasetMeta(chart.data.datasets.length - 1);
+      chart.data.datasets[0].data.forEach(function(_, i) {
+        var total = chart.data.datasets.reduce(function(s, ds){ return s + (ds.data[i]||0); }, 0);
+        var bar = meta.data[i];
+        if (!bar) return;
+        var x = chart.scales.x.getPixelForValue(total);
+        var y = bar.y;
+        ctx2.save();
+        ctx2.fillStyle = '#333';
+        ctx2.font = 'bold 10px Arial';
+        ctx2.textAlign = 'left';
+        ctx2.textBaseline = 'middle';
+        ctx2.fillText('$'+(total>=1000000?(total/1000000).toFixed(1)+'M':(total/1000).toFixed(0)+'K'), x+5, y);
+        ctx2.restore();
+      });
+    }
+  };
 
-  var procChart = new Chart(ctx, {
+  new Chart(canvas, {
     type: 'bar',
-    plugins: [budgetPlugin],
+    plugins: [totalPlugin],
     data: { labels: labels, datasets: datasets },
     options: {
       indexAxis: 'y',
@@ -2309,37 +2439,30 @@ function renderProcChart() {
       maintainAspectRatio: false,
       onClick: function(evt, elements) {
         if (!elements || !elements.length) return;
-        var idx = elements[0].index;
-        openProcDrilldown(idx);
+        openProcDrilldown(elements[0].index);
       },
+      layout: { padding: { right: 70 } },
       plugins: {
-        legend: { position:'bottom', labels:{ font:{size:11}, boxWidth:12 } },
+        legend: { display: false },
         tooltip: {
           callbacks: {
             title: function(items){ return items[0].label; },
             label: function(item){
-              var idx = item.dataIndex;
-              var c = countries[idx];
-              var key = STAGE_KEYS[item.datasetIndex];
-              var raw = (c.procurement&&c.procurement.byStage&&c.procurement.byStage[key])||0;
-              return ' '+item.dataset.label+': '+item.raw+'%  ($'+raw.toLocaleString()+')';
+              return ' ' + item.dataset.label + ': $' + item.raw.toLocaleString();
             },
             afterBody: function(items) {
-              var idx = items[0].dataIndex;
-              var c = countries[idx];
-              var budget = c.programmatic.budget.total;
-              var procTotal = c.procurement ? c.procurement.total : 0;
-              var diff = procTotal - budget;
-              var pct = budget > 0 ? Math.abs(diff/budget*100).toFixed(0) : 0;
-              var sign = diff > 0 ? '▲ '+pct+'% over budget' : '▼ '+pct+'% under budget';
-              return ['─────────────────','Budget: $'+budget.toLocaleString(),'Total Procurement: $'+procTotal.toLocaleString(), sign];
+              var c = countries[items[0].dataIndex];
+              var tot = STAGE_KEYS.reduce(function(s,k){
+                return s + ((c.procurement&&c.procurement.byStage&&c.procurement.byStage[k])||0);
+              },0);
+              return ['Total: $' + tot.toLocaleString()];
             }
           }
         }
       },
       scales: {
-        x: { stacked:true, display:false, max:100 },
-        y: { stacked:true, ticks:{ font:{size:12} } }
+        x: { stacked: true, ticks: { callback: function(v){ return '$'+(v/1000).toFixed(0)+'K'; }, font:{size:10} } },
+        y: { stacked: true, ticks: { font:{size:12} } }
       }
     }
   });
@@ -2375,7 +2498,7 @@ function openProcDrilldown(countryIndex) {
 
   var STAGES     = ['To be PR\'d','PR\'d','PO\'d','Delivered to FAO','Distributed'];
   var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
-  var COLORS     = ['#BDC3C7','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var COLORS     = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
   var COMM_LABELS = ['Seeds','Fertilizer','Machinery','Vaccines'];
   var COMM_KEYS   = ['seeds','fertilizer','machinery','vaccines'];
 
@@ -2459,19 +2582,6 @@ function renderGlobalCharts() {
       scales: { x: { stacked: true, ticks: { font: { size: 11 } } }, y: { stacked: true, ticks: { callback: v => v+'k', font: { size: 11 } } } }
     }
   });
-  // Status donut
-  const sCtx = document.getElementById('chart-global-status').getContext('2d');
-  new Chart(sCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['On Track', 'At Risk', 'Delayed'],
-      datasets: [{ data: [countries.filter(c=>c.status==='on-track').length, countries.filter(c=>c.status==='at-risk').length, countries.filter(c=>c.status==='delayed').length],
-        backgroundColor: ['#27AE60','#F39C12','#E74C3C'], borderWidth: 0 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '65%',
-      plugins: { legend: { position: 'right', labels: { font: { size: 12 } } } }
-    }
-  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2507,7 +2617,7 @@ function buildCountryPages() {
 
     const html = `
     <div id="page-${c.id}" class="page">
-      <div class="breadcrumb"><span onclick="showPage('landing')">Home</span> → <span onclick="showPage('global')">Global Overview</span> → ${c.name}</div>
+      <div class="breadcrumb"><span onclick="showPage('global')">Global Overview</span> → <span onclick="showPage('global')">Global Overview</span> → ${c.name}</div>
 
       <div class="country-hero">
         <div class="ch-flag">${c.flag}</div>
@@ -2764,7 +2874,6 @@ function buildCountryPages() {
 
     container.innerHTML += html;
   });
-  renderProcChart();
 }
 
 function renderCountryCharts(c) {
@@ -2811,10 +2920,11 @@ function renderCountryCharts(c) {
 // INIT
 // ═══════════════════════════════════════════════════════════════════════════
 buildSidebar();
-buildLanding();
 buildGlobal();
 buildCountryPages();
 restoreApNotes();
+// Trigger global charts on initial load
+showPage('global');
 
 
 // ── APPROVAL PLAN DROPDOWN ───────────────────────────────────────
@@ -2894,7 +3004,7 @@ var _map = null;
 function initMap() {
   if (_map) return;
   if (!document.getElementById('world-map')) return;
-  _map = L.map('world-map', { zoomControl: true, scrollWheelZoom: false }).setView([15, 20], 2);
+  _map = L.map('world-map', { zoomControl: true, scrollWheelZoom: false }).setView([10, 20], 1);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors', maxZoom: 6, minZoom: 1
   }).addTo(_map);
@@ -2904,25 +3014,27 @@ function initMap() {
     honduras:[15.20,-86.24], myanmar:[21.92,95.96], syria:[34.80,38.99]
   };
   const colors = { 'on-track':'#27AE60','at-risk':'#F39C12','delayed':'#E74C3C','not-started':'#888','critical':'#C0392B' };
+  const maxBudget = Math.max(...countries.map(c => c.programmatic.budget.total));
   countries.forEach(c => {
     const latlng = coords[c.id];
     if (!latlng) return;
     const col = colors[c.status] || '#888';
+    const radius = 9 + Math.round((c.programmatic.budget.total / maxBudget) * 20);
     const circle = L.circleMarker(latlng, {
-      radius:14, fillColor:col, color:'#fff', weight:2, fillOpacity:0.9
+      radius: radius, fillColor:col, color:'#fff', weight:2, fillOpacity:0.88
     }).addTo(_map);
-    circle.bindPopup(`<b>${c.flag} ${c.name}</b><br>Status: <b>${c.status.replace('-',' ')}</b><br>Budget: ${(c.programmatic.budget.total/1000000).toFixed(1)}M USD<br>Beneficiaries: ${c.programmatic.beneficiaries.target.toLocaleString()}<br><a href="#" onclick="showPage('${c.id}');return false;">View details →</a>`);
-    circle.bindTooltip(`${c.flag} ${c.name}`, {permanent:false, direction:'top'});
+    circle.bindPopup(`<b>${c.flag} ${c.name}</b><br>Status: <b>${c.status.replace('-',' ')}</b><br>Budget: <b>${(c.programmatic.budget.total/1000000).toFixed(1)}M USD</b><br>Beneficiaries: ${c.programmatic.beneficiaries.target.toLocaleString()}<br><a href="#" onclick="showPage('${c.id}');return false;">View details →</a>`);
+    circle.bindTooltip(`${c.flag} ${c.name} — $${(c.programmatic.budget.total/1000000).toFixed(1)}M`, {permanent:false, direction:'top'});
   });
   setTimeout(()=>_map.invalidateSize(),200);
 }
-// Init map when landing page shown
+// Init map when global page is shown or on first load
 const _origShowPage = showPage;
 window.showPage = function(id) {
   _origShowPage(id);
-  if (id === 'landing') setTimeout(initMap, 100);
+  if (id === 'global') setTimeout(initMap, 120);
 };
-setTimeout(initMap, 500);
+setTimeout(initMap, 600);
 </script>
 </body>
 </html>
