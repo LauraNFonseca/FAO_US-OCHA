@@ -512,6 +512,22 @@
   .proc-legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:#1C2D3E; }
   .proc-legend-dot { width:14px; height:14px; border-radius:3px; flex-shrink:0; }
 
+  /* ── ACTIONS TABLE ── */
+  .action-row { display:flex; gap:12px; padding:12px; background:#F8FAFC; border:1px solid #E0E8F0; border-radius:6px; margin-bottom:8px; align-items:flex-start; }
+  .action-col { flex:1; }
+  .action-label { font-size:11px; font-weight:600; color:#5A6A7A; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+  .action-value { font-size:12px; color:#1C2D3E; }
+  .action-value-input { width:100%; padding:6px 8px; border:1px solid #CBD5E0; border-radius:4px; font-size:12px; font-family:inherit; box-sizing:border-box; }
+  .action-value-input:focus { border-color:#0099CC; outline:none; box-shadow: 0 0 0 2px rgba(0,153,204,0.1); }
+  .action-status { font-size:12px; font-weight:600; padding:4px 8px; border-radius:4px; text-align:center; white-space:nowrap; }
+  .action-status.green { background:#D4F4DD; color:#27AE60; }
+  .action-status.yellow { background:#FCE5CD; color:#F39C12; }
+  .action-status.red { background:#FAE5E5; color:#E74C3C; }
+  .action-delete { background:#E74C3C; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer; transition:background 0.2s; }
+  .action-delete:hover { background:#C0392B; }
+  .action-edit-section { background:#FFFFFF; border:1px solid #CBD5E0; border-radius:6px; padding:12px; margin-bottom:12px; }
+  .action-form-row { display:grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap:8px; align-items:flex-end; }
+
 
 </style>
 </head>
@@ -2598,6 +2614,10 @@ function buildCountryPages() {
     const budgetPct = pct(p.budget.spent, p.budget.total);
     const benePct = pct(p.beneficiaries.reached, p.beneficiaries.target);
     const distPct = pct(p.distributions.completedMonths, p.distributions.totalMonths);
+    // Calculate total demand planned and delivered
+    const totalDemandPlanned = (c.demand.seeds || 0) + (c.demand.fertilizer || 0) + (c.demand.machinery || 0) + (c.demand.vaccines || 0);
+    const totalDemandDelivered = (sc.procurement && sc.procurement.byStage && sc.procurement.byStage.distributed) || 0;
+    const demandDeliveredPct = totalDemandPlanned > 0 ? Math.round((totalDemandDelivered / totalDemandPlanned) * 100) : 0;
     const invTotal = sc.inventory.onHand + sc.inventory.inTransit;
     const capPct = pct(invTotal, sc.inventory.capacity);
     const allOrds = totalOrders(sc.orders);
@@ -2626,13 +2646,8 @@ function buildCountryPages() {
         <div class="ch-flag">${c.flag}</div>
         <div class="ch-info">
           <h1>${c.name} — Country Supply Chain Dashboard</h1>
-          <div class="ch-sub">${c.region} · ${p.faoOffice} · Project Officer: ${p.projectOfficer}</div>
+          <div class="ch-sub">${p.faoOffice} · Project Officer: ${p.projectOfficer}</div>
           <div class="ch-meta">
-            <div class="ch-meta-item"><div class="cm-val">${fmtM(p.budget.total)}</div><div class="cm-lbl">Total Budget</div></div>
-            <div class="ch-meta-item"><div class="cm-val">${fmt(p.beneficiaries.target)}</div><div class="cm-lbl">Target Beneficiaries</div></div>
-            <div class="ch-meta-item"><div class="cm-val">${p.distributions.totalMonths} months</div><div class="cm-lbl">Distribution Period</div></div>
-            <div class="ch-meta-item"><div class="cm-val">${p.startDate} → ${p.endDate}</div><div class="cm-lbl">Project Timeline</div></div>
-            <div class="ch-meta-item"><div class="cm-val"><span class="badge ${c.status}">${statusLabel(c.status)}</span></div><div class="cm-lbl">Operational Status</div></div>
             <div class="ch-meta-item">
               <div class="cm-val">
                 <div class="approval-trigger" id="apt-${c.id}" onclick="toggleApproval('${c.id}',event)">
@@ -2656,7 +2671,10 @@ function buildCountryPages() {
               </div>
               <div class="cm-lbl">Project Status</div>
             </div>
-            <div class="ch-meta-item"><div class="cm-val">${c.lastUpdated || '—'} <span class="last-update-badge">🕐 Last updated</span></div><div class="cm-lbl">Data Updated</div></div>
+            <div class="ch-meta-item"><div class="cm-val"><span class="badge ${c.status}">${statusLabel(c.status)}</span></div><div class="cm-lbl">Operational Status</div></div>
+            <div class="ch-meta-item"><div class="cm-val">${fmtM(p.budget.spent)} / ${fmtM(p.budget.total)}</div><div class="cm-lbl">Budget (Spent / Total)</div></div>
+            <div class="ch-meta-item"><div class="cm-val">${fmt(p.beneficiaries.reached)} / ${fmt(p.beneficiaries.target)}</div><div class="cm-lbl">Beneficiaries (Reached / Target)</div></div>
+            <div class="ch-meta-item"><div class="cm-val">${calcProjectMonths(p.startDate, p.endDate)} months</div><div class="cm-lbl">Project Duration</div></div>
           </div>
         </div>
         <div style="margin-top:12px;">
@@ -2685,12 +2703,12 @@ function buildCountryPages() {
           </div>
         </div>
         <div class="kpi-card">
-          <span class="icon">📅</span>
+          <span class="icon">📦</span>
           <div class="label">Distributions Completed</div>
-          <div class="value">${p.distributions.completedMonths}/${p.distributions.totalMonths}</div>
-          <div class="sub">Next: ${p.distributions.nextDist}</div>
+          <div class="value">${demandDeliveredPct}%</div>
+          <div class="sub">Of planned demand delivered</div>
           <div class="progress-row" style="margin-top:10px">
-            <div class="progress-bar"><div class="progress-fill blue" style="width:${distPct}%"></div></div>
+            <div class="progress-bar"><div class="progress-fill blue" style="width:${demandDeliveredPct}%"></div></div>
           </div>
         </div>
         <div class="kpi-card ${sc.kpis.onTimeDelivery >= 75 ? 'green' : sc.kpis.onTimeDelivery >= 55 ? 'warning' : 'danger'}">
@@ -2702,76 +2720,101 @@ function buildCountryPages() {
             <div class="progress-bar"><div class="progress-fill ${sc.kpis.onTimeDelivery >= 75 ? 'green' : sc.kpis.onTimeDelivery >= 55 ? 'warning' : 'danger'}" style="width:${sc.kpis.onTimeDelivery}%"></div></div>
           </div>
         </div>
-        <div class="kpi-card ${sc.kpis.stockoutRisk === 'Critical' ? 'danger' : sc.kpis.stockoutRisk === 'High' ? 'danger' : sc.kpis.stockoutRisk === 'Medium' ? 'warning' : 'green'}">
-          <span class="icon">🏭</span>
-          <div class="label">Stockout Risk</div>
-          <div class="value">${sc.kpis.stockoutRisk}</div>
-          <div class="sub">On-hand: ${fmt(sc.inventory.onHand)} MT | In transit: ${fmt(sc.inventory.inTransit)} MT</div>
-        </div>
       </div>
 
-      <!-- Programmatic Section -->
-      <div class="section-title"><span class="dot"></span> Programmatic Overview</div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Budget Breakdown</div><div class="card-subtitle">USD allocation</div></div></div>
-          <div class="donut-wrap">
-            <canvas id="chart-${c.id}-budget" style="max-width:160px;max-height:160px;"></canvas>
-            <div class="donut-legend">
-              <div class="dl-item"><div class="dl-dot" style="background:#0099CC"></div>Spent<div class="dl-pct">${fmtM(p.budget.spent)}</div></div>
-              <div class="dl-item"><div class="dl-dot" style="background:#7EC8E3"></div>Committed<div class="dl-pct">${fmtM(p.budget.committed)}</div></div>
-              <div class="dl-item"><div class="dl-dot" style="background:#E8F4FA"></div>Available<div class="dl-pct">${fmtM(p.budget.total - p.budget.spent - p.budget.committed)}</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Beneficiary Progress</div></div></div>
-          <div class="kpi-row" style="margin-bottom:16px;">
-            <div class="kpi-mini">
-              <div class="km-val" style="color:#005A8E">${fmt(p.beneficiaries.target)}</div>
-              <div class="km-lbl">Target</div>
-            </div>
-            <div class="kpi-mini">
-              <div class="km-val" style="color:#27AE60">${fmt(p.beneficiaries.reached)}</div>
-              <div class="km-lbl">Reached</div>
-            </div>
-            <div class="kpi-mini">
-              <div class="km-val" style="color:#F39C12">${fmt(p.beneficiaries.target - p.beneficiaries.reached)}</div>
-              <div class="km-lbl">Gap</div>
-            </div>
-            <div class="kpi-mini">
-              <div class="km-val">${benePct}%</div>
-              <div class="km-lbl">Coverage</div>
-            </div>
-          </div>
-          <div class="progress-row">
-            <div class="progress-label"><span>Beneficiary reach</span><span class="pct">${benePct}%</span></div>
-            <div class="progress-bar" style="height:14px;"><div class="progress-fill green" style="width:${benePct}%"></div></div>
-          </div>
-          <hr class="divider-h">
-          <div class="card-title" style="font-size:12px;margin-bottom:8px;">Commodities Distributed</div>
-          <div class="items-list">${itemsHtml}</div>
-          <hr class="divider-h">
-          <div class="card-title" style="font-size:12px;margin-bottom:6px;">Distribution Model</div>
-          <div class="dist-model-box">🚚 ${c.distributionModel || '—'}</div>
-        </div>
-      </div>
-
-      <!-- Distribution Timeline -->
+      <!-- PROJECT TIMELINE -->
       <div class="card mb-16" style="margin-bottom:20px;">
-        <div class="card-header"><div><div class="card-title">Distribution Timeline</div><div class="card-subtitle">${p.distributions.completedMonths} of ${p.distributions.totalMonths} months completed</div></div></div>
-        <div class="timeline">
-          ${timelineMos.map((m, i) => {
-            let cls = i < p.distributions.completedMonths ? 'done' : i === p.distributions.completedMonths ? 'current' : 'todo';
-            let icon = cls === 'done' ? '✓' : cls === 'current' ? '►' : (i+1);
-            return `<div class="tl-item"><div class="tl-dot ${cls}">${icon}</div><div class="tl-label">Mo. ${i+1}</div></div>`;
-          }).join('')}
+        <div class="card-header"><div><div class="card-title">Project Timeline & Key Milestones</div><div class="card-subtitle">Critical dates and approvals throughout project duration</div></div></div>
+        <div class="timeline" style="flex-wrap:wrap;gap:20px;padding:20px 0;">
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-label">Sep 2025<br><span style="font-size:8px;color:#333;font-weight:400;">Approved</span></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-label">${p.startDate}<br><span style="font-size:8px;color:#333;font-weight:400;">Start Date</span></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-label">Jan 2026<br><span style="font-size:8px;color:#333;font-weight:400;">First PR</span></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-label">Feb 2026<br><span style="font-size:8px;color:#333;font-weight:400;">First PO</span></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-label">Mar 2026<br><span style="font-size:8px;color:#333;font-weight:400;">1st Delivery</span></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot current">●</div>
+            <div class="tl-label">Apr 2026<br><span style="font-size:8px;color:#333;font-weight:400;">Today</span></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot todo">→</div>
+            <div class="tl-label">${p.endDate}<br><span style="font-size:8px;color:#333;font-weight:400;">Project End</span></div>
+          </div>
         </div>
-        <div style="font-size:11px;color:#7F8C8D;margin-top:12px;">
-          <span style="margin-right:16px;">● Green = Completed</span>
-          <span style="margin-right:16px;">● Blue = Current / Next</span>
-          <span>● Grey = Planned</span>
-          <span style="float:right;">Next distribution: <b>${p.distributions.nextDist}</b></span>
+        <div style="margin-top:15px;padding:12px;background:#F8FAFC;border-radius:8px;border-left:3px solid #0099CC;font-size:11px;">
+          <span style="margin-right:15px;"><span style="display:inline-block;width:10px;height:10px;background:#27AE60;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>Completed</span>
+          <span style="margin-right:15px;"><span style="display:inline-block;width:10px;height:10px;background:#0099CC;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>Current</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#D8E4EE;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>Upcoming</span>
+        </div>
+      </div>
+
+      <!-- DEMAND PLAN -->
+      <div class="card mb-16" style="margin-bottom:20px;">
+        <div class="card-header"><div><div class="card-title">Demand Plan by Product Category</div><div class="card-subtitle">Identified needs and requirements for each product type</div></div></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;padding:20px;">
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
+            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Seeds</h3></div>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-seeds"></canvas></div>
+            <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
+              <div><b>${fmt(c.demand.seeds || 0)} MT</b> total demand</div>
+              <div style="margin-top:5px;">Supporting crop production and food security</div>
+            </div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
+            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Fertilizer</h3></div>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-fertilizer"></canvas></div>
+            <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
+              <div><b>${fmt(c.demand.fertilizer || 0)} MT</b> total demand</div>
+              <div style="margin-top:5px;">Enhancing soil quality and yield productivity</div>
+            </div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
+            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Machinery</h3></div>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-machinery"></canvas></div>
+            <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
+              <div><b>${fmt(c.demand.machinery || 0)} MT</b> total demand</div>
+              <div style="margin-top:5px;">Equipment for agricultural operations</div>
+            </div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
+            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Vaccines</h3></div>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-vaccines"></canvas></div>
+            <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
+              <div><b>${fmt(c.demand.vaccines || 0)} MT</b> total demand</div>
+              <div style="margin-top:5px;">Health coverage for livestock protection</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROCUREMENT PIPELINE (Country-Specific) -->
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Procurement Pipeline by Category</div>
+            <div class="card-subtitle">Total value by procurement stage per product category (Millions USD)</div>
+          </div>
+        </div>
+        <div id="proc-legend-row-${c.id}" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;padding:10px 16px;background:#F8FAFC;border-radius:8px;border:1px solid #E0E8F0;"></div>
+        <div id="proc-chart-wrap-${c.id}" style="position:relative;height:380px;margin-bottom:0;"><canvas id="chart-proc-${c.id}"></canvas></div>
+        <div id="proc-drilldown-${c.id}" style="display:none; border-top:2px solid #E0E8F0; padding:20px; background:#FAFCFF; border-radius:0 0 var(--radius) var(--radius);">
+          <div id="proc-drilldown-title-${c.id}"></div>
+          <div id="proc-drilldown-chart-wrap-${c.id}" style="position:relative;height:220px;"><canvas id="chart-proc-drill-${c.id}"></canvas></div>
+          <div id="proc-budget-compare-${c.id}"></div>
         </div>
       </div>
 
@@ -2852,19 +2895,27 @@ function buildCountryPages() {
         </div>
       </div>
 
-      <!-- Risks -->
-      <div class="section-title" style="margin-top:4px;"><span class="dot" style="background:#E74C3C"></span> Risk Register</div>
-      <div class="card" style="margin-bottom:24px;">
-        <div class="card-header"><div><div class="card-title">Supply Chain Risk Register</div><div class="card-subtitle">${sc.risks.length} active risk(s)</div></div></div>
-        ${risksHtml}
-      </div>
 
-      <!-- Comments -->
+      <!-- Comments & Actions -->
       <div class="section-title" style="margin-top:4px;"><span class="dot" style="background:#7F8C8D"></span> Coordinator Notes</div>
       <div class="card" style="margin-bottom:24px;">
-        <div class="card-header"><div><div class="card-title">Free-text Comments & Updates</div><div class="card-subtitle">For coordinator use — notes saved during this session</div></div></div>
-        <textarea class="comments-area" id="comments-${c.id}" placeholder="Enter any programme updates, observations, or action items here..."></textarea>
-        <div class="save-note">💡 Notes are saved for this browser session only. Copy important notes before closing.</div>
+        <div class="card-header"><div><div class="card-title">Notes & Actions</div><div class="card-subtitle">Programme updates and action tracking</div></div></div>
+
+        <!-- Notes Section -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:10px;">📝 Notes</div>
+          <textarea class="comments-area" id="comments-${c.id}" placeholder="Enter any programme updates, observations, or general notes here..."></textarea>
+          <div class="save-note">💡 Notes are saved for this browser session only. Copy important notes before closing.</div>
+        </div>
+
+        <!-- Actions Section -->
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:12px;">📋 Actions</div>
+          <div id="actions-list-${c.id}" style="margin-bottom:12px;">
+            <!-- Actions will be rendered here -->
+          </div>
+          <button onclick="addAction('${c.id}')" style="background:#0099CC;color:#fff;border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#005A8E'" onmouseout="this.style.background='#0099CC'">+ Add Action</button>
+        </div>
       </div>
 
       <div class="page-footer">
@@ -2879,23 +2930,225 @@ function buildCountryPages() {
   });
 }
 
+function openProcDrilldown_Country(countryId, cat, catLabel) {
+  var panel = document.getElementById(`proc-drilldown-${countryId}`);
+  var title = document.getElementById(`proc-drilldown-title-${countryId}`);
+
+  // Toggle off if same category clicked again
+  if (panel.classList.contains('open') && panel.dataset.category === cat) {
+    panel.classList.remove('open');
+    panel.dataset.category = '';
+    return;
+  }
+  panel.dataset.category = cat;
+  panel.classList.add('open');
+  title.innerHTML = catLabel + ' — Procurement by Product <span style="font-weight:400;font-size:12px;color:#5A6A7A">(click bar again to close)</span>';
+
+  // Get country object
+  var c = countries.find(cn => cn.id === countryId);
+  if (!c) return;
+
+  var STAGES = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
+  var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
+  var COLORS = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var subCatsMap = {
+    seeds: ['Rice Seed', 'Wheat Seed', 'Legume Seed'],
+    fertilizer: ['Urea', 'DAP', 'Compound NPK'],
+    machinery: ['Tractors', 'Water Pumps', 'Threshers'],
+    vaccines: ['FMD Vaccine', 'CBPP Vaccine', 'Newcastle']
+  };
+  var subCats = subCatsMap[cat];
+
+  var byCom = (c.procurement && c.procurement.byCommodity && c.procurement.byCommodity[cat]) || {};
+
+  // Calculate totals for each product
+  var prodTotals = STAGE_KEYS.map(function(key) {
+    return STAGE_KEYS.reduce(function(s, k) {
+      return s + ((byCom[k]) || 0);
+    }, 0);
+  });
+  var totalAll = prodTotals.reduce((a,b)=>a+b, 0) || 1;
+
+  var drillDatasets = STAGE_KEYS.map(function(key, i) {
+    return {
+      label: STAGES[i],
+      data: [Math.round(((byCom[key] || 0) / totalAll) * 100)],
+      backgroundColor: COLORS[i],
+      borderWidth: 0
+    };
+  });
+
+  var drillCanvas = document.getElementById(`chart-proc-drill-${countryId}`);
+  if (window['_procDrillChart_'+countryId]) {
+    window['_procDrillChart_'+countryId].destroy();
+  }
+
+  window['_procDrillChart_'+countryId] = new Chart(drillCanvas.getContext('2d'), {
+    type: 'bar',
+    data: { labels: [catLabel], datasets: drillDatasets },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display:false },
+        tooltip: { callbacks: {
+          label: function(item) {
+            var raw = (byCom[STAGE_KEYS[item.datasetIndex]]) || 0;
+            return ' ' + item.dataset.label + ': ' + item.raw + '%  ($' + (raw/1000000).toFixed(2) + 'M)';
+          }
+        }}
+      },
+      scales: {
+        x: { stacked:true, ticks: { callback: function(v){ return v+'%'; } } },
+        y: { stacked:true, ticks:{ font:{size:11} } }
+      }
+    }
+  });
+}
+
 function renderCountryCharts(c) {
   const p = c.programmatic;
   const sc = c.sc;
 
-  // Budget donut
-  const bCtx = document.getElementById(`chart-${c.id}-budget`);
-  if (bCtx) {
-    const avail = p.budget.total - p.budget.spent - p.budget.committed;
-    new Chart(bCtx.getContext('2d'), {
-      type: 'doughnut',
-      data: {
-        labels: ['Spent', 'Committed', 'Available'],
-        datasets: [{ data: [p.budget.spent, p.budget.committed, Math.max(avail,0)],
-          backgroundColor: ['#0099CC', '#7EC8E3', '#E8EDF2'], borderWidth: 0 }]
-      },
-      options: { responsive: true, maintainAspectRatio: false, cutout: '60%',
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmtM(ctx.raw) } } }
+  // Demand charts (circular by category)
+  const demandCategories = ['seeds', 'fertilizer', 'machinery', 'vaccines'];
+  const demandLabels = ['Seeds', 'Fertilizer', 'Machinery', 'Vaccines'];
+  const demandColors = ['#27AE60', '#F39C12', '#3498DB', '#E74C3C'];
+
+  const subCatsMap = {
+    seeds: ['Rice Seed', 'Wheat Seed', 'Legume Seed'],
+    fertilizer: ['Urea', 'DAP', 'Compound NPK'],
+    machinery: ['Tractors', 'Water Pumps', 'Threshers'],
+    vaccines: ['FMD Vaccine', 'CBPP Vaccine', 'Newcastle']
+  };
+  const subRatios = {
+    seeds: [0.45, 0.35, 0.20],
+    fertilizer: [0.40, 0.35, 0.25],
+    machinery: [0.40, 0.35, 0.25],
+    vaccines: [0.40, 0.35, 0.25]
+  };
+
+  demandCategories.forEach((cat, idx) => {
+    const dCtx = document.getElementById(`chart-demand-${cat}`);
+    if (dCtx && c.demand && c.demand[cat]) {
+      // Get demand by sub-categories using actual product names
+      const subCats = subCatsMap[cat];
+      const ratios = subRatios[cat];
+      const subValues = [
+        Math.round(c.demand[cat] * ratios[0]),
+        Math.round(c.demand[cat] * ratios[1]),
+        Math.round(c.demand[cat] * ratios[2])
+      ];
+
+      // Plugin to show total value in center of doughnut
+      const totalValue = c.demand[cat];
+      const totalPlugin = {
+        id: 'demandTotal_'+cat,
+        afterDraw: function(chart) {
+          const { ctx, chartArea: { left, top, width, height } } = chart;
+          ctx.save();
+          ctx.font = 'bold 16px Arial';
+          ctx.fillStyle = demandColors[idx];
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(fmt(totalValue), left + width/2, top + height/2 - 8);
+          ctx.font = '11px Arial';
+          ctx.fillStyle = '#666';
+          ctx.fillText('MT', left + width/2, top + height/2 + 10);
+          ctx.restore();
+        }
+      };
+
+      const chartConfig = {
+        type: 'doughnut',
+        data: {
+          labels: subCats,
+          datasets: [{
+            data: subValues,
+            backgroundColor: ['rgba('+parseInt(demandColors[idx].slice(1,3),16)+','+parseInt(demandColors[idx].slice(3,5),16)+','+parseInt(demandColors[idx].slice(5,7),16)+',1)',
+                            'rgba('+parseInt(demandColors[idx].slice(1,3),16)+','+parseInt(demandColors[idx].slice(3,5),16)+','+parseInt(demandColors[idx].slice(5,7),16)+',0.7)',
+                            'rgba('+parseInt(demandColors[idx].slice(1,3),16)+','+parseInt(demandColors[idx].slice(3,5),16)+','+parseInt(demandColors[idx].slice(5,7),16)+',0.4)'],
+            borderWidth: 0
+          }]
+        },
+        plugins: [totalPlugin],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '60%',
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 10 } },
+            tooltip: { callbacks: { label: ctx => ' ' + fmt(ctx.raw) + ' MT' } }
+          }
+        }
+      };
+
+      new Chart(dCtx.getContext('2d'), chartConfig);
+    }
+  });
+
+  // Procurement Pipeline (Country-specific)
+  const procCanvas = document.getElementById(`chart-proc-${c.id}`);
+  if (procCanvas && c.procurement) {
+    const STAGES = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
+    const STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
+    const COLORS = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+    const COMM_LABELS = ['Seeds','Fertilizer','Machinery','Vaccines'];
+    const COMM_KEYS = ['seeds','fertilizer','machinery','vaccines'];
+
+    // Build legend
+    const legendEl = document.getElementById(`proc-legend-row-${c.id}`);
+    if (legendEl) {
+      legendEl.innerHTML =
+        '<div style="width:100%;margin-bottom:8px;font-size:11px;color:#5A6A7A;font-style:italic;">Stages reflect procurement lifecycle from planning through contract issuance to final delivery and distribution.</div>' +
+        STAGES.map(function(s,i){
+          return '<div class="proc-legend-item"><div class="proc-legend-dot" style="background:'+COLORS[i]+'"></div>'+s+'</div>';
+        }).join('');
+    }
+
+    // Build datasets (millions USD)
+    const datasets = STAGE_KEYS.map(function(key, i) {
+      return {
+        label: STAGES[i],
+        data: COMM_KEYS.map(function(ck){
+          const byCom = (c.procurement && c.procurement.byCommodity) || {};
+          const val = (byCom[ck] && byCom[ck][key]) || 0;
+          return val / 1000000;
+        }),
+        backgroundColor: COLORS[i],
+        borderWidth: 0
+      };
+    });
+
+    new Chart(procCanvas.getContext('2d'), {
+      type: 'bar',
+      data: { labels: COMM_LABELS, datasets: datasets },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: function(evt, elements) {
+          if (!elements || !elements.length) return;
+          const catIdx = elements[0].index;
+          const cat = COMM_KEYS[catIdx];
+          openProcDrilldown_Country(c.id, cat, COMM_LABELS[catIdx]);
+        },
+        layout: { padding: { right: 50 } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(item){
+                return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'M';
+              }
+            }
+          }
+        },
+        scales: {
+          x: { stacked: true, ticks: { callback: function(v){ return '$'+v.toFixed(0)+'M'; }, font:{size:10} } },
+          y: { stacked: true, ticks: { font:{size:11} } }
+        }
       }
     });
   }
@@ -2920,12 +3173,136 @@ function renderCountryCharts(c) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// ACTIONS MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════
+var actionsStore = {};
+
+function getActionStatus(dueDate) {
+  if (!dueDate) return 'gray';
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const due = new Date(dueDate);
+  due.setHours(0,0,0,0);
+  const diffMs = due - today;
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return 'red';    // Overdue
+  if (diffDays < 7) return 'yellow'; // Less than 1 week
+  return 'green';                    // 1 week or more
+}
+
+function getActionStatusLabel(status) {
+  if (status === 'red') return 'Overdue';
+  if (status === 'yellow') return 'Due Soon';
+  if (status === 'green') return 'On Track';
+  return 'No Date';
+}
+
+function addAction(countryId) {
+  if (!actionsStore[countryId]) actionsStore[countryId] = [];
+
+  actionsStore[countryId].push({
+    id: Date.now(),
+    description: '',
+    responsible: '',
+    dueDate: '',
+    status: 'green'
+  });
+
+  renderActions(countryId);
+}
+
+function removeAction(countryId, actionId) {
+  if (!actionsStore[countryId]) return;
+  actionsStore[countryId] = actionsStore[countryId].filter(function(a){ return a.id !== actionId; });
+  renderActions(countryId);
+}
+
+function updateAction(countryId, actionId, field, value) {
+  if (!actionsStore[countryId]) return;
+  var action = actionsStore[countryId].find(function(a){ return a.id === actionId; });
+  if (action) {
+    action[field] = value;
+    if (field === 'dueDate') {
+      action.status = getActionStatus(value);
+    }
+    renderActions(countryId);
+  }
+}
+
+function renderActions(countryId) {
+  var listEl = document.getElementById('actions-list-' + countryId);
+  if (!listEl) return;
+
+  if (!actionsStore[countryId] || actionsStore[countryId].length === 0) {
+    listEl.innerHTML = '<div style="color:#7F8C8D;font-size:12px;padding:10px;text-align:center;">No actions yet. Click "+ Add Action" to create one.</div>';
+    return;
+  }
+
+  var html = '';
+  actionsStore[countryId].forEach(function(action) {
+    var statusClass = action.status || 'gray';
+    var statusLabel = getActionStatusLabel(statusClass);
+    html += '<div class="action-row">' +
+      '<div class="action-col" style="flex:2.5;">' +
+        '<div class="action-label">Action</div>' +
+        '<input type="text" class="action-value-input" value="' + (action.description || '') + '" ' +
+        'onchange="updateAction(\'' + countryId + '\', ' + action.id + ', \'description\', this.value)" ' +
+        'placeholder="Describe the action..." />' +
+      '</div>' +
+      '<div class="action-col" style="flex:1.5;">' +
+        '<div class="action-label">Responsible</div>' +
+        '<input type="text" class="action-value-input" value="' + (action.responsible || '') + '" ' +
+        'onchange="updateAction(\'' + countryId + '\', ' + action.id + ', \'responsible\', this.value)" ' +
+        'placeholder="Name or role..." />' +
+      '</div>' +
+      '<div class="action-col" style="flex:1.2;">' +
+        '<div class="action-label">Due Date</div>' +
+        '<input type="date" class="action-value-input" value="' + (action.dueDate || '') + '" ' +
+        'onchange="updateAction(\'' + countryId + '\', ' + action.id + ', \'dueDate\', this.value)" />' +
+      '</div>' +
+      '<div class="action-col" style="flex:1; text-align:center;">' +
+        '<div class="action-label">Status</div>' +
+        '<div class="action-status ' + statusClass + '">' + statusLabel + '</div>' +
+      '</div>' +
+      '<div class="action-col" style="flex:0.4; text-align:center; padding-top:20px;">' +
+        '<button class="action-delete" onclick="removeAction(\'' + countryId + '\', ' + action.id + ')">✕</button>' +
+      '</div>' +
+      '</div>';
+  });
+
+  listEl.innerHTML = html;
+
+  // Save to sessionStorage
+  try {
+    sessionStorage.setItem('actions_' + countryId, JSON.stringify(actionsStore[countryId]));
+  } catch(e){}
+}
+
+function restoreActions() {
+  try {
+    for (var i = 0; i < sessionStorage.length; i++) {
+      var key = sessionStorage.key(i);
+      if (key && key.startsWith('actions_')) {
+        var countryId = key.substring(8);
+        actionsStore[countryId] = JSON.parse(sessionStorage.getItem(key));
+      }
+    }
+  } catch(e){}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════════════════
 buildSidebar();
 buildGlobal();
 buildCountryPages();
 restoreApNotes();
+restoreActions();
+// Re-render actions for all countries
+Object.keys(actionsStore).forEach(function(cid) {
+  renderActions(cid);
+});
 // Trigger global charts on initial load
 showPage('global');
 
@@ -2978,15 +3355,20 @@ function restoreApNotes() {
   }
 
   window.checkPassword = function() {
-    var val = document.getElementById("pw-input").value;
+    var pwInput = document.getElementById("pw-input");
     var err = document.getElementById("pw-error");
+    if (!pwInput) {
+      console.error("Password input not found");
+      return;
+    }
+    var val = pwInput.value.trim();
     if (val === CORRECT) {
       err.style.display = "none";
       unlock();
     } else {
       err.style.display = "block";
-      document.getElementById("pw-input").value = "";
-      document.getElementById("pw-input").focus();
+      pwInput.value = "";
+      pwInput.focus();
     }
   };
 
