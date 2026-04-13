@@ -6,6 +6,7 @@
 <title>GSCMTF | US-OCHA Global Supply Chain Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   :root {
     --fao-dark: #005A8E;
@@ -444,6 +445,7 @@
     background:#FAFCFF; border-radius:0 0 var(--radius) var(--radius);
   }
   #proc-drilldown.open { display:block; }
+  [id^="proc-drilldown-"].open { display:block !important; }
   #proc-drilldown-title { font-weight:700; color:#005A8E; font-size:14px; margin-bottom:12px; }
   #proc-drilldown-chart-wrap { position:relative; height:220px; }
   .budget-compare { display:flex; align-items:center; gap:8px; font-size:11px; padding:6px 0; }
@@ -2705,10 +2707,10 @@ function buildCountryPages() {
         <div class="kpi-card">
           <span class="icon">📦</span>
           <div class="label">Distributions Completed</div>
-          <div class="value">${demandDeliveredPct}%</div>
-          <div class="sub">Of planned demand delivered</div>
+          <div class="value">${p.items.length} items</div>
+          <div class="sub">across ${Object.keys(c.procurement.byCommodity || {}).length} product categories being distributed</div>
           <div class="progress-row" style="margin-top:10px">
-            <div class="progress-bar"><div class="progress-fill blue" style="width:${demandDeliveredPct}%"></div></div>
+            <div class="progress-bar"><div class="progress-fill blue" style="width:${pct(totalDemandDelivered, totalDemandPlanned)}%"></div></div>
           </div>
         </div>
         <div class="kpi-card ${sc.kpis.onTimeDelivery >= 75 ? 'green' : sc.kpis.onTimeDelivery >= 55 ? 'warning' : 'danger'}">
@@ -2762,6 +2764,100 @@ function buildCountryPages() {
         </div>
       </div>
 
+      <!-- PROGRAMMATIC OBJECTIVES & BENEFICIARY PACKAGES -->
+      <div class="card mb-16" style="margin-bottom:20px;">
+        <div class="card-header"><div><div class="card-title">Programmatic Objectives & Beneficiary Packages</div><div class="card-subtitle">Beneficiary distribution across three programmatic packages</div></div></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;padding:24px;">
+
+          <!-- Agricultural Input Package Card -->
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #27AE60;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div style="font-size:56px;margin-bottom:8px;">🌾</div>
+              <div style="font-size:42px;font-weight:800;color:#27AE60;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.45))}</div>
+              <div style="font-size:12px;color:#8A96A3;font-weight:600;">Beneficiaries</div>
+            </div>
+            <div style="margin-bottom:16px;text-align:center;">
+              <div style="font-size:14px;font-weight:700;color:var(--fao-dark);margin-bottom:8px;">Agricultural Input Package</div>
+              <div style="font-size:12px;color:#5A6A7A;line-height:1.6;">
+                Rice seed: TBC 10kg | Urea fertilizer: TBC 5kg | DAP fertilizer: TBC 3kg | Garden hoe: TBC 1 unit
+              </div>
+            </div>
+            <div style="margin-top:16px;">
+              <div style="display:flex;align-items:center;height:8px;background:#E0E8F0;border-radius:4px;overflow:hidden;">
+                <div style="width:45%;background:#27AE60;height:100%;"></div>
+              </div>
+              <div style="font-size:11px;color:#8A96A3;margin-top:6px;text-align:right;">45% of total</div>
+            </div>
+          </div>
+
+          <!-- Equipment & Infrastructure Package Card -->
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #0099CC;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div style="font-size:56px;margin-bottom:8px;">🚜</div>
+              <div style="font-size:42px;font-weight:800;color:#0099CC;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.35))}</div>
+              <div style="font-size:12px;color:#8A96A3;font-weight:600;">Beneficiaries</div>
+            </div>
+            <div style="margin-bottom:16px;text-align:center;">
+              <div style="font-size:14px;font-weight:700;color:var(--fao-dark);margin-bottom:8px;">Equipment & Infrastructure Package</div>
+              <div style="font-size:12px;color:#5A6A7A;line-height:1.6;">
+                Water pump: TBC 1 unit | Tractor access: TBC shared (20 HH) | Storage facility: TBC 1 per community | Training: TBC 8 hours
+              </div>
+            </div>
+            <div style="margin-top:16px;">
+              <div style="display:flex;align-items:center;height:8px;background:#E0E8F0;border-radius:4px;overflow:hidden;">
+                <div style="width:35%;background:#0099CC;height:100%;"></div>
+              </div>
+              <div style="font-size:11px;color:#8A96A3;margin-top:6px;text-align:right;">35% of total</div>
+            </div>
+          </div>
+
+          <!-- Livestock Health Package Card -->
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #E74C3C;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div style="font-size:56px;margin-bottom:8px;">💉</div>
+              <div style="font-size:42px;font-weight:800;color:#E74C3C;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.20))}</div>
+              <div style="font-size:12px;color:#8A96A3;font-weight:600;">Beneficiaries</div>
+            </div>
+            <div style="margin-bottom:16px;text-align:center;">
+              <div style="font-size:14px;font-weight:700;color:var(--fao-dark);margin-bottom:8px;">Livestock Health Package</div>
+              <div style="font-size:12px;color:#5A6A7A;line-height:1.6;">
+                FMD Vaccine: TBC 5 doses | CBPP Vaccine: TBC 3 doses | Newcastle Vaccine: TBC 10 doses | Veterinary kit: TBC 1 unit | Training: TBC 4 hours
+              </div>
+            </div>
+            <div style="margin-top:16px;">
+              <div style="display:flex;align-items:center;height:8px;background:#E0E8F0;border-radius:4px;overflow:hidden;">
+                <div style="width:20%;background:#E74C3C;height:100%;"></div>
+              </div>
+              <div style="font-size:11px;color:#8A96A3;margin-top:6px;text-align:right;">20% of total</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- KEY PLANNING DOCS SECTION -->
+      <div class="card mb-16" style="margin-bottom:20px;">
+        <div class="card-header"><div><div class="card-title">Key Planning Docs & Approvals</div><div class="card-subtitle">Supply chain approval plans and their current status</div></div></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;padding:20px;">
+          ${(c.approvalPlans||[]).map((pl,i) => `
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:13px;color:var(--fao-dark);margin-bottom:4px;">${pl.plan}</div>
+                  <div style="font-size:11px;color:#5A6A7A;">Owner: ${pl.owner}</div>
+                </div>
+                <span class="badge ap-${pl.status.toLowerCase().split(' ')[0]}">${pl.status}</span>
+              </div>
+              <div style="font-size:12px;color:var(--text);line-height:1.4;margin-top:8px;padding-top:8px;border-top:1px solid #E0E8F0;">
+                <b>Notes:</b> ${pl.notes && pl.notes.trim() ? pl.notes : '—'}
+              </div>
+              <div style="font-size:12px;color:var(--text);line-height:1.4;margin-top:10px;padding-top:10px;border-top:1px solid #E0E8F0;">
+                <b>📄 Document:</b> <span style="color:#999;font-style:italic;">[Pending document URL]</span>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+
       <!-- DEMAND PLAN -->
       <div class="card mb-16" style="margin-bottom:20px;">
         <div class="card-header"><div><div class="card-title">Demand Plan by Product Category</div><div class="card-subtitle">Identified needs and requirements for each product type</div></div></div>
@@ -2794,8 +2890,49 @@ function buildCountryPages() {
             <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Vaccines</h3></div>
             <div style="position:relative;height:220px;"><canvas id="chart-demand-vaccines"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
-              <div><b>${fmt(c.demand.vaccines || 0)} MT</b> total demand</div>
+              <div><b>${fmt(c.demand.vaccines || 0)} units</b> total demand</div>
               <div style="margin-top:5px;">Health coverage for livestock protection</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demand Breakdown USD by Category -->
+        <div style="border-top:2px solid #E0E8F0;padding:20px;margin-top:10px;">
+          <div style="margin-bottom:20px;">
+            <h3 style="font-size:13px;font-weight:700;color:var(--fao-dark);margin-bottom:12px;">Demand Value by Category (USD)</h3>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-usd-${c.id}"></canvas></div>
+          </div>
+
+          <!-- Item Details Table -->
+          <div style="margin-top:20px;">
+            <h3 style="font-size:13px;font-weight:700;color:var(--fao-dark);margin-bottom:12px;">Item Details & Technical Specifications</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Category</th>
+                    <th>Unit</th>
+                    <th>Technical Specs</th>
+                    <th>Required Qty</th>
+                    <th>Unit Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Rice Seed</b></td><td>Seeds</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.45)}</td><td>\$50</td></tr>
+                  <tr><td><b>Wheat Seed</b></td><td>Seeds</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.35)}</td><td>\$50</td></tr>
+                  <tr><td><b>Legume Seed</b></td><td>Seeds</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.20)}</td><td>\$50</td></tr>
+                  <tr><td><b>Urea Fertilizer</b></td><td>Fertilizer</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.40)}</td><td>\$45</td></tr>
+                  <tr><td><b>DAP Fertilizer</b></td><td>Fertilizer</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.35)}</td><td>\$45</td></tr>
+                  <tr><td><b>Compound NPK</b></td><td>Fertilizer</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.25)}</td><td>\$45</td></tr>
+                  <tr><td><b>Tractors</b></td><td>Machinery</td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.40)}</td><td>\$2,000</td></tr>
+                  <tr><td><b>Water Pumps</b></td><td>Machinery</td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.35)}</td><td>\$2,000</td></tr>
+                  <tr><td><b>Threshers</b></td><td>Machinery</td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.25)}</td><td>\$2,000</td></tr>
+                  <tr><td><b>FMD Vaccine</b></td><td>Vaccines</td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.40)}</td><td>\$0.50</td></tr>
+                  <tr><td><b>CBPP Vaccine</b></td><td>Vaccines</td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.35)}</td><td>\$0.50</td></tr>
+                  <tr><td><b>Newcastle Vaccine</b></td><td>Vaccines</td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.25)}</td><td>\$0.50</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -2938,11 +3075,13 @@ function openProcDrilldown_Country(countryId, cat, catLabel) {
   if (panel.classList.contains('open') && panel.dataset.category === cat) {
     panel.classList.remove('open');
     panel.dataset.category = '';
+    panel.dataset.drillLevel = '1';
     return;
   }
   panel.dataset.category = cat;
+  panel.dataset.drillLevel = panel.dataset.drillLevel || '1';
   panel.classList.add('open');
-  title.innerHTML = catLabel + ' — Procurement by Product <span style="font-weight:400;font-size:12px;color:#5A6A7A">(click bar again to close)</span>';
+  title.innerHTML = catLabel + ' — Procurement by Product <span style="font-weight:400;font-size:12px;color:#5A6A7A">(click to drill down by item)</span>';
 
   // Get country object
   var c = countries.find(cn => cn.id === countryId);
@@ -2961,13 +3100,10 @@ function openProcDrilldown_Country(countryId, cat, catLabel) {
 
   var byCom = (c.procurement && c.procurement.byCommodity && c.procurement.byCommodity[cat]) || {};
 
-  // Calculate totals for each product
-  var prodTotals = STAGE_KEYS.map(function(key) {
-    return STAGE_KEYS.reduce(function(s, k) {
-      return s + ((byCom[k]) || 0);
-    }, 0);
-  });
-  var totalAll = prodTotals.reduce((a,b)=>a+b, 0) || 1;
+  // Calculate total across all stages
+  var totalAll = STAGE_KEYS.reduce(function(s, k) {
+    return s + ((byCom[k]) || 0);
+  }, 0) || 1;
 
   var drillDatasets = STAGE_KEYS.map(function(key, i) {
     return {
@@ -2990,6 +3126,10 @@ function openProcDrilldown_Country(countryId, cat, catLabel) {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
+      onClick: function(evt, elements) {
+        // Drill down to items level
+        openProcDrilldown_Items(countryId, cat, catLabel);
+      },
       plugins: {
         legend: { display:false },
         tooltip: { callbacks: {
@@ -3002,6 +3142,77 @@ function openProcDrilldown_Country(countryId, cat, catLabel) {
       scales: {
         x: { stacked:true, ticks: { callback: function(v){ return v+'%'; } } },
         y: { stacked:true, ticks:{ font:{size:11} } }
+      }
+    }
+  });
+}
+
+function openProcDrilldown_Items(countryId, cat, catLabel) {
+  var c = countries.find(cn => cn.id === countryId);
+  if (!c) return;
+
+  var title = document.getElementById(`proc-drilldown-title-${countryId}`);
+  var canvas = document.getElementById(`chart-proc-drill-${countryId}`);
+
+  title.innerHTML = catLabel + ' — Breakdown by Item <span style="font-weight:400;font-size:12px;color:#5A6A7A">(click to go back)</span>';
+
+  var subCatsMap = {
+    seeds: ['Rice Seed', 'Wheat Seed', 'Legume Seed'],
+    fertilizer: ['Urea', 'DAP', 'Compound NPK'],
+    machinery: ['Tractors', 'Water Pumps', 'Threshers'],
+    vaccines: ['FMD Vaccine', 'CBPP Vaccine', 'Newcastle']
+  };
+  var subCats = subCatsMap[cat];
+
+  var STAGES = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
+  var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
+  var COLORS = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+
+  var byCom = (c.procurement && c.procurement.byCommodity && c.procurement.byCommodity[cat]) || {};
+
+  // Simulate data distribution across items (equal distribution)
+  var ratios = [0.45, 0.35, 0.20];
+
+  var datasets = STAGE_KEYS.map(function(key, stageIdx) {
+    var stageTotal = (byCom[key] || 0);
+    return {
+      label: STAGES[stageIdx],
+      data: ratios.map(function(ratio) {
+        return Math.round((stageTotal * ratio) / 1000000);
+      }),
+      backgroundColor: COLORS[stageIdx],
+      borderWidth: 0
+    };
+  });
+
+  if (window['_procDrillItemsChart_'+countryId]) {
+    window['_procDrillItemsChart_'+countryId].destroy();
+  }
+
+  window['_procDrillItemsChart_'+countryId] = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: subCats,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      onClick: function(evt, elements) {
+        // Go back to commodity level
+        openProcDrilldown_Country(countryId, cat, catLabel.split(' —')[0]);
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 } } },
+        tooltip: { callbacks: {
+          label: function(item) {
+            return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'M';
+          }
+        }}
+      },
+      scales: {
+        x: { stacked: true, ticks: { callback: function(v){ return '$'+v.toFixed(0)+'M'; }, font:{size:10} } },
+        y: { stacked: true, ticks: { font:{size:11} } }
       }
     }
   });
@@ -3043,6 +3254,7 @@ function renderCountryCharts(c) {
 
       // Plugin to show total value in center of doughnut
       const totalValue = c.demand[cat];
+      const unitLabel = (cat === 'vaccines') ? 'units' : 'MT';
       const totalPlugin = {
         id: 'demandTotal_'+cat,
         afterDraw: function(chart) {
@@ -3055,7 +3267,7 @@ function renderCountryCharts(c) {
           ctx.fillText(fmt(totalValue), left + width/2, top + height/2 - 8);
           ctx.font = '11px Arial';
           ctx.fillStyle = '#666';
-          ctx.fillText('MT', left + width/2, top + height/2 + 10);
+          ctx.fillText(unitLabel, left + width/2, top + height/2 + 10);
           ctx.restore();
         }
       };
@@ -3079,7 +3291,7 @@ function renderCountryCharts(c) {
           cutout: '60%',
           plugins: {
             legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 10 } },
-            tooltip: { callbacks: { label: ctx => ' ' + fmt(ctx.raw) + ' MT' } }
+            tooltip: { callbacks: { label: ctx => ' ' + fmt(ctx.raw) + ' ' + unitLabel } }
           }
         }
       };
@@ -3087,6 +3299,57 @@ function renderCountryCharts(c) {
       new Chart(dCtx.getContext('2d'), chartConfig);
     }
   });
+
+  // Demand Breakdown USD Chart by Category
+  const demandUsdCanvas = document.getElementById(`chart-demand-usd-${c.id}`);
+  if (demandUsdCanvas && c.demand) {
+    // Calculate USD values for each category
+    const seedsUsd = (c.demand.seeds || 0) * 50;
+    const fertilizerUsd = (c.demand.fertilizer || 0) * 45;
+    const machineryUsd = (c.demand.machinery || 0) * 2000;
+    const vaccinesUsd = (c.demand.vaccines || 0) * 0.5;
+
+    new Chart(demandUsdCanvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Seeds', 'Fertilizer', 'Machinery', 'Vaccines'],
+        datasets: [{
+          label: 'Demand Value (USD)',
+          data: [seedsUsd, fertilizerUsd, machineryUsd, vaccinesUsd],
+          backgroundColor: ['#27AE60', '#F39C12', '#3498DB', '#E74C3C'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(item) {
+                return ' $' + (item.raw / 1000000).toFixed(2) + 'M';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              callback: function(v) {
+                return '$' + (v / 1000000).toFixed(1) + 'M';
+              },
+              font: { size: 10 }
+            }
+          },
+          y: {
+            ticks: { font: { size: 11 } }
+          }
+        }
+      }
+    });
+  }
 
   // Procurement Pipeline (Country-specific)
   const procCanvas = document.getElementById(`chart-proc-${c.id}`);
@@ -3152,6 +3415,7 @@ function renderCountryCharts(c) {
       }
     });
   }
+
 
   // Orders bar
   const oCtx = document.getElementById(`chart-${c.id}-orders`);
