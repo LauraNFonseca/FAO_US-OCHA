@@ -530,6 +530,60 @@
   .action-edit-section { background:#FFFFFF; border:1px solid #CBD5E0; border-radius:6px; padding:12px; margin-bottom:12px; }
   .action-form-row { display:grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap:8px; align-items:flex-end; }
 
+  /* ── PROCUREMENT SECTION ── */
+  .procurement-section { margin-bottom: 24px; }
+  .subsection-header {
+    font-size: 13px; font-weight: 700; color: #fff; background: #F26522;
+    padding: 12px 16px; border-radius: 6px 6px 0 0; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 0;
+  }
+  .inventory-section { margin-bottom: 24px; }
+  .distribution-section { margin-bottom: 24px; }
+
+  /* ── PROCUREMENT TABLES ── */
+  .procurement-table {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+  }
+  .procurement-table thead th {
+    background: #F5F7FA; color: #1C2D3E; font-weight: 600; padding: 12px;
+    border-bottom: 2px solid #E0E6EB; text-align: left; font-size: 12px;
+  }
+  .procurement-table tbody td {
+    padding: 12px; border-bottom: 1px solid #E8EDF2; color: #1C2D3E;
+  }
+  .procurement-table tbody tr:nth-child(even) {
+    background: #FAFBFC;
+  }
+  .procurement-table tbody tr:hover {
+    background: #F5F7FA;
+  }
+
+  .po-table {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+  }
+  .po-table thead th {
+    background: #F5F7FA; color: #1C2D3E; font-weight: 600; padding: 12px;
+    border-bottom: 2px solid #E0E6EB; text-align: left; white-space: nowrap;
+  }
+  .po-table tbody td {
+    padding: 12px; border-bottom: 1px solid #E8EDF2; color: #1C2D3E;
+  }
+  .po-table tbody tr:nth-child(even) {
+    background: #FAFBFC;
+  }
+  .po-table tbody tr:hover {
+    background: #F5F7FA;
+  }
+
+  /* ── KPI ROW (for Procurement cards) ── */
+  .kpi-row { display: flex; gap: 16px; justify-content: space-around; }
+  .kpi-mini {
+    flex: 1; text-align: center;
+    padding: 12px; background: #F5F7FA; border-radius: 6px;
+  }
+  .km-val { font-size: 18px; font-weight: 700; color: #1C2D3E; line-height: 1; }
+  .km-lbl { font-size: 11px; color: #5A6A7A; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
 
 </style>
 </head>
@@ -839,7 +893,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "M. Rahman",
-      "faoOffice": "FAO Bangladesh (Dhaka)"
+      "faoOffice": "FAO Bangladesh (Dhaka)",
+      "beneficiaryLocations": [
+        {"name": "Dhaka", "lat": 23.8103, "lng": 90.4125, "agri": 18500, "equip": 34500, "livestock": 16000},
+        {"name": "Chittagong", "lat": 22.3569, "lng": 91.7832, "agri": 22900, "equip": 12700, "livestock": 15400},
+        {"name": "Cox's Bazar", "lat": 21.4423, "lng": 92.0084, "agri": 20600, "equip": 15800, "livestock": 22000}
+      ]
     },
     "sc": {
       "orders": {
@@ -858,6 +917,16 @@ const countries =
           "Dhaka",
           "Cox's Bazar",
           "Chittagong"
+        ],
+        "products": [
+          {"id": "PROD-001", "name": "Rice Seed", "category": "Seeds", "description": "High-quality rice seed variety", "unitPrice": 50, "quantity": 250, "reorderLevel": 100, "location": "Dhaka"},
+          {"id": "PROD-002", "name": "Wheat Seed", "category": "Seeds", "description": "Premium wheat seed for cultivation", "unitPrice": 45, "quantity": 180, "reorderLevel": 75, "location": "Chittagong"},
+          {"id": "PROD-003", "name": "Legume Seed", "category": "Seeds", "description": "Nutritious legume seed mix", "unitPrice": 55, "quantity": 120, "reorderLevel": 50, "location": "Cox's Bazar"},
+          {"id": "PROD-004", "name": "Urea Fertilizer", "category": "Fertilizer", "description": "Nitrogen-rich fertilizer for soil enrichment", "unitPrice": 45, "quantity": 200, "reorderLevel": 100, "location": "Dhaka"},
+          {"id": "PROD-005", "name": "DAP Fertilizer", "category": "Fertilizer", "description": "Phosphate-rich compound fertilizer", "unitPrice": 50, "quantity": 150, "reorderLevel": 75, "location": "Chittagong"},
+          {"id": "PROD-006", "name": "Water Pump", "category": "Equipment", "description": "Solar-powered water pump unit", "unitPrice": 2000, "quantity": 12, "reorderLevel": 5, "location": "Dhaka"},
+          {"id": "PROD-007", "name": "Garden Hoe", "category": "Equipment", "description": "Manual garden cultivation tool", "unitPrice": 25, "quantity": 320, "reorderLevel": 150, "location": "Cox's Bazar"},
+          {"id": "PROD-008", "name": "FMD Vaccine", "category": "Vaccines", "description": "Foot and Mouth Disease vaccine", "unitPrice": 1.50, "quantity": 15000, "reorderLevel": 5000, "location": "Dhaka"}
         ]
       },
       "deliveries": {
@@ -988,7 +1057,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "A. Mahamat",
-      "faoOffice": "FAO Chad (N'Djamena)"
+      "faoOffice": "FAO Chad (N'Djamena)",
+      "beneficiaryLocations": [
+        {"name": "N'Djamena", "lat": 12.1348, "lng": 15.0557, "agri": 35700, "equip": 52100, "livestock": 31400},
+        {"name": "Abéché", "lat": 13.8444, "lng": 20.8167, "agri": 28525, "equip": 29075, "livestock": 42550},
+        {"name": "Moundou", "lat": 8.5656, "lng": 16.0844, "agri": 45175, "equip": 21405, "livestock": 24550}
+      ]
     },
     "sc": {
       "orders": {
@@ -1143,7 +1217,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "C. Rodríguez",
-      "faoOffice": "FAO Colombia (Bogotá)"
+      "faoOffice": "FAO Colombia (Bogotá)",
+      "beneficiaryLocations": [
+        {"name": "Bogotá", "lat": 4.7110, "lng": -74.0055, "agri": 12350, "equip": 22050, "livestock": 10000},
+        {"name": "Cali", "lat": 3.4372, "lng": -76.5197, "agri": 18245, "equip": 10635, "livestock": 14710},
+        {"name": "Medellín", "lat": 6.2442, "lng": -75.5812, "agri": 10105, "equip": 12415, "livestock": 15000}
+      ]
     },
     "sc": {
       "orders": {
@@ -1292,7 +1371,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "J. Kabila",
-      "faoOffice": "FAO DRC (Kinshasa)"
+      "faoOffice": "FAO DRC (Kinshasa)",
+      "beneficiaryLocations": [
+        {"name": "Kinshasa", "lat": -4.3276, "lng": 15.3136, "agri": 25000, "equip": 20000, "livestock": 38600},
+        {"name": "Bukavu", "lat": -2.5012, "lng": 28.8383, "agri": 36500, "equip": 31500, "livestock": 19000},
+        {"name": "Kisangani", "lat": 0.5019, "lng": 25.1921, "agri": 18500, "equip": 35500, "livestock": 12300}
+      ]
     },
     "sc": {
       "orders": {
@@ -1449,7 +1533,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "T. Bekele",
-      "faoOffice": "FAO Ethiopia (Addis Ababa)"
+      "faoOffice": "FAO Ethiopia (Addis Ababa)",
+      "beneficiaryLocations": [
+        {"name": "Addis Ababa", "lat": 9.0320, "lng": 38.7469, "agri": 25050, "equip": 42200, "livestock": 22560},
+        {"name": "Dire Dawa", "lat": 9.6412, "lng": 41.8687, "agri": 20038, "equip": 18400, "livestock": 36420},
+        {"name": "Adama", "lat": 8.5386, "lng": 39.2669, "agri": 35912, "equip": 15160, "livestock": 24710}
+      ]
     },
     "sc": {
       "orders": {
@@ -1600,7 +1689,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "M. Pierre",
-      "faoOffice": "FAO Haiti (Port-au-Prince)"
+      "faoOffice": "FAO Haiti (Port-au-Prince)",
+      "beneficiaryLocations": [
+        {"name": "Port-au-Prince", "lat": 18.9712, "lng": -72.2852, "agri": 25500, "equip": 45000, "livestock": 16800},
+        {"name": "Cap-Haïtien", "lat": 19.7592, "lng": -72.2029, "agri": 22500, "equip": 18500, "livestock": 28000},
+        {"name": "Les Cayes", "lat": 18.2088, "lng": -73.7545, "agri": 27000, "equip": 17500, "livestock": 18300}
+      ]
     },
     "sc": {
       "orders": {
@@ -1755,7 +1849,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "R. Flores",
-      "faoOffice": "FAO Honduras (Tegucigalpa)"
+      "faoOffice": "FAO Honduras (Tegucigalpa)",
+      "beneficiaryLocations": [
+        {"name": "Tegucigalpa", "lat": 14.0723, "lng": -87.1921, "agri": 14750, "equip": 23900, "livestock": 11960},
+        {"name": "San Pedro Sula", "lat": 15.5007, "lng": -88.0234, "agri": 20500, "equip": 12200, "livestock": 17070},
+        {"name": "Choluteca", "lat": 13.3102, "lng": -87.1874, "agri": 12000, "equip": 10100, "livestock": 18360}
+      ]
     },
     "sc": {
       "orders": {
@@ -1904,7 +2003,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "K. Aung",
-      "faoOffice": "FAO Myanmar (Yangon)"
+      "faoOffice": "FAO Myanmar (Yangon)",
+      "beneficiaryLocations": [
+        {"name": "Yangon", "lat": 16.8661, "lng": 96.1951, "agri": 27250, "equip": 36750, "livestock": 29500},
+        {"name": "Mandalay", "lat": 21.9748, "lng": 96.0857, "agri": 40438, "equip": 21600, "livestock": 24650},
+        {"name": "Sittwe", "lat": 20.1584, "lng": 92.8975, "agri": 18550, "equip": 20700, "livestock": 36000}
+      ]
     },
     "sc": {
       "orders": {
@@ -2061,7 +2165,12 @@ const countries =
       "startDate": "Nov 2025",
       "endDate": "Apr 2026",
       "projectOfficer": "H. Al-Ahmad",
-      "faoOffice": "FAO Syria (Damascus)"
+      "faoOffice": "FAO Syria (Damascus)",
+      "beneficiaryLocations": [
+        {"name": "Damascus", "lat": 33.5138, "lng": 36.2765, "agri": 24550, "equip": 44650, "livestock": 28400},
+        {"name": "Aleppo", "lat": 36.2021, "lng": 37.1580, "agri": 28413, "equip": 20000, "livestock": 38800},
+        {"name": "Homs", "lat": 34.7302, "lng": 36.7237, "agri": 32513, "equip": 17500, "livestock": 19300}
+      ]
     },
     "sc": {
       "orders": {
@@ -2726,41 +2835,68 @@ function buildCountryPages() {
 
       <!-- PROJECT TIMELINE -->
       <div class="card mb-16" style="margin-bottom:20px;">
-        <div class="card-header"><div><div class="card-title">Project Timeline & Key Milestones</div><div class="card-subtitle">Critical dates and approvals throughout project duration</div></div></div>
-        <div class="timeline" style="flex-wrap:wrap;gap:20px;padding:20px 0;">
-          <div class="tl-item">
-            <div class="tl-dot done">✓</div>
-            <div class="tl-label">Sep 2025<br><span style="font-size:8px;color:#333;font-weight:400;">Approved</span></div>
+        <div class="card-header"><div><div class="card-title">Project Timeline & Key Milestones</div><div class="card-subtitle">Four-phase project roadmap from March to September 2026</div></div></div>
+
+        <!-- Timeline Container -->
+        <div style="padding:20px;position:relative;">
+          <!-- Single Timeline Line -->
+          <div style="position:relative;height:80px;margin-bottom:20px;">
+            <!-- Base timeline line -->
+            <div style="position:absolute;top:30px;left:0;right:0;height:2px;background:#CBD5E0;"></div>
+
+            <!-- Month markers on timeline -->
+            <div style="display:flex;justify-content:space-between;position:absolute;top:24px;left:0;right:0;width:100%;">
+              <div style="width:12px;height:12px;background:#CBD5E0;border-radius:50%;margin-left:-6px;"></div>
+              <div style="width:12px;height:12px;background:#CBD5E0;border-radius:50%;margin-left:-6px;"></div>
+              <div style="width:12px;height:12px;background:#CBD5E0;border-radius:50%;margin-left:-6px;"></div>
+              <div style="width:12px;height:12px;background:#CBD5E0;border-radius:50%;margin-left:-6px;"></div>
+              <div style="width:12px;height:12px;background:#CBD5E0;border-radius:50%;margin-left:-6px;"></div>
+              <div style="width:12px;height:12px;background:#CBD5E0;border-radius:50%;margin-left:-6px;"></div>
+              <div style="width:12px;height:12px;background:#CBD5E0;border-radius:50%;margin-left:-6px;"></div>
+            </div>
+
+            <!-- Project Formulation Marker at March (left) -->
+            <div style="position:absolute;left:0;top:18px;margin-left:-10px;">
+              <div style="width:20px;height:20px;background:#27AE60;border-radius:50%;border:3px solid white;box-shadow:0 0 0 1px #CBD5E0;"></div>
+            </div>
+
+            <!-- NOW Indicator (April 14, 2026 - between April and May) -->
+            <div style="position:absolute;left:21%;top:-5px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap;">
+              <div style="font-size:11px;font-weight:700;color:#E74C3C;">● NOW</div>
+              <div style="font-size:9px;color:#5A6A7A;margin-top:2px;">14 Apr 2026</div>
+            </div>
+
+            <!-- Month labels below timeline -->
+            <div style="display:flex;justify-content:space-between;position:absolute;top:50px;left:0;right:0;width:100%;">
+              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">March</span>
+              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">April</span>
+              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">May</span>
+              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">June</span>
+              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">July</span>
+              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">August</span>
+              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">September</span>
+            </div>
           </div>
-          <div class="tl-item">
-            <div class="tl-dot done">✓</div>
-            <div class="tl-label">${p.startDate}<br><span style="font-size:8px;color:#333;font-weight:400;">Start Date</span></div>
+
+          <!-- Legend -->
+          <div style="display:flex;gap:24px;flex-wrap:wrap;padding:16px 0;border-top:1px solid #E0E8F0;margin-top:20px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:14px;height:14px;background:#27AE60;border-radius:50%;flex-shrink:0;"></div>
+              <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Project Formulation</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:14px;height:14px;background:#0099CC;border-radius:50%;flex-shrink:0;"></div>
+              <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Project Approval</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:14px;height:14px;background:#3498DB;border-radius:50%;flex-shrink:0;"></div>
+              <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Implementation & Monitoring</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:14px;height:14px;background:#E67E22;border-radius:50%;flex-shrink:0;"></div>
+              <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Evaluation & Closure</span>
+            </div>
           </div>
-          <div class="tl-item">
-            <div class="tl-dot done">✓</div>
-            <div class="tl-label">Jan 2026<br><span style="font-size:8px;color:#333;font-weight:400;">First PR</span></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot done">✓</div>
-            <div class="tl-label">Feb 2026<br><span style="font-size:8px;color:#333;font-weight:400;">First PO</span></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot done">✓</div>
-            <div class="tl-label">Mar 2026<br><span style="font-size:8px;color:#333;font-weight:400;">1st Delivery</span></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot current">●</div>
-            <div class="tl-label">Apr 2026<br><span style="font-size:8px;color:#333;font-weight:400;">Today</span></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot todo">→</div>
-            <div class="tl-label">${p.endDate}<br><span style="font-size:8px;color:#333;font-weight:400;">Project End</span></div>
-          </div>
-        </div>
-        <div style="margin-top:15px;padding:12px;background:#F8FAFC;border-radius:8px;border-left:3px solid #0099CC;font-size:11px;">
-          <span style="margin-right:15px;"><span style="display:inline-block;width:10px;height:10px;background:#27AE60;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>Completed</span>
-          <span style="margin-right:15px;"><span style="display:inline-block;width:10px;height:10px;background:#0099CC;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>Current</span>
-          <span><span style="display:inline-block;width:10px;height:10px;background:#D8E4EE;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>Upcoming</span>
         </div>
       </div>
 
@@ -2833,6 +2969,26 @@ function buildCountryPages() {
           </div>
 
         </div>
+
+        <!-- Beneficiary Distribution Map -->
+        <div style="border-top:2px solid #E0E8F0;padding:24px;background:#FAFCFF;">
+          <h3 style="font-size:14px;font-weight:700;color:var(--fao-dark);margin-bottom:16px;">Beneficiary Distribution by Location</h3>
+          <div id="beneficiary-map-${c.id}" style="position:relative;height:400px;border-radius:8px;overflow:hidden;border:1px solid #E0E8F0;"></div>
+          <div style="margin-top:16px;display:flex;gap:20px;flex-wrap:wrap;font-size:12px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:16px;height:16px;background:#27AE60;border-radius:50%;"></div>
+              <span>Agricultural Input Package</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:16px;height:16px;background:#0099CC;border-radius:50%;"></div>
+              <span>Equipment & Infrastructure Package</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:16px;height:16px;background:#E74C3C;border-radius:50%;"></div>
+              <span>Livestock Health Package</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- KEY PLANNING DOCS SECTION -->
@@ -2864,7 +3020,7 @@ function buildCountryPages() {
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;padding:20px;">
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
             <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Seeds</h3></div>
-            <div style="position:relative;height:220px;"><canvas id="chart-demand-seeds"></canvas></div>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-seeds-${c.id}"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
               <div><b>${fmt(c.demand.seeds || 0)} MT</b> total demand</div>
               <div style="margin-top:5px;">Supporting crop production and food security</div>
@@ -2872,7 +3028,7 @@ function buildCountryPages() {
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
             <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Fertilizer</h3></div>
-            <div style="position:relative;height:220px;"><canvas id="chart-demand-fertilizer"></canvas></div>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-fertilizer-${c.id}"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
               <div><b>${fmt(c.demand.fertilizer || 0)} MT</b> total demand</div>
               <div style="margin-top:5px;">Enhancing soil quality and yield productivity</div>
@@ -2880,7 +3036,7 @@ function buildCountryPages() {
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
             <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Machinery</h3></div>
-            <div style="position:relative;height:220px;"><canvas id="chart-demand-machinery"></canvas></div>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-machinery-${c.id}"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
               <div><b>${fmt(c.demand.machinery || 0)} MT</b> total demand</div>
               <div style="margin-top:5px;">Equipment for agricultural operations</div>
@@ -2888,7 +3044,7 @@ function buildCountryPages() {
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
             <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Vaccines</h3></div>
-            <div style="position:relative;height:220px;"><canvas id="chart-demand-vaccines"></canvas></div>
+            <div style="position:relative;height:220px;"><canvas id="chart-demand-vaccines-${c.id}"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
               <div><b>${fmt(c.demand.vaccines || 0)} units</b> total demand</div>
               <div style="margin-top:5px;">Health coverage for livestock protection</div>
@@ -2956,78 +3112,351 @@ function buildCountryPages() {
       </div>
 
       <!-- SC Section -->
+      <!-- SUPPLY CHAIN MANAGEMENT SECTION -->
       <div class="section-title"><span class="dot" style="background:#F26522"></span> Supply Chain Management</div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Order Pipeline</div><div class="card-subtitle">Total: ${allOrds} orders</div></div></div>
-          <div class="pipeline">
-            ${[['Pending','#95A5A6',sc.orders.pending],['Confirmed','#3498DB',sc.orders.confirmed],['Shipped','#9B59B6',sc.orders.shipped],['Delivered','#27AE60',sc.orders.delivered]]
-              .map(([l,col,v]) => `<div class="pipe-step"><div class="pipe-num">${v}</div><div class="pipe-label">${l}</div><div class="pipe-bar" style="background:${col}"></div></div>`).join('')}
+
+      <!-- PROCUREMENT SECTION -->
+      <div class="procurement-section">
+        <div class="subsection-header">PROCUREMENT</div>
+
+        <!-- Subsection 1: Procurement KPIs (4 columns) -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px;">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Procurement Plan vs Execution</div></div></div>
+            ${(() => {
+              const procTotal = c.procurement ? c.procurement.total : 0;
+              const procExecuted = ((c.procurement && c.procurement.byStage) ? (c.procurement.byStage.distributed || 0) + (c.procurement.byStage.deliveredToFAO || 0) : 0);
+              const procExecPct = procTotal > 0 ? Math.round((procExecuted / procTotal) * 100) : 0;
+              return `
+                <div class="kpi-row" style="margin-bottom:16px;">
+                  <div class="kpi-mini"><div class="km-val">$${(procTotal/1000000).toFixed(2)}M</div><div class="km-lbl">Planned</div></div>
+                  <div class="kpi-mini"><div class="km-val">$${(procExecuted/1000000).toFixed(2)}M</div><div class="km-lbl">Executed</div></div>
+                  <div class="kpi-mini"><div class="km-val">${procExecPct}%</div><div class="km-lbl">Execution</div></div>
+                </div>
+                <div style="margin-bottom:12px;">
+                  <div class="progress-bar" style="height:24px;border-radius:8px;overflow:hidden;">
+                    <div class="progress-fill" style="background:#27AE60;width:${procExecPct}%;height:100%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;">
+                      ${procExecPct > 10 ? procExecPct+'%' : ''}
+                    </div>
+                  </div>
+                </div>
+              `;
+            })()}
           </div>
-          <div class="chart-container" style="height:160px;margin-top:16px;"><canvas id="chart-${c.id}-orders"></canvas></div>
+
+          <!-- Subsection 2: Procurement Origin (Local vs International) -->
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Procurement Origin</div></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;gap:20px;">
+              <div style="display:flex;gap:30px;justify-content:center;width:100%;">
+                <div style="text-align:center;">
+                  <div style="font-size:32px;font-weight:700;color:#27AE60;">65%</div>
+                  <div style="font-size:13px;color:#5A6A7A;margin-top:4px;">Local</div>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-size:32px;font-weight:700;color:#3498DB;">35%</div>
+                  <div style="font-size:13px;color:#5A6A7A;margin-top:4px;">🌍 International</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subsection 3: Procurement Lead Time -->
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Procurement Lead Time</div></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;gap:12px;">
+              <div style="text-align:center;">
+                <div style="font-size:36px;font-weight:700;color:#005A8E;">24</div>
+                <div style="font-size:12px;color:#5A6A7A;margin-top:4px;font-weight:600;">days (Avg)</div>
+              </div>
+              <div style="display:flex;gap:20px;justify-content:center;width:100%;font-size:12px;color:#5A6A7A;">
+                <div style="text-align:center;">
+                  <div style="font-size:14px;font-weight:600;color:#1C2D3E;">32d</div>
+                  <div style="font-size:10px;">Max</div>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-size:14px;font-weight:600;color:#1C2D3E;">16d</div>
+                  <div style="font-size:10px;">Min</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subsection 4: Open POs with Extended Lead Time -->
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Open POs Extended Lead Time</div></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;gap:12px;">
+              <div style="text-align:center;">
+                <div style="font-size:36px;font-weight:700;color:#E74C3C;">3</div>
+                <div style="font-size:12px;color:#5A6A7A;margin-top:4px;font-weight:600;">POs with >20 days</div>
+              </div>
+              <div style="font-size:12px;color:#8A96A3;text-align:center;">
+                Avg delay: 8 days
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Subsection 3: Procurement Volume and Value per Product (as simple indicators) -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px;">
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Rice Seed</div>
+            <div style="font-size:18px;font-weight:700;color:#005A8E;">1,200 MT</div>
+            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$60,000</div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFBFC;">
+            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Wheat Seed</div>
+            <div style="font-size:18px;font-weight:700;color:#005A8E;">850 MT</div>
+            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$38,250</div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Fertilizer (Urea)</div>
+            <div style="font-size:18px;font-weight:700;color:#005A8E;">2,150 MT</div>
+            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$96,750</div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFBFC;">
+            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Tractors</div>
+            <div style="font-size:18px;font-weight:700;color:#005A8E;">12 units</div>
+            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$240,000</div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Vaccines (FMD)</div>
+            <div style="font-size:18px;font-weight:700;color:#005A8E;">45,000 units</div>
+            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$67,500</div>
+          </div>
+        </div>
+
+        <!-- Subsection 5: Procurement Orders (POs) Table -->
         <div class="card">
-          <div class="card-header"><div><div class="card-title">Inventory Status</div><div class="card-subtitle">${c.sc.inventory.unit}</div></div></div>
-          <div class="kpi-row" style="margin-bottom:12px;">
-            <div class="kpi-mini"><div class="km-val">${fmt(sc.inventory.onHand)}</div><div class="km-lbl">On Hand (MT)</div></div>
-            <div class="kpi-mini"><div class="km-val">${fmt(sc.inventory.inTransit)}</div><div class="km-lbl">In Transit (MT)</div></div>
-            <div class="kpi-mini"><div class="km-val">${fmt(sc.inventory.onHand + sc.inventory.inTransit)}</div><div class="km-lbl">Total (MT)</div></div>
+          <div class="card-header"><div><div class="card-title">Procurement Orders (POs)</div></div></div>
+          <div style="overflow-x:auto;margin-bottom:16px;">
+            <table class="po-table" style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead>
+                <tr style="background:#F5F7FA;border-bottom:2px solid #E0E6EB;">
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">PO Number</th>
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Issue Date</th>
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;">Supplier</th>
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;">Product</th>
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Category</th>
+                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Quantity</th>
+                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Unit Price</th>
+                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Total Price</th>
+                  <th style="text-align:center;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:12px;color:#1C2D3E;">PO-2026-001</td>
+                  <td style="padding:12px;color:#5A6A7A;">15 Jan 2026</td>
+                  <td style="padding:12px;color:#1C2D3E;">ABC Agro Ltd</td>
+                  <td style="padding:12px;color:#1C2D3E;">Rice Seed</td>
+                  <td style="padding:12px;color:#5A6A7A;">Seeds</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">1,000 MT</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$50/MT</td>
+                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$50,000</td>
+                  <td style="text-align:center;padding:12px;"><span style="background:#27AE60;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Delivered</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:12px;color:#1C2D3E;">PO-2026-002</td>
+                  <td style="padding:12px;color:#5A6A7A;">18 Jan 2026</td>
+                  <td style="padding:12px;color:#1C2D3E;">Global Seed Corp</td>
+                  <td style="padding:12px;color:#1C2D3E;">Wheat Seed</td>
+                  <td style="padding:12px;color:#5A6A7A;">Seeds</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">850 MT</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$45/MT</td>
+                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$38,250</td>
+                  <td style="text-align:center;padding:12px;"><span style="background:#0099CC;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">In Transit</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:12px;color:#1C2D3E;">PO-2026-003</td>
+                  <td style="padding:12px;color:#5A6A7A;">20 Jan 2026</td>
+                  <td style="padding:12px;color:#1C2D3E;">FertilizeCo International</td>
+                  <td style="padding:12px;color:#1C2D3E;">Urea (Fertilizer)</td>
+                  <td style="padding:12px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">2,150 MT</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$45/MT</td>
+                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$96,750</td>
+                  <td style="text-align:center;padding:12px;"><span style="background:#27AE60;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Delivered</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:12px;color:#1C2D3E;">PO-2026-004</td>
+                  <td style="padding:12px;color:#5A6A7A;">22 Jan 2026</td>
+                  <td style="padding:12px;color:#1C2D3E;">AgriMachinery Ltd</td>
+                  <td style="padding:12px;color:#1C2D3E;">Tractors</td>
+                  <td style="padding:12px;color:#5A6A7A;">Equipment</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">12 units</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$20K/unit</td>
+                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$240,000</td>
+                  <td style="text-align:center;padding:12px;"><span style="background:#F39C12;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:12px;color:#1C2D3E;">PO-2026-005</td>
+                  <td style="padding:12px;color:#5A6A7A;">25 Jan 2026</td>
+                  <td style="padding:12px;color:#1C2D3E;">VaxDirect Pharma</td>
+                  <td style="padding:12px;color:#1C2D3E;">FMD Vaccine</td>
+                  <td style="padding:12px;color:#5A6A7A;">Vaccines</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">45,000 units</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$1.50/unit</td>
+                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$67,500</td>
+                  <td style="text-align:center;padding:12px;"><span style="background:#27AE60;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Delivered</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:12px;color:#1C2D3E;">PO-2026-006</td>
+                  <td style="padding:12px;color:#5A6A7A;">28 Jan 2026</td>
+                  <td style="padding:12px;color:#1C2D3E;">Regional Supply Hub</td>
+                  <td style="padding:12px;color:#1C2D3E;">Legume Seed</td>
+                  <td style="padding:12px;color:#5A6A7A;">Seeds</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">500 MT</td>
+                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$50/MT</td>
+                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$25,000</td>
+                  <td style="text-align:center;padding:12px;"><span style="background:#E74C3C;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Cancelled</span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="inv-bar-wrap">
-            <div class="inv-bar">
-              <div class="inv-seg" style="width:${pct(sc.inventory.onHand, sc.inventory.onHand+sc.inventory.inTransit+1)}%;background:#0099CC;">${sc.inventory.onHand > 50 ? sc.inventory.onHand+'MT' : ''}</div>
-              <div class="inv-seg" style="width:${pct(sc.inventory.inTransit, sc.inventory.onHand+sc.inventory.inTransit+1)}%;background:#7EC8E3;">${sc.inventory.inTransit > 30 ? sc.inventory.inTransit+'MT' : ''}</div>
-            </div>
-            <div class="inv-legend">
-              <div class="il-item"><div class="il-dot" style="background:#0099CC"></div>On Hand</div>
-              <div class="il-item"><div class="il-dot" style="background:#7EC8E3"></div>In Transit</div>
-            </div>
+          <div style="background:#F5F7FA;padding:12px;border-radius:6px;font-size:12px;color:#1C2D3E;font-weight:600;">
+            <span style="display:inline-block;margin-right:20px;">Total POs: 6</span>
+            <span style="display:inline-block;margin-right:20px;color:#27AE60;">Delivered: 3</span>
+            <span style="display:inline-block;margin-right:20px;color:#0099CC;">In Transit: 1</span>
+            <span style="display:inline-block;margin-right:20px;color:#F39C12;">Pending: 1</span>
+            <span style="display:inline-block;color:#E74C3C;">Cancelled: 1</span>
           </div>
-          <hr class="divider-h">
-          <div class="card-title" style="font-size:12px;margin-bottom:6px;">Warehouse Locations</div>
-          <div class="items-list">${sc.inventory.locations.map(l => `<span class="item-tag">📍 ${l}</span>`).join('')}</div>
         </div>
       </div>
 
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Delivery Tracking</div></div></div>
-          ${[['Planned Deliveries', sc.deliveries.planned, sc.deliveries.planned, '#E8EDF2', false],
-             ['Dispatched', sc.deliveries.dispatched, sc.deliveries.planned, '#0099CC', true],
-             ['Received by Partners', sc.deliveries.receivedByPartners, sc.deliveries.planned, '#27AE60', true],
-             ['Last Mile Completed', sc.deliveries.lastMile, sc.deliveries.planned, '#005A8E', true]]
-            .map(([l, v, t, col, showBar]) => `
-              <div class="progress-row">
-                <div class="progress-label"><span>${l}</span><span class="pct">${v} ${showBar ? '('+pct(v,t)+'%)' : ''}</span></div>
-                ${showBar ? `<div class="progress-bar"><div class="progress-fill" style="background:${col};width:${pct(v,t)}%;"></div></div>` : ''}
-              </div>`).join('')}
-          <hr class="divider-h">
-          <div class="card-title" style="font-size:12px;margin-bottom:6px;">Last Mile Partners</div>
-          <div class="items-list">${partnersHtml}</div>
-          <div style="margin-top:10px;font-size:12px;color:#5A6A7A;"><b>Transport mode:</b> ${sc.transport}</div>
+      <!-- INVENTORY SECTION -->
+      <div class="inventory-section" style="margin-top:24px;">
+        <div class="subsection-header">INVENTORY</div>
+
+        <!-- Subsection 1: Inventory Status Overview (KPI Cards) -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><div><div class="card-title">Status Overview</div><div class="card-subtitle">Current stock levels, turnover rate and capacity utilization</div></div></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:20px;">
+            <!-- KPI 1: On-Hand Stock -->
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">On-Hand Stock</div>
+              <div style="font-size:28px;font-weight:700;color:#005A8E;margin-bottom:4px;">${fmt(sc.inventory.onHand)}</div>
+              <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">MT in storage</div>
+              <div style="display:flex;align-items:center;height:6px;background:#E0E8F0;border-radius:3px;overflow:hidden;">
+                <div style="width:${pct(sc.inventory.onHand, sc.inventory.capacity)}%;background:#0099CC;height:100%;"></div>
+              </div>
+              <div style="font-size:10px;color:#8A96A3;margin-top:6px;text-align:right;">${pct(sc.inventory.onHand, sc.inventory.capacity)}% of capacity</div>
+            </div>
+            <!-- KPI 2: Inventory Turnover (Stock In - Stock Out) -->
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Stock Movement (30 days)</div>
+              <div style="font-size:28px;font-weight:700;color:#27AE60;margin-bottom:4px;">+230</div>
+              <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">MT net change</div>
+              <div style="font-size:11px;color:#27AE60;background:#EBF7ED;padding:6px 8px;border-radius:4px;text-align:center;">
+                850 in – 620 out = ↑ Inventory increased
+              </div>
+            </div>
+            <!-- KPI 3: Days of Stock -->
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Days of Stock</div>
+              <div style="font-size:28px;font-weight:700;color:#3498DB;margin-bottom:4px;">~${Math.round((sc.inventory.onHand + sc.inventory.inTransit) / (sc.inventory.onHand > 0 ? sc.inventory.onHand / 30 : 1))}</div>
+              <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">days supply remaining</div>
+              <div style="font-size:10px;color:#3498DB;background:#EBF5FF;padding:6px 8px;border-radius:4px;text-align:center;">
+                Based on monthly consumption
+              </div>
+            </div>
+            <!-- KPI 4: Storage Capacity -->
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Storage Capacity</div>
+              <div style="font-size:28px;font-weight:700;color:#27AE60;margin-bottom:4px;">${fmt(sc.inventory.onHand + sc.inventory.inTransit)} / ${fmt(sc.inventory.capacity)}</div>
+              <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">MT used / Total</div>
+              <div style="display:flex;align-items:center;height:6px;background:#E0E8F0;border-radius:3px;overflow:hidden;">
+                <div style="width:${pct(sc.inventory.onHand + sc.inventory.inTransit, sc.inventory.capacity)}%;background:#27AE60;height:100%;"></div>
+              </div>
+              <div style="font-size:10px;color:#8A96A3;margin-top:6px;text-align:right;">${pct(sc.inventory.onHand + sc.inventory.inTransit, sc.inventory.capacity)}% utilized</div>
+            </div>
+          </div>
         </div>
+
+        <!-- Subsection 2: Inventory Status (Product Details Table) -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><div><div class="card-title">Inventory Status</div><div class="card-subtitle">Detailed product inventory breakdown with stock levels and reorder information</div></div></div>
+          <div style="overflow-x:auto;margin-bottom:16px;padding:20px;">
+            <table class="inv-table" style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead>
+                <tr style="background:#F5F7FA;border-bottom:2px solid #E0E6EB;">
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;cursor:pointer;" onclick="sortTable(this)">Product ID ↕</th>
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;cursor:pointer;" onclick="sortTable(this)">Product Name ↕</th>
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;cursor:pointer;" onclick="sortTable(this)">Category ↕</th>
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;cursor:pointer;" onclick="sortTable(this)">Description ↕</th>
+                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;cursor:pointer;" onclick="sortTable(this)">Unit Price ↕</th>
+                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;cursor:pointer;" onclick="sortTable(this)">Qty in Stock ↕</th>
+                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;cursor:pointer;" onclick="sortTable(this)">Inventory Value ↕</th>
+                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;cursor:pointer;" onclick="sortTable(this)">Reorder Level ↕</th>
+                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;cursor:pointer;" onclick="sortTable(this)">Location ↕</th>
+                </tr>
+              </thead>
+              <tbody id="inv-table-${c.id}">
+                <!-- Populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Subsection 3: Inventory by Location/Warehouse -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><div><div class="card-title">Inventory by Location</div><div class="card-subtitle">Warehouse distribution and capacity utilization</div></div></div>
+
+          <!-- Warehouse Map -->
+          <div style="padding:20px;border-bottom:1px solid #E0E8F0;">
+            <div style="position:relative;height:350px;border:1px solid #E0E8F0;border-radius:8px;overflow:hidden;background:#F5F8FA;"><div id="inv-map-${c.id}" style="width:100%;height:100%;"></div></div>
+          </div>
+
+          <!-- Warehouse Table -->
+          <div style="padding:20px;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead>
+                <tr style="border-bottom:2px solid #E0E8F0;background:#F8FAFC;">
+                  <th style="text-align:left;padding:12px;color:#5A6A7A;font-weight:600;">Warehouse Name</th>
+                  <th style="text-align:left;padding:12px;color:#5A6A7A;font-weight:600;">On-Hand (MT)</th>
+                  <th style="text-align:left;padding:12px;color:#5A6A7A;font-weight:600;">Capacity (MT)</th>
+                  <th style="text-align:left;padding:12px;color:#5A6A7A;font-weight:600;">Utilization</th>
+                  <th style="text-align:left;padding:12px;color:#5A6A7A;font-weight:600;">Last Updated</th>
+                </tr>
+              </thead>
+              <tbody id="warehouse-table-${c.id}">
+                <!-- Populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Subsection 4: Inventory Movement & Turnover -->
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-header"><div><div class="card-title">Movement & Turnover</div><div class="card-subtitle">Inbound vs outbound inventory flow (Last 30 days)</div></div></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:20px;">
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;border-left:4px solid #27AE60;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Inbound</div>
+              <div style="font-size:28px;font-weight:700;color:#27AE60;margin-bottom:4px;">~850</div>
+              <div style="font-size:12px;color:#5A6A7A;">MT received from suppliers</div>
+            </div>
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;border-left:4px solid #E74C3C;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Outbound</div>
+              <div style="font-size:28px;font-weight:700;color:#E74C3C;margin-bottom:4px;">~620</div>
+              <div style="font-size:12px;color:#5A6A7A;">MT distributed to partners</div>
+            </div>
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;border-left:4px solid #3498DB;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Net Change</div>
+              <div style="font-size:28px;font-weight:700;color:#3498DB;margin-bottom:4px;">+230</div>
+              <div style="font-size:12px;color:#5A6A7A;">MT <span style="color:#27AE60;font-weight:600;">↑ Inventory increased</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DISTRIBUTION SECTION (Placeholder) -->
+      <div class="distribution-section" style="margin-top:24px;margin-bottom:24px;">
+        <div class="subsection-header">DISTRIBUTION</div>
         <div class="card">
-          <div class="card-header"><div><div class="card-title">SC Performance KPIs</div></div></div>
-          <div class="progress-row">
-            <div class="progress-label"><span>Order Fulfillment Rate</span><span class="pct">${sc.kpis.orderFulfillment}%</span></div>
-            <div class="progress-bar"><div class="progress-fill ${sc.kpis.orderFulfillment>=75?'green':sc.kpis.orderFulfillment>=50?'warning':'danger'}" style="width:${sc.kpis.orderFulfillment}%"></div></div>
-          </div>
-          <div class="progress-row">
-            <div class="progress-label"><span>On-Time Delivery Rate</span><span class="pct">${sc.kpis.onTimeDelivery}%</span></div>
-            <div class="progress-bar"><div class="progress-fill ${sc.kpis.onTimeDelivery>=75?'green':sc.kpis.onTimeDelivery>=50?'warning':'danger'}" style="width:${sc.kpis.onTimeDelivery}%"></div></div>
-          </div>
-          <div class="progress-row">
-            <div class="progress-label"><span>Distribution Progress</span><span class="pct">${distPct}%</span></div>
-            <div class="progress-bar"><div class="progress-fill blue" style="width:${distPct}%"></div></div>
-          </div>
-          <div class="progress-row">
-            <div class="progress-label"><span>Budget Utilized</span><span class="pct">${budgetPct}%</span></div>
-            <div class="progress-bar"><div class="progress-fill ${budgetPct>85?'danger':budgetPct>65?'warning':'orange'}" style="width:${budgetPct}%"></div></div>
-          </div>
-          <hr class="divider-h">
-          <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
-            <div style="font-size:13px;color:#5A6A7A;"><b>Stockout Risk:</b></div>
-            <span class="badge ${sc.kpis.stockoutRisk==='Low'?'on-track':sc.kpis.stockoutRisk==='Medium'?'at-risk':sc.kpis.stockoutRisk==='High'?'delayed':'delayed'}">${sc.kpis.stockoutRisk}</span>
+          <div style="padding:40px;text-align:center;color:#5A6A7A;">
+            <div style="font-size:14px;font-weight:600;margin-bottom:8px;">Coming soon</div>
+            <div style="font-size:12px;">Distribution tracking and logistics features will be available in the next update.</div>
           </div>
         </div>
       </div>
@@ -3241,7 +3670,7 @@ function renderCountryCharts(c) {
   };
 
   demandCategories.forEach((cat, idx) => {
-    const dCtx = document.getElementById(`chart-demand-${cat}`);
+    const dCtx = document.getElementById(`chart-demand-${cat}-${c.id}`);
     if (dCtx && c.demand && c.demand[cat]) {
       // Get demand by sub-categories using actual product names
       const subCats = subCatsMap[cat];
@@ -3433,6 +3862,332 @@ function renderCountryCharts(c) {
         scales: { x: { ticks: { font: { size: 10 } } }, y: { ticks: { font: { size: 10 } } } }
       }
     });
+  }
+
+  // INVENTORY CHARTS AND MAPS
+  // Inventory by Product Category
+  const invCatCanvas = document.getElementById(`chart-inv-by-category-${c.id}`);
+  if (invCatCanvas && c.demand) {
+    // Calculate proportions based on demand as proxy for inventory
+    const seedsDemand = c.demand.seeds || 0;
+    const fertilizerDemand = c.demand.fertilizer || 0;
+    const machineryDemand = c.demand.machinery || 0;
+    const vaccinesDemand = c.demand.vaccines || 0;
+    const totalDemand = seedsDemand + fertilizerDemand + machineryDemand + vaccinesDemand;
+
+    const seedsInventory = totalDemand > 0 ? Math.round(sc.inventory.onHand * (seedsDemand / totalDemand)) : 0;
+    const fertilizerInventory = totalDemand > 0 ? Math.round(sc.inventory.onHand * (fertilizerDemand / totalDemand)) : 0;
+    const machineryInventory = totalDemand > 0 ? Math.round(sc.inventory.onHand * (machineryDemand / totalDemand)) : 0;
+    const vaccinesInventory = totalDemand > 0 ? Math.round(sc.inventory.onHand * (vaccinesDemand / totalDemand)) : 0;
+
+    new Chart(invCatCanvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Seeds', 'Fertilizer', 'Machinery', 'Vaccines'],
+        datasets: [{
+          label: 'Inventory (MT)',
+          data: [seedsInventory, fertilizerInventory, machineryInventory, vaccinesInventory],
+          backgroundColor: ['#27AE60', '#F39C12', '#3498DB', '#E74C3C'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(item) {
+                return ' ' + fmt(item.raw) + ' MT';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              callback: function(v) {
+                return fmt(v) + ' MT';
+              },
+              font: { size: 10 }
+            }
+          },
+          y: {
+            ticks: { font: { size: 11 } }
+          }
+        }
+      }
+    });
+  }
+
+  // Warehouse table and map data
+  const warehouseTableEl = document.getElementById(`warehouse-table-${c.id}`);
+  const warehouseMapDiv = document.getElementById(`inv-map-${c.id}`);
+
+  if (warehouseTableEl && sc.inventory.locations) {
+    // Create warehouse data with realistic distribution
+    const locations = sc.inventory.locations;
+    const invTotal = sc.inventory.onHand;
+
+    // Warehouse coordinates mapping (based on country center coords)
+    const coordsByCountry = {
+      bangladesh: {
+        'Dhaka': [23.81, 90.41],
+        'Cox\'s Bazar': [21.43, 91.97],
+        'Chittagong': [22.34, 91.81]
+      },
+      chad: {
+        'N\'Djamena': [12.13, 15.05],
+        'Moundou': [8.57, 16.07],
+        'Abéché': [13.85, 20.82]
+      },
+      colombia: {
+        'Bogotá': [4.71, -74.07],
+        'Cali': [3.44, -76.50],
+        'Medellín': [6.22, -75.59]
+      },
+      drc: {
+        'Kinshasa': [-4.31, 15.31],
+        'Goma': [-1.70, 29.22],
+        'Bukavu': [-2.49, 28.84]
+      },
+      ethiopia: {
+        'Addis Ababa': [9.03, 38.75],
+        'Dire Dawa': [9.55, 41.86],
+        'Mekelle': [13.49, 39.48]
+      },
+      haiti: {
+        'Port-au-Prince': [18.97, -72.29],
+        'Cap-Haïtien': [19.76, -72.19],
+        'Les Cayes': [18.20, -73.75]
+      },
+      honduras: {
+        'Tegucigalpa': [14.07, -87.19],
+        'San Pedro Sula': [15.50, -88.04],
+        'La Ceiba': [15.76, -86.79]
+      },
+      myanmar: {
+        'Yangon': [16.87, 96.20],
+        'Mandalay': [21.98, 96.08],
+        'Naypyidaw': [19.76, 96.07]
+      },
+      syria: {
+        'Damascus': [33.51, 36.28],
+        'Aleppo': [36.20, 37.16],
+        'Homs': [34.73, 36.72]
+      }
+    };
+
+    const countryCoords = coordsByCountry[c.id] || {};
+
+    // Distribute inventory across warehouses
+    const warehouseData = locations.map((loc, idx) => {
+      const pct_of_total = (idx === 0) ? 0.50 : (idx === 1) ? 0.30 : 0.20;
+      const onHand = Math.round(invTotal * pct_of_total);
+      const capacity = Math.round(sc.inventory.capacity / locations.length);
+      const util = Math.round((onHand / capacity) * 100);
+
+      return {
+        name: loc,
+        onHand: onHand,
+        capacity: capacity,
+        utilization: util,
+        coords: countryCoords[loc] || [0, 0],
+        lastUpdated: c.lastUpdated || '—'
+      };
+    });
+
+    // Render warehouse table
+    let tableHtml = warehouseData.map((w, idx) => `
+      <tr style="border-bottom:1px solid #E0E8F0;${idx % 2 === 0 ? 'background:#FAFCFF;' : ''}">
+        <td style="padding:12px;color:var(--fao-dark);font-weight:600;">${w.name}</td>
+        <td style="padding:12px;color:#005A8E;font-weight:600;">${fmt(w.onHand)}</td>
+        <td style="padding:12px;color:#5A6A7A;">${fmt(w.capacity)}</td>
+        <td style="padding:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;height:6px;background:#E0E8F0;border-radius:3px;overflow:hidden;flex:1;min-width:60px;">
+              <div style="width:${w.utilization}%;background:${w.utilization > 80 ? '#E74C3C' : w.utilization > 60 ? '#F39C12' : '#27AE60'};height:100%;"></div>
+            </div>
+            <span style="font-weight:600;color:#1C2D3E;min-width:35px;">${w.utilization}%</span>
+          </div>
+        </td>
+        <td style="padding:12px;color:#5A6A7A;font-size:12px;">${w.lastUpdated}</td>
+      </tr>
+    `).join('');
+
+    warehouseTableEl.innerHTML = tableHtml;
+
+    // Initialize warehouse map
+    if (warehouseMapDiv) {
+      setTimeout(() => {
+        const mapId = `inv-map-instance-${c.id}`;
+        if (!window[mapId]) {
+          window[mapId] = L.map(`inv-map-${c.id}`, { zoomControl: true, scrollWheelZoom: false });
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors', maxZoom: 8
+          }).addTo(window[mapId]);
+
+          // Center map on country
+          const countryCenter = {
+            bangladesh: [23.68, 90.36],
+            chad: [15.45, 18.73],
+            colombia: [4.57, -74.30],
+            drc: [-4.04, 21.76],
+            ethiopia: [9.15, 40.49],
+            haiti: [18.97, -72.29],
+            honduras: [15.20, -86.24],
+            myanmar: [21.92, 95.96],
+            syria: [34.80, 38.99]
+          };
+
+          const center = countryCenter[c.id] || [0, 0];
+          window[mapId].setView(center, 7);
+
+          // Add warehouse markers
+          warehouseData.forEach(w => {
+            if (w.coords[0] !== 0 || w.coords[1] !== 0) {
+              const markerColor = w.onHand > (invTotal * 0.35) ? '#E74C3C' : w.onHand > (invTotal * 0.15) ? '#F39C12' : '#3498DB';
+              const markerSize = w.onHand > (invTotal * 0.35) ? 30 : w.onHand > (invTotal * 0.15) ? 25 : 20;
+
+              const circleMarker = L.circleMarker(w.coords, {
+                radius: markerSize / 2,
+                fillColor: markerColor,
+                color: '#fff',
+                weight: 2,
+                fillOpacity: 0.8
+              }).addTo(window[mapId]);
+
+              circleMarker.bindPopup(`
+                <div style="font-weight:600;margin-bottom:8px;">📦 ${w.name}</div>
+                <table style="font-size:12px;line-height:1.6;">
+                  <tr><td><b>On-hand:</b></td><td style="text-align:right;padding-left:12px;">${fmt(w.onHand)} MT</td></tr>
+                  <tr><td><b>Capacity:</b></td><td style="text-align:right;padding-left:12px;">${fmt(w.capacity)} MT</td></tr>
+                  <tr><td><b>Utilization:</b></td><td style="text-align:right;padding-left:12px;">${w.utilization}%</td></tr>
+                </table>
+              `);
+
+              circleMarker.bindTooltip(`${w.name} — ${fmt(w.onHand)} MT`, { permanent: false, direction: 'top' });
+            }
+          });
+        }
+      }, 100);
+    }
+  }
+
+  // Beneficiary Distribution Map
+  const beneficiaryMapDiv = document.getElementById(`beneficiary-map-${c.id}`);
+  if (beneficiaryMapDiv && p.beneficiaryLocations && p.beneficiaryLocations.length > 0) {
+    setTimeout(function() {
+      const mapId = `bmap-${c.id}`;
+      if (!window[mapId]) {
+        window[mapId] = L.map(beneficiaryMapDiv, {
+          zoomControl: true,
+          scrollWheelZoom: true,
+          dragging: true
+        }).setView([0, 0], 5);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+          maxZoom: 8
+        }).addTo(window[mapId]);
+
+        // Country centers for map positioning
+        const countryCenter = {
+          bangladesh: [23.68, 90.36],
+          chad: [15.45, 18.73],
+          colombia: [4.57, -74.30],
+          drc: [-4.04, 21.76],
+          ethiopia: [9.15, 40.49],
+          haiti: [18.97, -72.29],
+          honduras: [15.20, -86.24],
+          myanmar: [21.92, 95.96],
+          syria: [34.80, 38.99]
+        };
+
+        const center = countryCenter[c.id] || [0, 0];
+        window[mapId].setView(center, 6);
+
+        // Find max beneficiaries per package type for circle sizing
+        let maxAgri = 0, maxEquip = 0, maxLivestock = 0;
+        p.beneficiaryLocations.forEach(loc => {
+          if (loc.agri > maxAgri) maxAgri = loc.agri;
+          if (loc.equip > maxEquip) maxEquip = loc.equip;
+          if (loc.livestock > maxLivestock) maxLivestock = loc.livestock;
+        });
+
+        // Package type colors
+        const packageColors = {
+          agri: '#27AE60',      // Green
+          equip: '#0099CC',     // Blue
+          livestock: '#E74C3C'  // Red
+        };
+
+        // Add circles for each location (proportional sizing)
+        p.beneficiaryLocations.forEach(loc => {
+          const totalBenef = loc.agri + loc.equip + loc.livestock;
+
+          // Determine dominant package type for color and size
+          let dominantColor = packageColors.agri;
+          let dominantBenef = loc.agri;
+          let dominantMax = maxAgri;
+          let dominantType = 'Agricultural Input';
+
+          if (loc.equip > loc.agri && loc.equip > loc.livestock) {
+            dominantColor = packageColors.equip;
+            dominantBenef = loc.equip;
+            dominantMax = maxEquip;
+            dominantType = 'Equipment & Infrastructure';
+          } else if (loc.livestock > loc.agri && loc.livestock > loc.equip) {
+            dominantColor = packageColors.livestock;
+            dominantBenef = loc.livestock;
+            dominantMax = maxLivestock;
+            dominantType = 'Livestock Health';
+          }
+
+          // Base radius: 5 to 35 pixels based on dominant package beneficiary count
+          const radiusScale = Math.sqrt(dominantBenef / dominantMax);
+          const radius = 5 + radiusScale * 30;
+
+          const circleMarker = L.circleMarker([loc.lat, loc.lng], {
+            radius: radius,
+            fillColor: dominantColor,
+            color: '#fff',
+            weight: 2,
+            fillOpacity: 0.7
+          }).addTo(window[mapId]);
+
+          // Create popup content with breakdown by package type
+          const popupContent = `
+            <div style="font-weight:700;margin-bottom:8px;font-size:13px;">📍 ${loc.name}</div>
+            <table style="font-size:11px;line-height:1.8;border-collapse:collapse;">
+              <tr style="border-bottom:1px solid #E0E8F0;">
+                <td style="padding:4px 8px 4px 0;"><span style="display:inline-block;width:10px;height:10px;background:${packageColors.agri};border-radius:2px;margin-right:6px;"></span><b>Agricultural</b></td>
+                <td style="text-align:right;padding:4px 0;">${fmt(loc.agri)}</td>
+              </tr>
+              <tr style="border-bottom:1px solid #E0E8F0;">
+                <td style="padding:4px 8px 4px 0;"><span style="display:inline-block;width:10px;height:10px;background:${packageColors.equip};border-radius:2px;margin-right:6px;"></span><b>Equipment</b></td>
+                <td style="text-align:right;padding:4px 0;">${fmt(loc.equip)}</td>
+              </tr>
+              <tr>
+                <td style="padding:4px 8px 4px 0;"><span style="display:inline-block;width:10px;height:10px;background:${packageColors.livestock};border-radius:2px;margin-right:6px;"></span><b>Livestock</b></td>
+                <td style="text-align:right;padding:4px 0;">${fmt(loc.livestock)}</td>
+              </tr>
+            </table>
+            <div style="margin-top:8px;padding-top:8px;border-top:1px solid #E0E8F0;font-weight:700;color:var(--fao-dark);">
+              Total: ${fmt(totalBenef)}
+            </div>
+          `;
+
+          circleMarker.bindPopup(popupContent);
+          circleMarker.bindTooltip(`${loc.name} — ${fmt(totalBenef)} beneficiaries`, {
+            permanent: false,
+            direction: 'top'
+          });
+        });
+      }
+    }, 100);
   }
 }
 
