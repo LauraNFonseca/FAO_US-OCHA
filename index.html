@@ -2915,7 +2915,7 @@ function buildCountryPages() {
             <div style="margin-bottom:16px;text-align:center;">
               <div style="font-size:14px;font-weight:700;color:var(--fao-dark);margin-bottom:8px;">Agricultural Input Package</div>
               <div style="font-size:12px;color:#5A6A7A;line-height:1.6;">
-                Rice seed: TBC 10kg | Urea fertilizer: TBC 5kg | DAP fertilizer: TBC 3kg | Garden hoe: TBC 1 unit
+                Package detail TBC
               </div>
             </div>
             <div style="margin-top:16px;">
@@ -2936,7 +2936,7 @@ function buildCountryPages() {
             <div style="margin-bottom:16px;text-align:center;">
               <div style="font-size:14px;font-weight:700;color:var(--fao-dark);margin-bottom:8px;">Equipment & Infrastructure Package</div>
               <div style="font-size:12px;color:#5A6A7A;line-height:1.6;">
-                Water pump: TBC 1 unit | Tractor access: TBC shared (20 HH) | Storage facility: TBC 1 per community | Training: TBC 8 hours
+                Package detail TBC
               </div>
             </div>
             <div style="margin-top:16px;">
@@ -2957,7 +2957,7 @@ function buildCountryPages() {
             <div style="margin-bottom:16px;text-align:center;">
               <div style="font-size:14px;font-weight:700;color:var(--fao-dark);margin-bottom:8px;">Livestock Health Package</div>
               <div style="font-size:12px;color:#5A6A7A;line-height:1.6;">
-                FMD Vaccine: TBC 5 doses | CBPP Vaccine: TBC 3 doses | Newcastle Vaccine: TBC 10 doses | Veterinary kit: TBC 1 unit | Training: TBC 4 hours
+                Package detail TBC
               </div>
             </div>
             <div style="margin-top:16px;">
@@ -3423,28 +3423,6 @@ function buildCountryPages() {
                 <!-- Populated by JavaScript -->
               </tbody>
             </table>
-          </div>
-        </div>
-
-        <!-- Subsection 4: Inventory Movement & Turnover -->
-        <div class="card" style="margin-bottom:0;">
-          <div class="card-header"><div><div class="card-title">Movement & Turnover</div><div class="card-subtitle">Inbound vs outbound inventory flow (Last 30 days)</div></div></div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:20px;">
-            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;border-left:4px solid #27AE60;">
-              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Inbound</div>
-              <div style="font-size:28px;font-weight:700;color:#27AE60;margin-bottom:4px;">~850</div>
-              <div style="font-size:12px;color:#5A6A7A;">MT received from suppliers</div>
-            </div>
-            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;border-left:4px solid #E74C3C;">
-              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Outbound</div>
-              <div style="font-size:28px;font-weight:700;color:#E74C3C;margin-bottom:4px;">~620</div>
-              <div style="font-size:12px;color:#5A6A7A;">MT distributed to partners</div>
-            </div>
-            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;border-left:4px solid #3498DB;">
-              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Net Change</div>
-              <div style="font-size:28px;font-weight:700;color:#3498DB;margin-bottom:4px;">+230</div>
-              <div style="font-size:12px;color:#5A6A7A;">MT <span style="color:#27AE60;font-weight:600;">↑ Inventory increased</span></div>
-            </div>
           </div>
         </div>
 
@@ -4008,7 +3986,7 @@ function renderCountryCharts(c) {
         <td style="padding:12px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="display:flex;align-items:center;height:6px;background:#E0E8F0;border-radius:3px;overflow:hidden;flex:1;min-width:60px;">
-              <div style="width:${w.utilization}%;background:${w.utilization > 80 ? '#E74C3C' : w.utilization > 60 ? '#F39C12' : '#27AE60'};height:100%;"></div>
+              <div style="width:${w.utilization}%;background:#A0A9B8;height:100%;"></div>
             </div>
             <span style="font-weight:600;color:#1C2D3E;min-width:35px;">${w.utilization}%</span>
           </div>
@@ -4048,12 +4026,12 @@ function renderCountryCharts(c) {
           // Add warehouse markers
           warehouseData.forEach(w => {
             if (w.coords[0] !== 0 || w.coords[1] !== 0) {
-              const markerColor = w.onHand > (invTotal * 0.35) ? '#E74C3C' : w.onHand > (invTotal * 0.15) ? '#F39C12' : '#3498DB';
+              // Marker size varies by stock on-hand
               const markerSize = w.onHand > (invTotal * 0.35) ? 30 : w.onHand > (invTotal * 0.15) ? 25 : 20;
 
               const circleMarker = L.circleMarker(w.coords, {
                 radius: markerSize / 2,
-                fillColor: markerColor,
+                fillColor: '#A0A9B8',
                 color: '#fff',
                 weight: 2,
                 fillOpacity: 0.8
@@ -4189,6 +4167,75 @@ function renderCountryCharts(c) {
       }
     }, 100);
   }
+
+  // Inventory Status Table
+  const invTableEl = document.getElementById(`inv-table-${c.id}`);
+  if (invTableEl) {
+    // Create sample inventory data with TBD values
+    const inventoryData = [
+      {id: 'PROD-001', name: 'Rice Seed', category: 'Seeds', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
+      {id: 'PROD-002', name: 'Wheat Seed', category: 'Seeds', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
+      {id: 'PROD-003', name: 'Legume Seed', category: 'Seeds', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
+      {id: 'PROD-004', name: 'Urea Fertilizer', category: 'Fertilizer', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
+      {id: 'PROD-005', name: 'DAP Fertilizer', category: 'Fertilizer', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
+      {id: 'PROD-006', name: 'Water Pump', category: 'Equipment', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
+      {id: 'PROD-007', name: 'Garden Hoe', category: 'Equipment', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
+      {id: 'PROD-008', name: 'FMD Vaccine', category: 'Vaccines', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'}
+    ];
+
+    // Render inventory data in table
+    invTableEl.innerHTML = inventoryData.map((product, idx) => `
+      <tr style="border-bottom:1px solid #E8EDF2;${idx % 2 === 1 ? 'background:#FAFBFC;' : ''}">
+        <td style="padding:12px;color:#1C2D3E;">${product.id}</td>
+        <td style="padding:12px;color:#1C2D3E;">${product.name}</td>
+        <td style="padding:12px;color:#5A6A7A;">${product.category}</td>
+        <td style="padding:12px;color:#5A6A7A;">${product.description}</td>
+        <td style="text-align:right;padding:12px;color:#5A6A7A;">${product.unitPrice}</td>
+        <td style="text-align:right;padding:12px;color:#5A6A7A;">${product.quantity}</td>
+        <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">${product.inventoryValue}</td>
+        <td style="text-align:right;padding:12px;color:#5A6A7A;">${product.reorderLevel}</td>
+        <td style="padding:12px;color:#1C2D3E;">${product.location}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TABLE SORTING FUNCTIONALITY
+// ═══════════════════════════════════════════════════════════════════════════
+function sortTable(headerCell) {
+  const table = headerCell.closest('table');
+  const tbody = table.querySelector('tbody');
+  const columnIndex = Array.from(headerCell.parentElement.children).indexOf(headerCell);
+  const isAscending = headerCell.classList.contains('sort-asc');
+
+  // Remove sort classes from all headers
+  table.querySelectorAll('th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+  });
+
+  // Add sort class to current header
+  headerCell.classList.add(isAscending ? 'sort-desc' : 'sort-asc');
+
+  // Get all rows and sort them
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.sort((a, b) => {
+    const aVal = a.children[columnIndex].textContent.trim();
+    const bVal = b.children[columnIndex].textContent.trim();
+
+    // Try numeric sort
+    const aNum = parseFloat(aVal);
+    const bNum = parseFloat(bVal);
+    if (!isNaN(aNum) && !isNaN(bNum)) {
+      return isAscending ? bNum - aNum : aNum - bNum;
+    }
+
+    // String sort
+    return isAscending ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+  });
+
+  // Reorder rows in table
+  rows.forEach(row => tbody.appendChild(row));
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
