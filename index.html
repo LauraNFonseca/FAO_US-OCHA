@@ -81,10 +81,12 @@
     text-decoration: none; color: inherit;
   }
   #header .logo-emblem {
-    width: 42px; height: 42px; background: #fff; border-radius: 50%;
+    width: 42px; height: 42px; background: transparent;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900; font-size: 13px; color: var(--fao-dark); letter-spacing: -0.5px;
     flex-shrink: 0;
+  }
+  #header .logo-emblem img {
+    width: 100%; height: 100%; object-fit: contain;
   }
   #header .logo-text { line-height: 1.2; }
   #header .logo-text .org { font-size: 11px; opacity: 0.75; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; }
@@ -653,19 +655,8 @@
 <!-- ═══════════════════════════════════════ HEADER ═══════════════════════════════════════ -->
 <div id="header">
   <a class="logo" href="#" onclick="showPage('global'); return false;">
-    <div class="logo-emblem" style="background:white;padding:2px;overflow:visible;width:44px;height:44px;">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="40" height="40">
-        <!-- Outer circle -->
-        <circle cx="50" cy="50" r="47" fill="white" stroke="#5791C8" stroke-width="3"/>
-        <!-- F letter -->
-        <text x="28" y="60" font-family="Arial Black" font-size="32" font-weight="900" fill="#5791C8">F</text>
-        <!-- Wheat lines left -->
-        <path d="M33 32 Q31 42 33 52" stroke="#5791C8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-        <path d="M38 30 Q36 42 38 54" stroke="#5791C8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-        <!-- Wheat lines right -->
-        <path d="M67 32 Q69 42 67 52" stroke="#5791C8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-        <path d="M62 30 Q64 42 62 54" stroke="#5791C8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-      </svg>
+    <div class="logo-emblem" style="background:white;padding:2px;overflow:visible;width:44px;height:44px;border-radius:50%;">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23003A70' stroke='%23fff' stroke-width='2'/%3E%3Ctext x='50' y='58' font-family='Arial Black' font-size='36' font-weight='900' fill='%23fff' text-anchor='middle'%3EFAO%3C/text%3E%3C/svg%3E" alt="FAO Logo" width="40" height="40"/>
     </div>
     <div class="logo-text">
       <div class="org">Food and Agriculture Organization</div>
@@ -3158,6 +3149,28 @@ function buildCountryPages() {
         </div>
       </div>
 
+      <!-- Coordinator Notes -->
+      <div class="section-title" style="margin-top:4px;"><span class="dot" style="background:#7F8C8D"></span> Coordinator Notes</div>
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header"><div><div class="card-title">Notes & Actions</div><div class="card-subtitle">Programme updates and action tracking</div></div></div>
+
+        <!-- Notes Section -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:10px;">📝 Notes</div>
+          <textarea class="comments-area" id="comments-${c.id}" placeholder="Enter any programme updates, observations, or general notes here..."></textarea>
+          <div class="save-note">💡 Notes are saved for this browser session only. Copy important notes before closing.</div>
+        </div>
+
+        <!-- Actions Section -->
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:12px;">📋 Actions</div>
+          <div id="actions-list-${c.id}" style="margin-bottom:12px;">
+            <!-- Actions will be rendered here -->
+          </div>
+          <button onclick="addAction('${c.id}')" style="background:#5791C8;color:#fff;border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1A648C'" onmouseout="this.style.background='#5791C8'">+ Add Action</button>
+        </div>
+      </div>
+
       </div> <!-- END OVERVIEW TAB -->
 
       <!-- TAB: DEMAND -->
@@ -3645,28 +3658,6 @@ function buildCountryPages() {
         </div>
       </div>
 
-
-      <!-- Comments & Actions -->
-      <div class="section-title" style="margin-top:4px;"><span class="dot" style="background:#7F8C8D"></span> Coordinator Notes</div>
-      <div class="card" style="margin-bottom:24px;">
-        <div class="card-header"><div><div class="card-title">Notes & Actions</div><div class="card-subtitle">Programme updates and action tracking</div></div></div>
-
-        <!-- Notes Section -->
-        <div style="margin-bottom:24px;">
-          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:10px;">📝 Notes</div>
-          <textarea class="comments-area" id="comments-${c.id}" placeholder="Enter any programme updates, observations, or general notes here..."></textarea>
-          <div class="save-note">💡 Notes are saved for this browser session only. Copy important notes before closing.</div>
-        </div>
-
-        <!-- Actions Section -->
-        <div>
-          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:12px;">📋 Actions</div>
-          <div id="actions-list-${c.id}" style="margin-bottom:12px;">
-            <!-- Actions will be rendered here -->
-          </div>
-          <button onclick="addAction('${c.id}')" style="background:#5791C8;color:#fff;border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1A648C'" onmouseout="this.style.background='#5791C8'">+ Add Action</button>
-        </div>
-      </div>
 
       </div> <!-- END DISTRIBUTION TAB -->
 
