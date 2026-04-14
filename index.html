@@ -7,21 +7,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root {
-    --fao-dark: #005A8E;
-    --fao-blue: #0099CC;
+    --fao-dark: #1A648C;
+    --fao-blue: #5791C8;
     --fao-light: #E8F4FA;
-    --fao-orange: #F26522;
+    --fao-orange: #EF781F;
     --fao-green: #4CAF50;
-    --success: #27AE60;
-    --warning: #F39C12;
-    --danger: #E74C3C;
+    --success: #508931;
+    --warning: #EF781F;
+    --danger: #A81E3B;
     --neutral: #7F8C8D;
     --bg: #F4F7FA;
     --sidebar-w: 180px;
     --header-h: 64px;
-    --shadow: 0 2px 12px rgba(0,90,142,0.10);
+    --shadow: 0 2px 12px rgba(26,100,140,0.10);
     --radius: 10px;
     --text: #1C2D3E;
     --text-light: #5A6A7A;
@@ -43,7 +44,7 @@
     text-align: center;
   }
   #pw-box .pw-logo { display: flex; justify-content:center; margin-bottom:18px; }
-  #pw-box h2 { display:block; color:#005A8E; font-size:1.2rem; font-weight:700; margin-bottom:6px; }
+  #pw-box h2 { display:block; color:#1A648C; font-size:1.2rem; font-weight:700; margin-bottom:6px; }
   #pw-box p { display:block; color:#5A6A7A; font-size:0.83rem; margin-bottom:24px; line-height:1.5; }
   #pw-input {
     width: 100%; padding: 12px 16px; border-radius: 8px;
@@ -53,16 +54,16 @@
     font-family: 'Segoe UI', Arial, sans-serif;
     box-sizing: border-box;
   }
-  #pw-input:focus { border-color: #0099CC; }
+  #pw-input:focus { border-color: #5791C8; }
   #pw-btn {
     margin-top: 12px; width: 100%; padding: 13px;
-    background: #005A8E; color: #fff; border: none;
+    background: #1A648C; color: #fff; border: none;
     border-radius: 8px; font-size: 1rem; font-weight: 600;
     cursor: pointer; transition: background 0.2s;
   }
-  #pw-btn:hover { background: #0099CC; }
+  #pw-btn:hover { background: #5791C8; }
   #pw-error {
-    margin-top: 10px; color: #E74C3C;
+    margin-top: 10px; color: #A81E3B;
     font-size: 0.85rem; min-height: 20px;
     display: none;
   }
@@ -71,7 +72,7 @@
   /* ── HEADER ── */
   #header {
     position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
-    background: var(--fao-dark); color: #fff; z-index: 1000;
+    background: var(--fao-blue); color: #fff; z-index: 1000;
     display: flex; align-items: center; padding: 0 20px; gap: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   }
@@ -257,7 +258,7 @@
 
   /* ── LANDING HERO ── */
   .hero {
-    background: linear-gradient(135deg, var(--fao-dark) 0%, #003D61 50%, #001F35 100%);
+    background: linear-gradient(135deg, var(--fao-blue) 0%, var(--fao-dark) 50%, #1A648C 100%);
     color: #fff; border-radius: 14px; padding: 40px 44px; margin-bottom: 28px;
     position: relative; overflow: hidden;
   }
@@ -269,7 +270,7 @@
   .hero::after {
     content: ''; position: absolute; right: 60px; bottom: -40px;
     width: 160px; height: 160px; border-radius: 50%;
-    background: rgba(0,153,204,0.15);
+    background: rgba(87,145,200,0.15);
   }
   .hero .hero-badge {
     display: inline-block; background: var(--fao-orange); color: #fff;
@@ -294,7 +295,7 @@
 
   /* ── COUNTRY DETAIL HEADER ── */
   .country-hero {
-    background: linear-gradient(135deg, var(--fao-dark), #003D61);
+    background: linear-gradient(135deg, var(--fao-blue), var(--fao-dark));
     color: #fff; border-radius: 14px; padding: 28px 32px;
     margin-bottom: 24px; display: flex; align-items: center; gap: 24px;
   }
@@ -374,11 +375,11 @@
 
   /* ── COMMENTS ── */
   .comments-area { width:100%; min-height:100px; padding:12px; border:1px solid #CBD5E0; border-radius:8px; font-family:'Segoe UI',Arial,sans-serif; font-size:13px; color:var(--text); resize:vertical; background:#FFFEF9; }
-  .comments-area:focus { outline:none; border-color:#0099CC; }
+  .comments-area:focus { outline:none; border-color:#5791C8; }
   .save-note { font-size:11px; color:#888; margin-top:4px; }
 
   /* ── LAST UPDATE ── */
-  .last-update-badge { display:inline-flex; align-items:center; gap:6px; background:#F0F7FF; border:1px solid #C8DFF5; border-radius:20px; padding:3px 12px; font-size:11px; color:#005A8E; margin-left:8px; }
+  .last-update-badge { display:inline-flex; align-items:center; gap:6px; background:#F0F7FF; border:1px solid #C8DFF5; border-radius:20px; padding:3px 12px; font-size:11px; color:#1A648C; margin-left:8px; }
 
   /* ── PROJECT STATUS BADGE ── */
   .badge.approved { background:#E8F5E9; color:#2E7D32; }
@@ -386,11 +387,11 @@
   .badge.pending { background:#FFF3E0; color:#E65100; }
 
   /* ── DISTRIBUTION MODEL ── */
-  .dist-model-box { background:#F0F7FF; border-left:3px solid #0099CC; padding:10px 14px; border-radius:0 8px 8px 0; font-size:13px; margin-top:8px; }
+  .dist-model-box { background:#F0F7FF; border-left:3px solid #5791C8; padding:10px 14px; border-radius:0 8px 8px 0; font-size:13px; margin-top:8px; }
 
   /* ── EXPORT BTN ── */
-  .export-btn { display:inline-flex; align-items:center; gap:6px; background:#005A8E; color:#fff; border:none; border-radius:6px; padding:8px 16px; font-size:12px; cursor:pointer; margin-left:auto; }
-  .export-btn:hover { background:#0099CC; }
+  .export-btn { display:inline-flex; align-items:center; gap:6px; background:#1A648C; color:#fff; border:none; border-radius:6px; padding:8px 16px; font-size:12px; cursor:pointer; margin-left:auto; }
+  .export-btn:hover { background:#5791C8; }
 
   /* ── PRINT ── */
   @media print {
@@ -412,9 +413,9 @@
     min-width:580px; max-width:92vw; padding:0; overflow:hidden;
   }
   .approval-panel.open { display:block; }
-  .ap-header { background:#005A8E; color:#fff; padding:10px 16px; font-size:13px; font-weight:600; }
+  .ap-header { background:#1A648C; color:#fff; padding:10px 16px; font-size:13px; font-weight:600; }
   .ap-table { width:100%; border-collapse:collapse; font-size:12px; }
-  .ap-table th { background:#F0F7FF; color:#005A8E; font-weight:600; padding:8px 12px; text-align:left; border-bottom:1px solid #C8DDF5; }
+  .ap-table th { background:#F0F7FF; color:#1A648C; font-weight:600; padding:8px 12px; text-align:left; border-bottom:1px solid #C8DDF5; }
   .ap-table td { padding:8px 12px; border-bottom:1px solid #EAF0F6; vertical-align:top; }
   .ap-table tr:last-child td { border-bottom:none; }
   .ap-table tr:hover td { background:#FAFCFF; }
@@ -429,13 +430,13 @@
 
   /* ── DEMAND TABLE ── */
   .demand-table { width:100%; border-collapse:collapse; font-size:13px; }
-  .demand-table th { background:#005A8E; color:#fff; padding:10px 14px; text-align:right; font-weight:600; white-space:nowrap; }
+  .demand-table th { background:#1A648C; color:#fff; padding:10px 14px; text-align:right; font-weight:600; white-space:nowrap; }
   .demand-table th:first-child { text-align:left; }
   .demand-table td { padding:9px 14px; border-bottom:1px solid #EAF0F6; text-align:right; }
   .demand-table td:first-child { text-align:left; font-weight:500; }
   .demand-table tr:hover td { background:#F4F9FF; }
-  .demand-table .total-row td { background:#F0F7FF; font-weight:700; border-top:2px solid #0099CC; color:#005A8E; }
-  .demand-table .unit-row th { background:#0099CC; font-size:11px; font-weight:400; padding:4px 14px; }
+  .demand-table .total-row td { background:#F0F7FF; font-weight:700; border-top:2px solid #5791C8; color:#1A648C; }
+  .demand-table .unit-row th { background:#5791C8; font-size:11px; font-weight:400; padding:4px 14px; }
 
 
   /* ── PROCUREMENT CHART ── */
@@ -446,12 +447,12 @@
   }
   #proc-drilldown.open { display:block; }
   [id^="proc-drilldown-"].open { display:block !important; }
-  #proc-drilldown-title { font-weight:700; color:#005A8E; font-size:14px; margin-bottom:12px; }
+  #proc-drilldown-title { font-weight:700; color:#1A648C; font-size:14px; margin-bottom:12px; }
   #proc-drilldown-chart-wrap { position:relative; height:220px; }
   .budget-compare { display:flex; align-items:center; gap:8px; font-size:11px; padding:6px 0; }
   .budget-compare .bc-label { color:#5A6A7A; min-width:120px; }
-  .bc-over  { color:#E74C3C; font-weight:700; }
-  .bc-under { color:#27AE60; font-weight:700; }
+  .bc-over  { color:#A81E3B; font-weight:700; }
+  .bc-under { color:#508931; font-weight:700; }
 
 
   /* ── HERO-MAP ROW ── */
@@ -486,15 +487,15 @@
   #portfolio-table { border-collapse:collapse; font-size:13px; }
   #portfolio-table th.th-sortable:hover { background:#D6EAF8; cursor:pointer; }
   #portfolio-table th.th-sortable { user-select:none; }
-  .sort-icon { font-size:10px; color:#0099CC; }
+  .sort-icon { font-size:10px; color:#5791C8; }
   .portfolio-row { cursor:pointer; transition:background 0.15s; }
   .portfolio-row:hover td { background:#F0F7FF !important; }
   .pt-country { display:flex; align-items:center; gap:10px; }
   .pt-flag { font-size:22px; }
-  .pt-name { font-weight:700; color:#005A8E; }
+  .pt-name { font-weight:700; color:#1A648C; }
   .pt-region { font-size:11px; color:#888; }
   .pt-budget-wrap { min-width:160px; }
-  .pt-budget-val { font-size:13px; font-weight:700; color:#005A8E; }
+  .pt-budget-val { font-size:13px; font-weight:700; color:#1A648C; }
   .pt-budget-sub { font-size:11px; color:#888; margin-top:1px; }
   .pt-bar { height:6px; background:#E8EDF2; border-radius:3px; overflow:hidden; margin-top:4px; }
   .pt-bar-fill { height:100%; border-radius:3px; }
@@ -504,9 +505,9 @@
     cursor:pointer; user-select:none; white-space:nowrap;
     position:relative;
   }
-  .demand-parent-th:hover { background:#0099CC !important; }
+  .demand-parent-th:hover { background:#5791C8 !important; }
   .d-exp-icon { font-size:10px; margin-left:4px; color:rgba(255,255,255,0.8); }
-  .demand-sub-th { background:#C8E6F5 !important; color:#005A8E !important; font-size:11px; font-weight:600; }
+  .demand-sub-th { background:#C8E6F5 !important; color:#1A648C !important; font-size:11px; font-weight:600; }
   .demand-sub-td { background:#EBF6FD; font-size:12px; color:#1C2D3E; }
   .demand-parent-td-exp { background:#D6EFF9 !important; font-weight:700; }
 
@@ -520,12 +521,12 @@
   .action-label { font-size:11px; font-weight:600; color:#5A6A7A; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
   .action-value { font-size:12px; color:#1C2D3E; }
   .action-value-input { width:100%; padding:6px 8px; border:1px solid #CBD5E0; border-radius:4px; font-size:12px; font-family:inherit; box-sizing:border-box; }
-  .action-value-input:focus { border-color:#0099CC; outline:none; box-shadow: 0 0 0 2px rgba(0,153,204,0.1); }
+  .action-value-input:focus { border-color:#5791C8; outline:none; box-shadow: 0 0 0 2px rgba(0,153,204,0.1); }
   .action-status { font-size:12px; font-weight:600; padding:4px 8px; border-radius:4px; text-align:center; white-space:nowrap; }
-  .action-status.green { background:#D4F4DD; color:#27AE60; }
-  .action-status.yellow { background:#FCE5CD; color:#F39C12; }
-  .action-status.red { background:#FAE5E5; color:#E74C3C; }
-  .action-delete { background:#E74C3C; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer; transition:background 0.2s; }
+  .action-status.green { background:#D4F4DD; color:#508931; }
+  .action-status.yellow { background:#FCE5CD; color:#EF781F; }
+  .action-status.red { background:#FAE5E5; color:#A81E3B; }
+  .action-delete { background:#A81E3B; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer; transition:background 0.2s; }
   .action-delete:hover { background:#C0392B; }
   .action-edit-section { background:#FFFFFF; border:1px solid #CBD5E0; border-radius:6px; padding:12px; margin-bottom:12px; }
   .action-form-row { display:grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap:8px; align-items:flex-end; }
@@ -533,12 +534,46 @@
   /* ── PROCUREMENT SECTION ── */
   .procurement-section { margin-bottom: 24px; }
   .subsection-header {
-    font-size: 13px; font-weight: 700; color: #fff; background: #F26522;
+    font-size: 13px; font-weight: 700; color: #fff; background: #EF781F;
     padding: 12px 16px; border-radius: 6px 6px 0 0; letter-spacing: 1px;
     text-transform: uppercase; margin-bottom: 0;
   }
   .inventory-section { margin-bottom: 24px; }
   .distribution-section { margin-bottom: 24px; }
+
+  /* ── TAB NAVIGATION ── */
+  .tab-navigation {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #E0E8F0;
+    padding: 0 0 0 0;
+  }
+  .tab-button {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #5A6A7A;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+  }
+  .tab-button:hover {
+    color: #5791C8;
+  }
+  .tab-button.active {
+    color: #5791C8;
+    border-bottom-color: #5791C8;
+  }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
 
   /* ── PROCUREMENT TABLES ── */
   .procurement-table {
@@ -594,17 +629,17 @@
   <div id="pw-box">
     <div class="pw-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" width="80" height="93">
   <!-- Outer circle -->
-  <circle cx="60" cy="50" r="48" fill="white" stroke="#0099CC" stroke-width="4"/>
+  <circle cx="60" cy="50" r="48" fill="white" stroke="#5791C8" stroke-width="4"/>
   <!-- F letter -->
-  <text x="35" y="62" font-family="Arial Black" font-size="38" font-weight="900" fill="#0099CC">F</text>
+  <text x="35" y="62" font-family="Arial Black" font-size="38" font-weight="900" fill="#5791C8">F</text>
   <!-- Wheat lines left -->
-  <path d="M40 28 Q37 40 40 52" stroke="#0099CC" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <path d="M46 26 Q43 40 46 54" stroke="#0099CC" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M40 28 Q37 40 40 52" stroke="#5791C8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M46 26 Q43 40 46 54" stroke="#5791C8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
   <!-- Wheat lines right -->
-  <path d="M80 28 Q83 40 80 52" stroke="#0099CC" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <path d="M74 26 Q77 40 74 54" stroke="#0099CC" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M80 28 Q83 40 80 52" stroke="#5791C8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M74 26 Q77 40 74 54" stroke="#5791C8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
   <!-- FIAT PANIS text -->
-  <text x="60" y="130" font-family="Arial" font-size="8" font-weight="700" fill="#0099CC" text-anchor="middle" letter-spacing="1">FIAT PANIS</text>
+  <text x="60" y="130" font-family="Arial" font-size="8" font-weight="700" fill="#5791C8" text-anchor="middle" letter-spacing="1">FIAT PANIS</text>
 </svg></div>
     <h2>Supply Chain Management Control Tower</h2>
     <p>A Supply chain orchestration tool to support the US-OCHA projects.<br>Please enter your password, and click on the button <b>"Access Control Tower"</b>.</p>
@@ -621,15 +656,15 @@
     <div class="logo-emblem" style="background:white;padding:2px;overflow:visible;width:44px;height:44px;">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="40" height="40">
         <!-- Outer circle -->
-        <circle cx="50" cy="50" r="47" fill="white" stroke="#0099CC" stroke-width="3"/>
+        <circle cx="50" cy="50" r="47" fill="white" stroke="#5791C8" stroke-width="3"/>
         <!-- F letter -->
-        <text x="28" y="60" font-family="Arial Black" font-size="32" font-weight="900" fill="#0099CC">F</text>
+        <text x="28" y="60" font-family="Arial Black" font-size="32" font-weight="900" fill="#5791C8">F</text>
         <!-- Wheat lines left -->
-        <path d="M33 32 Q31 42 33 52" stroke="#0099CC" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-        <path d="M38 30 Q36 42 38 54" stroke="#0099CC" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M33 32 Q31 42 33 52" stroke="#5791C8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M38 30 Q36 42 38 54" stroke="#5791C8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
         <!-- Wheat lines right -->
-        <path d="M67 32 Q69 42 67 52" stroke="#0099CC" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-        <path d="M62 30 Q64 42 62 54" stroke="#0099CC" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M67 32 Q69 42 67 52" stroke="#5791C8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M62 30 Q64 42 62 54" stroke="#5791C8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
       </svg>
     </div>
     <div class="logo-text">
@@ -678,9 +713,9 @@
         <div id="world-map"></div>
         <div class="map-legend">
           <span style="font-weight:600;color:#5A6A7A;margin-right:4px;">Status:</span>
-          <div class="ml-item"><div class="ml-dot" style="background:#27AE60"></div>On Track</div>
-          <div class="ml-item"><div class="ml-dot" style="background:#F39C12"></div>At Risk</div>
-          <div class="ml-item"><div class="ml-dot" style="background:#E74C3C"></div>Delayed</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#508931"></div>On Track</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#EF781F"></div>At Risk</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#A81E3B"></div>Delayed</div>
           <div class="ml-item"><div class="ml-dot" style="background:#888"></div>Not Started</div>
           <div class="ml-item" style="margin-left:auto;font-size:11px;color:#888;">● Bubble size = budget</div>
         </div>
@@ -741,7 +776,7 @@
               <th class="demand-sub-th" id="dsub-vaccines-0" style="display:none;">FMD Vaccine</th>
               <th class="demand-sub-th" id="dsub-vaccines-1" style="display:none;">CBPP Vaccine</th>
               <th class="demand-sub-th" id="dsub-vaccines-2" style="display:none;">Newcastle</th>
-              <th style="text-align:right;font-weight:700;">TOTAL</th>
+              <th style="text-align:right;font-weight:700;">TOTAL (USD)</th>
             </tr>
           </thead>
           <tbody id="demand-table-body"></tbody>
@@ -2266,6 +2301,105 @@ function showPage(pageId) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// TAB SWITCHING FUNCTIONALITY
+// ═══════════════════════════════════════════════════════════════════════════
+function switchTab(event, countryId, tabName) {
+  event.preventDefault();
+
+  // Hide all tabs for this country
+  document.querySelectorAll(`[id^="${tabName}-${countryId}"]`).forEach(tab => {
+    const actualId = `${tabName}-${countryId}`;
+    document.getElementById(actualId)?.classList.remove('active');
+  });
+
+  // Hide all tabs for this country properly
+  const countryPage = event.target.closest('[id^="page-"]');
+  if (countryPage) {
+    countryPage.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
+    });
+  }
+
+  // Show selected tab
+  const tabId = `${tabName}-${countryId}`;
+  const tabContent = document.getElementById(tabId);
+  if (tabContent) {
+    tabContent.classList.add('active');
+  }
+
+  // Update button active state
+  if (countryPage) {
+    countryPage.querySelectorAll('.tab-button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPORT TO EXCEL FUNCTIONALITY
+// ═══════════════════════════════════════════════════════════════════════════
+function exportPOTableToExcel(countryId) {
+  // Find the table in the procurement tab for this country
+  const countryPage = document.getElementById('page-' + countryId);
+  if (!countryPage) {
+    alert('Country page not found');
+    return;
+  }
+
+  const table = countryPage.querySelector('.po-table');
+  if (!table) {
+    alert('Procurement Orders table not found');
+    return;
+  }
+
+  // Extract data from table
+  const headers = [];
+  const rows = [];
+
+  // Get headers
+  const headerCells = table.querySelectorAll('thead th');
+  headerCells.forEach(cell => {
+    headers.push(cell.textContent.trim());
+  });
+
+  // Get data rows
+  const bodyCells = table.querySelectorAll('tbody tr');
+  bodyCells.forEach(row => {
+    const rowData = [];
+    row.querySelectorAll('td').forEach(cell => {
+      rowData.push(cell.textContent.trim());
+    });
+    if (rowData.length > 0) {
+      rows.push(rowData);
+    }
+  });
+
+  // Create worksheet data
+  const wsData = [headers, ...rows];
+
+  // Create workbook and worksheet
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Procurement Orders');
+
+  // Set column widths for better readability
+  const colWidths = headers.map((h, idx) => {
+    const headerLen = h.length;
+    const dataLen = Math.max(...rows.map(r => (r[idx] || '').toString().length));
+    return { wch: Math.max(headerLen + 2, dataLen + 2) };
+  });
+  ws['!cols'] = colWidths;
+
+  // Get country name for filename
+  const countryName = document.querySelector('#nav-' + countryId)?.textContent.trim() || 'Country';
+  const timestamp = new Date().toISOString().split('T')[0];
+
+  // Download file
+  XLSX.writeFile(wb, `ProcurementOrders_${countryName}_${timestamp}.xlsx`);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
 function fmt(n) { return new Intl.NumberFormat('en-US').format(n); }
@@ -2275,7 +2409,7 @@ function statusLabel(s) {
   return { 'on-track': 'On Track', 'at-risk': 'At Risk', 'delayed': 'Delayed', 'critical': 'Critical', 'not-started': 'Not Started' }[s] || s;
 }
 function statusColor(s) {
-  return { 'on-track': '#27AE60', 'at-risk': '#F39C12', 'delayed': '#E74C3C', 'critical': '#C0392B', 'not-started': '#888' }[s] || '#888';
+  return { 'on-track': '#508931', 'at-risk': '#EF781F', 'delayed': '#A81E3B', 'critical': '#C0392B', 'not-started': '#888' }[s] || '#888';
 }
 function projectStatusClass(s) {
   return { 'Approved': 'approved', 'Draft': 'draft', 'Pending Approval': 'pending', 'Other': 'other' }[s] || 'other';
@@ -2382,7 +2516,7 @@ function renderPortfolioTable() {
     var p = c.programmatic;
     var budgetPct = pct(p.budget.spent, p.budget.total);
     var benePct   = pct(p.beneficiaries.reached, p.beneficiaries.target);
-    var barColor  = c.status === 'on-track' ? '#27AE60' : c.status === 'at-risk' ? '#F39C12' : '#E74C3C';
+    var barColor  = c.status === 'on-track' ? '#508931' : c.status === 'at-risk' ? '#EF781F' : '#A81E3B';
 
     // approval plans panel (same logic as country pages)
     var plansHtml = (c.approvalPlans||[]).map(function(pl, i) {
@@ -2419,9 +2553,9 @@ function renderPortfolioTable() {
       '<td>' +
         '<div class="pt-budget-val">' + fmt(p.beneficiaries.target) + '</div>' +
         '<div class="pt-budget-sub">' + benePct + '% reached (' + fmt(p.beneficiaries.reached) + ')</div>' +
-        '<div class="pt-bar"><div class="pt-bar-fill" style="width:' + Math.min(benePct,100) + '%;background:#27AE60;height:100%;border-radius:3px;"></div></div>' +
+        '<div class="pt-bar"><div class="pt-bar-fill" style="width:' + Math.min(benePct,100) + '%;background:#508931;height:100%;border-radius:3px;"></div></div>' +
       '</td>' +
-      '<td style="text-align:center;font-weight:700;font-size:15px;color:#005A8E;">' + calcProjectMonths(p.startDate, p.endDate) + '</td>' +
+      '<td style="text-align:center;font-weight:700;font-size:15px;color:#1A648C;">' + calcProjectMonths(p.startDate, p.endDate) + '</td>' +
     '</tr>';
   }).join('');
 }
@@ -2435,6 +2569,12 @@ var DEMAND_SUB_RATIOS = {
   vaccines:   [0.40, 0.35, 0.25]
 };
 var DEMAND_COMMODITY_KEYS = ['seeds','fertilizer','machinery','vaccines'];
+var DEMAND_UNIT_PRICES = {
+  seeds: 50,           // USD per MT
+  fertilizer: 48,      // USD per MT
+  machinery: 2000,     // USD per unit
+  vaccines: 1.50       // USD per dose
+};
 
 function toggleDemandExpand(col) {
   _demandExpanded[col] = !_demandExpanded[col];
@@ -2458,7 +2598,7 @@ function buildExpandableDemandTableBody() {
   var rows = countries.map(function(c) {
     var d = c.demand || {seeds:0,fertilizer:0,machinery:0,vaccines:0};
     dSeeds += d.seeds||0; dFert += d.fertilizer||0; dMach += d.machinery||0; dVacc += d.vaccines||0;
-    var rowTotal = (d.seeds||0)+(d.fertilizer||0)+(d.machinery||0)+(d.vaccines||0);
+    var rowTotal = (d.seeds||0)*DEMAND_UNIT_PRICES.seeds + (d.fertilizer||0)*DEMAND_UNIT_PRICES.fertilizer + (d.machinery||0)*DEMAND_UNIT_PRICES.machinery + (d.vaccines||0)*DEMAND_UNIT_PRICES.vaccines;
 
     var cells = '<td>' + c.flag + ' ' + c.name + '</td>';
 
@@ -2473,14 +2613,14 @@ function buildExpandableDemandTableBody() {
       }
     });
 
-    cells += '<td style="text-align:right;font-weight:700;">' + fmt(rowTotal) + '</td>';
+    cells += '<td style="text-align:right;font-weight:700;">$' + fmt(Math.round(rowTotal)) + '</td>';
     return '<tr>' + cells + '</tr>';
   });
 
   var tbody = document.getElementById('demand-table-body');
   if (tbody) tbody.innerHTML = rows.join('');
 
-  var grandTotal = dSeeds + dFert + dMach + dVacc;
+  var grandTotal = dSeeds*DEMAND_UNIT_PRICES.seeds + dFert*DEMAND_UNIT_PRICES.fertilizer + dMach*DEMAND_UNIT_PRICES.machinery + dVacc*DEMAND_UNIT_PRICES.vaccines;
   var foot = document.getElementById('demand-table-foot');
   if (foot) {
     var fcells = '<td>TOTAL</td>';
@@ -2491,7 +2631,7 @@ function buildExpandableDemandTableBody() {
         fcells += '<td class="demand-sub-td" style="text-align:right;display:' + (_demandExpanded[key] ? '' : 'none') + ';">' + fmt(Math.round(totals[ki]*DEMAND_SUB_RATIOS[key][i])) + '</td>';
       }
     });
-    fcells += '<td style="text-align:right;">' + fmt(grandTotal) + '</td>';
+    fcells += '<td style="text-align:right;font-weight:700;">$' + fmt(Math.round(grandTotal)) + '</td>';
     foot.innerHTML = '<tr class="total-row">' + fcells + '</tr>';
   }
 }
@@ -2510,7 +2650,7 @@ function renderProcChart() {
 
   var STAGES     = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
   var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
-  var COLORS     = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var COLORS     = ['#A81E3B','#EF781F','#3498DB','#7EC8E3','#508931'];
   var labels     = countries.map(function(c){ return c.flag + ' ' + c.name; });
 
   // Build legend
@@ -2628,7 +2768,7 @@ function openProcDrilldown(countryIndex) {
 
   var STAGES     = ['To be PR\'d','PR\'d','PO\'d','Delivered to FAO','Distributed'];
   var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
-  var COLORS     = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var COLORS     = ['#A81E3B','#EF781F','#3498DB','#7EC8E3','#508931'];
   var COMM_LABELS = ['Seeds','Fertilizer','Machinery','Vaccines'];
   var COMM_KEYS   = ['seeds','fertilizer','machinery','vaccines'];
 
@@ -2688,7 +2828,7 @@ function renderGlobalCharts() {
     data: {
       labels: countries.map(c => c.name),
       datasets: [
-        { label: 'Spent', data: countries.map(c => c.programmatic.budget.spent/1000000), backgroundColor: '#0099CC', borderRadius: 4 },
+        { label: 'Spent', data: countries.map(c => c.programmatic.budget.spent/1000000), backgroundColor: '#5791C8', borderRadius: 4 },
         { label: 'Committed', data: countries.map(c => c.programmatic.budget.committed/1000000), backgroundColor: '#7EC8E3', borderRadius: 4 },
         { label: 'Available', data: countries.map(c => (c.programmatic.budget.total - c.programmatic.budget.spent - c.programmatic.budget.committed)/1000000), backgroundColor: '#E8F4FA', borderRadius: 4 }
       ]
@@ -2704,7 +2844,7 @@ function renderGlobalCharts() {
     data: {
       labels: countries.map(c => c.name),
       datasets: [
-        { label: 'Reached', data: countries.map(c => c.programmatic.beneficiaries.reached/1000), backgroundColor: '#27AE60', borderRadius: 4 },
+        { label: 'Reached', data: countries.map(c => c.programmatic.beneficiaries.reached/1000), backgroundColor: '#508931', borderRadius: 4 },
         { label: 'Gap to Target', data: countries.map(c => (c.programmatic.beneficiaries.target - c.programmatic.beneficiaries.reached)/1000), backgroundColor: '#E8F4FA', borderRadius: 4 }
       ]
     },
@@ -2751,34 +2891,17 @@ function buildCountryPages() {
 
     const html = `
     <div id="page-${c.id}" class="page">
-      <div class="breadcrumb"><span onclick="showPage('global')">Global Overview</span> → <span onclick="showPage('global')">Global Overview</span> → ${c.name}</div>
+      <div class="breadcrumb"><span onclick="showPage('global')">Countries</span> → ${c.name}</div>
 
       <div class="country-hero">
         <div class="ch-flag">${c.flag}</div>
         <div class="ch-info">
           <h1>${c.name} — Country Supply Chain Dashboard</h1>
-          <div class="ch-sub">${p.faoOffice} · Project Officer: ${p.projectOfficer}</div>
+          <div class="ch-sub">${p.faoOffice}</div>
           <div class="ch-meta">
             <div class="ch-meta-item">
               <div class="cm-val">
-                <div class="approval-trigger" id="apt-${c.id}" onclick="toggleApproval('${c.id}',event)">
-                  <span class="badge ${projectStatusClass(c.projectStatus)}">${projectStatusLabel(c.projectStatus)} ▾</span>
-                  <div class="approval-panel" id="ap-${c.id}" onclick="event.stopPropagation()">
-                    <div class="ap-header">📋 SC Approval Plans — ${c.name}</div>
-                    <table class="ap-table">
-                      <thead><tr><th>Plan</th><th>Status</th><th>Owner</th><th>Notes</th></tr></thead>
-                      <tbody>${(c.approvalPlans||[]).map((pl,i) => `
-                        <tr>
-                          <td><b>${pl.plan}</b></td>
-                          <td><span class="badge ap-${pl.status.toLowerCase().split(' ')[0]}">${pl.status}</span></td>
-                          <td style="color:#5A6A7A;font-size:11px">${pl.owner}</td>
-                          <td><textarea class="ap-notes-input" rows="1" placeholder="Add notes..." onchange="saveApNote('${c.id}',${i},this.value)">${pl.notes||''}</textarea></td>
-                        </tr>`).join('')}
-                      </tbody>
-                    </table>
-                    <div class="ap-footer">💡 Notes are saved for this browser session. Click outside to close.</div>
-                  </div>
-                </div>
+                <span class="badge" style="background:#5791C8;color:white;font-weight:600;">PROJECT APPROVAL</span>
               </div>
               <div class="cm-lbl">Project Status</div>
             </div>
@@ -2792,6 +2915,18 @@ function buildCountryPages() {
           <button class="export-btn" onclick="window.print()">🖨️ Export / Print Report</button>
         </div>
       </div>
+
+      <!-- TAB NAVIGATION -->
+      <div class="tab-navigation">
+        <button class="tab-button active" onclick="switchTab(event, '${c.id}', 'overview')">Overview</button>
+        <button class="tab-button" onclick="switchTab(event, '${c.id}', 'demand')">Demand</button>
+        <button class="tab-button" onclick="switchTab(event, '${c.id}', 'procurement')">Procurement</button>
+        <button class="tab-button" onclick="switchTab(event, '${c.id}', 'inventory')">Inventory</button>
+        <button class="tab-button" onclick="switchTab(event, '${c.id}', 'distribution')">Distribution</button>
+      </div>
+
+      <!-- TAB: OVERVIEW -->
+      <div id="overview-${c.id}" class="tab-content active">
 
       <!-- KPI Row -->
       <div class="kpi-grid">
@@ -2855,14 +2990,19 @@ function buildCountryPages() {
               <div style="width:12px;height:12px;background:#CBD5E0;border-radius:50%;margin-left:-6px;"></div>
             </div>
 
-            <!-- Project Formulation Marker at March (left) -->
+            <!-- Project Identification Marker at March -->
             <div style="position:absolute;left:0;top:18px;margin-left:-10px;">
-              <div style="width:20px;height:20px;background:#27AE60;border-radius:50%;border:3px solid white;box-shadow:0 0 0 1px #CBD5E0;"></div>
+              <div style="width:20px;height:20px;background:#9B59B6;border-radius:50%;border:3px solid white;box-shadow:0 0 0 1px #CBD5E0;"></div>
+            </div>
+
+            <!-- Project Approval Marker at April -->
+            <div style="position:absolute;left:14.28%;top:18px;margin-left:-10px;">
+              <div style="width:20px;height:20px;background:#5791C8;border-radius:50%;border:3px solid white;box-shadow:0 0 0 1px #CBD5E0;"></div>
             </div>
 
             <!-- NOW Indicator (April 14, 2026 - between April and May) -->
             <div style="position:absolute;left:21%;top:-5px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap;">
-              <div style="font-size:11px;font-weight:700;color:#E74C3C;">● NOW</div>
+              <div style="font-size:11px;font-weight:700;color:#A81E3B;">● NOW</div>
               <div style="font-size:9px;color:#5A6A7A;margin-top:2px;">14 Apr 2026</div>
             </div>
 
@@ -2881,11 +3021,15 @@ function buildCountryPages() {
           <!-- Legend -->
           <div style="display:flex;gap:24px;flex-wrap:wrap;padding:16px 0;border-top:1px solid #E0E8F0;margin-top:20px;">
             <div style="display:flex;align-items:center;gap:8px;">
-              <div style="width:14px;height:14px;background:#27AE60;border-radius:50%;flex-shrink:0;"></div>
+              <div style="width:14px;height:14px;background:#9B59B6;border-radius:50%;flex-shrink:0;"></div>
+              <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Project Identification</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:14px;height:14px;background:#508931;border-radius:50%;flex-shrink:0;"></div>
               <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Project Formulation</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
-              <div style="width:14px;height:14px;background:#0099CC;border-radius:50%;flex-shrink:0;"></div>
+              <div style="width:14px;height:14px;background:#5791C8;border-radius:50%;flex-shrink:0;"></div>
               <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Project Approval</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
@@ -2906,10 +3050,10 @@ function buildCountryPages() {
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;padding:24px;">
 
           <!-- Agricultural Input Package Card -->
-          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #27AE60;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #508931;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
             <div style="text-align:center;margin-bottom:20px;">
               <div style="font-size:56px;margin-bottom:8px;">🌾</div>
-              <div style="font-size:42px;font-weight:800;color:#27AE60;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.45))}</div>
+              <div style="font-size:42px;font-weight:800;color:#508931;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.45))}</div>
               <div style="font-size:12px;color:#8A96A3;font-weight:600;">Beneficiaries</div>
             </div>
             <div style="margin-bottom:16px;text-align:center;">
@@ -2920,17 +3064,17 @@ function buildCountryPages() {
             </div>
             <div style="margin-top:16px;">
               <div style="display:flex;align-items:center;height:8px;background:#E0E8F0;border-radius:4px;overflow:hidden;">
-                <div style="width:45%;background:#27AE60;height:100%;"></div>
+                <div style="width:45%;background:#508931;height:100%;"></div>
               </div>
               <div style="font-size:11px;color:#8A96A3;margin-top:6px;text-align:right;">45% of total</div>
             </div>
           </div>
 
           <!-- Equipment & Infrastructure Package Card -->
-          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #0099CC;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #5791C8;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
             <div style="text-align:center;margin-bottom:20px;">
               <div style="font-size:56px;margin-bottom:8px;">🚜</div>
-              <div style="font-size:42px;font-weight:800;color:#0099CC;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.35))}</div>
+              <div style="font-size:42px;font-weight:800;color:#5791C8;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.35))}</div>
               <div style="font-size:12px;color:#8A96A3;font-weight:600;">Beneficiaries</div>
             </div>
             <div style="margin-bottom:16px;text-align:center;">
@@ -2941,17 +3085,17 @@ function buildCountryPages() {
             </div>
             <div style="margin-top:16px;">
               <div style="display:flex;align-items:center;height:8px;background:#E0E8F0;border-radius:4px;overflow:hidden;">
-                <div style="width:35%;background:#0099CC;height:100%;"></div>
+                <div style="width:35%;background:#5791C8;height:100%;"></div>
               </div>
               <div style="font-size:11px;color:#8A96A3;margin-top:6px;text-align:right;">35% of total</div>
             </div>
           </div>
 
           <!-- Livestock Health Package Card -->
-          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #E74C3C;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:24px;background:#FAFCFF;border-top:5px solid #A81E3B;transition:all 0.3s ease;cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';" onmouseout="this.style.boxShadow='none';">
             <div style="text-align:center;margin-bottom:20px;">
               <div style="font-size:56px;margin-bottom:8px;">💉</div>
-              <div style="font-size:42px;font-weight:800;color:#E74C3C;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.20))}</div>
+              <div style="font-size:42px;font-weight:800;color:#A81E3B;margin-bottom:4px;">${fmt(Math.round(p.beneficiaries.target * 0.20))}</div>
               <div style="font-size:12px;color:#8A96A3;font-weight:600;">Beneficiaries</div>
             </div>
             <div style="margin-bottom:16px;text-align:center;">
@@ -2962,7 +3106,7 @@ function buildCountryPages() {
             </div>
             <div style="margin-top:16px;">
               <div style="display:flex;align-items:center;height:8px;background:#E0E8F0;border-radius:4px;overflow:hidden;">
-                <div style="width:20%;background:#E74C3C;height:100%;"></div>
+                <div style="width:20%;background:#A81E3B;height:100%;"></div>
               </div>
               <div style="font-size:11px;color:#8A96A3;margin-top:6px;text-align:right;">20% of total</div>
             </div>
@@ -2976,15 +3120,15 @@ function buildCountryPages() {
           <div id="beneficiary-map-${c.id}" style="position:relative;height:400px;border-radius:8px;overflow:hidden;border:1px solid #E0E8F0;"></div>
           <div style="margin-top:16px;display:flex;gap:20px;flex-wrap:wrap;font-size:12px;">
             <div style="display:flex;align-items:center;gap:6px;">
-              <div style="width:16px;height:16px;background:#27AE60;border-radius:50%;"></div>
+              <div style="width:16px;height:16px;background:#508931;border-radius:50%;"></div>
               <span>Agricultural Input Package</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px;">
-              <div style="width:16px;height:16px;background:#0099CC;border-radius:50%;"></div>
+              <div style="width:16px;height:16px;background:#5791C8;border-radius:50%;"></div>
               <span>Equipment & Infrastructure Package</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px;">
-              <div style="width:16px;height:16px;background:#E74C3C;border-radius:50%;"></div>
+              <div style="width:16px;height:16px;background:#A81E3B;border-radius:50%;"></div>
               <span>Livestock Health Package</span>
             </div>
           </div>
@@ -3014,12 +3158,25 @@ function buildCountryPages() {
         </div>
       </div>
 
+      </div> <!-- END OVERVIEW TAB -->
+
+      <!-- TAB: DEMAND -->
+      <div id="demand-${c.id}" class="tab-content">
+
       <!-- DEMAND PLAN -->
       <div class="card mb-16" style="margin-bottom:20px;">
         <div class="card-header"><div><div class="card-title">Demand Plan by Product Category</div><div class="card-subtitle">Identified needs and requirements for each product type</div></div></div>
+
+        <!-- 1) Demand Breakdown USD by Category -->
+        <div style="padding:20px;border-bottom:2px solid #E0E8F0;">
+          <h3 style="font-size:13px;font-weight:700;color:var(--fao-dark);margin-bottom:12px;">Demand Value by Category (USD - Thousands)</h3>
+          <div style="position:relative;height:220px;"><canvas id="chart-demand-usd-${c.id}"></canvas></div>
+        </div>
+
+        <!-- 2) 4 Product Cards -->
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;padding:20px;">
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
-            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Seeds</h3></div>
+            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#1A648C;font-size:14px;margin:0;">Seeds</h3></div>
             <div style="position:relative;height:220px;"><canvas id="chart-demand-seeds-${c.id}"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
               <div><b>${fmt(c.demand.seeds || 0)} MT</b> total demand</div>
@@ -3027,7 +3184,7 @@ function buildCountryPages() {
             </div>
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
-            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Fertilizer</h3></div>
+            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#1A648C;font-size:14px;margin:0;">Fertilizer</h3></div>
             <div style="position:relative;height:220px;"><canvas id="chart-demand-fertilizer-${c.id}"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
               <div><b>${fmt(c.demand.fertilizer || 0)} MT</b> total demand</div>
@@ -3035,7 +3192,7 @@ function buildCountryPages() {
             </div>
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
-            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Machinery</h3></div>
+            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#1A648C;font-size:14px;margin:0;">Machinery</h3></div>
             <div style="position:relative;height:220px;"><canvas id="chart-demand-machinery-${c.id}"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
               <div><b>${fmt(c.demand.machinery || 0)} MT</b> total demand</div>
@@ -3043,7 +3200,7 @@ function buildCountryPages() {
             </div>
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:20px;">
-            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#005A8E;font-size:14px;margin:0;">Vaccines</h3></div>
+            <div style="text-align:center;margin-bottom:15px;"><h3 style="color:#1A648C;font-size:14px;margin:0;">Vaccines</h3></div>
             <div style="position:relative;height:220px;"><canvas id="chart-demand-vaccines-${c.id}"></canvas></div>
             <div style="margin-top:10px;font-size:11px;color:#5A6A7A;text-align:center;">
               <div><b>${fmt(c.demand.vaccines || 0)} units</b> total demand</div>
@@ -3052,47 +3209,44 @@ function buildCountryPages() {
           </div>
         </div>
 
-        <!-- Demand Breakdown USD by Category -->
-        <div style="border-top:2px solid #E0E8F0;padding:20px;margin-top:10px;">
-          <div style="margin-bottom:20px;">
-            <h3 style="font-size:13px;font-weight:700;color:var(--fao-dark);margin-bottom:12px;">Demand Value by Category (USD)</h3>
-            <div style="position:relative;height:220px;"><canvas id="chart-demand-usd-${c.id}"></canvas></div>
-          </div>
-
-          <!-- Item Details Table -->
-          <div style="margin-top:20px;">
-            <h3 style="font-size:13px;font-weight:700;color:var(--fao-dark);margin-bottom:12px;">Item Details & Technical Specifications</h3>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Item</th>
-                    <th>Category</th>
-                    <th>Unit</th>
-                    <th>Technical Specs</th>
-                    <th>Required Qty</th>
-                    <th>Unit Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td><b>Rice Seed</b></td><td>Seeds</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.45)}</td><td>\$50</td></tr>
-                  <tr><td><b>Wheat Seed</b></td><td>Seeds</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.35)}</td><td>\$50</td></tr>
-                  <tr><td><b>Legume Seed</b></td><td>Seeds</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.20)}</td><td>\$50</td></tr>
-                  <tr><td><b>Urea Fertilizer</b></td><td>Fertilizer</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.40)}</td><td>\$45</td></tr>
-                  <tr><td><b>DAP Fertilizer</b></td><td>Fertilizer</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.35)}</td><td>\$45</td></tr>
-                  <tr><td><b>Compound NPK</b></td><td>Fertilizer</td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.25)}</td><td>\$45</td></tr>
-                  <tr><td><b>Tractors</b></td><td>Machinery</td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.40)}</td><td>\$2,000</td></tr>
-                  <tr><td><b>Water Pumps</b></td><td>Machinery</td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.35)}</td><td>\$2,000</td></tr>
-                  <tr><td><b>Threshers</b></td><td>Machinery</td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.25)}</td><td>\$2,000</td></tr>
-                  <tr><td><b>FMD Vaccine</b></td><td>Vaccines</td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.40)}</td><td>\$0.50</td></tr>
-                  <tr><td><b>CBPP Vaccine</b></td><td>Vaccines</td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.35)}</td><td>\$0.50</td></tr>
-                  <tr><td><b>Newcastle Vaccine</b></td><td>Vaccines</td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.25)}</td><td>\$0.50</td></tr>
-                </tbody>
-              </table>
-            </div>
+        <!-- 3) Item Details Table -->
+        <div style="border-top:2px solid #E0E8F0;padding:20px;">
+          <h3 style="font-size:13px;font-weight:700;color:var(--fao-dark);margin-bottom:12px;">Item Details & Technical Specifications</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Item</th>
+                  <th>Unit</th>
+                  <th>Technical Specs</th>
+                  <th>Required Qty</th>
+                  <th>Estimated Unit Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Seeds</td><td><b>Rice Seed</b></td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.45)}</td><td>\$50</td></tr>
+                <tr><td>Seeds</td><td><b>Wheat Seed</b></td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.35)}</td><td>\$50</td></tr>
+                <tr><td>Seeds</td><td><b>Legume Seed</b></td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.seeds || 0) * 0.20)}</td><td>\$50</td></tr>
+                <tr><td>Fertilizer</td><td><b>Urea Fertilizer</b></td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.40)}</td><td>\$45</td></tr>
+                <tr><td>Fertilizer</td><td><b>DAP Fertilizer</b></td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.35)}</td><td>\$45</td></tr>
+                <tr><td>Fertilizer</td><td><b>Compound NPK</b></td><td>MT</td><td>TBC</td><td>${Math.round((c.demand.fertilizer || 0) * 0.25)}</td><td>\$45</td></tr>
+                <tr><td>Machinery</td><td><b>Tractors</b></td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.40)}</td><td>\$2,000</td></tr>
+                <tr><td>Machinery</td><td><b>Water Pumps</b></td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.35)}</td><td>\$2,000</td></tr>
+                <tr><td>Machinery</td><td><b>Threshers</b></td><td>Units</td><td>TBC</td><td>${Math.round((c.demand.machinery || 0) * 0.25)}</td><td>\$2,000</td></tr>
+                <tr><td>Vaccines</td><td><b>FMD Vaccine</b></td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.40)}</td><td>\$0.50</td></tr>
+                <tr><td>Vaccines</td><td><b>CBPP Vaccine</b></td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.35)}</td><td>\$0.50</td></tr>
+                <tr><td>Vaccines</td><td><b>Newcastle Vaccine</b></td><td>Doses</td><td>TBC</td><td>${Math.round((c.demand.vaccines || 0) * 0.25)}</td><td>\$0.50</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+
+      </div> <!-- END DEMAND TAB -->
+
+      <!-- TAB: PROCUREMENT -->
+      <div id="procurement-${c.id}" class="tab-content">
 
       <!-- PROCUREMENT PIPELINE (Country-Specific) -->
       <div class="card" style="margin-bottom:24px;">
@@ -3111,13 +3265,8 @@ function buildCountryPages() {
         </div>
       </div>
 
-      <!-- SC Section -->
-      <!-- SUPPLY CHAIN MANAGEMENT SECTION -->
-      <div class="section-title"><span class="dot" style="background:#F26522"></span> Supply Chain Management</div>
-
       <!-- PROCUREMENT SECTION -->
       <div class="procurement-section">
-        <div class="subsection-header">PROCUREMENT</div>
 
         <!-- Subsection 1: Procurement KPIs (4 columns) -->
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px;">
@@ -3133,13 +3282,6 @@ function buildCountryPages() {
                   <div class="kpi-mini"><div class="km-val">$${(procExecuted/1000000).toFixed(2)}M</div><div class="km-lbl">Executed</div></div>
                   <div class="kpi-mini"><div class="km-val">${procExecPct}%</div><div class="km-lbl">Execution</div></div>
                 </div>
-                <div style="margin-bottom:12px;">
-                  <div class="progress-bar" style="height:24px;border-radius:8px;overflow:hidden;">
-                    <div class="progress-fill" style="background:#27AE60;width:${procExecPct}%;height:100%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;">
-                      ${procExecPct > 10 ? procExecPct+'%' : ''}
-                    </div>
-                  </div>
-                </div>
               `;
             })()}
           </div>
@@ -3150,7 +3292,7 @@ function buildCountryPages() {
             <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;gap:20px;">
               <div style="display:flex;gap:30px;justify-content:center;width:100%;">
                 <div style="text-align:center;">
-                  <div style="font-size:32px;font-weight:700;color:#27AE60;">65%</div>
+                  <div style="font-size:32px;font-weight:700;color:#508931;">65%</div>
                   <div style="font-size:13px;color:#5A6A7A;margin-top:4px;">Local</div>
                 </div>
                 <div style="text-align:center;">
@@ -3161,37 +3303,36 @@ function buildCountryPages() {
             </div>
           </div>
 
-          <!-- Subsection 3: Procurement Lead Time -->
+          <!-- Subsection 3: Procurement Lead Time (Split into 3 stages) -->
           <div class="card">
             <div class="card-header"><div><div class="card-title">Procurement Lead Time</div></div></div>
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;gap:12px;">
-              <div style="text-align:center;">
-                <div style="font-size:36px;font-weight:700;color:#005A8E;">24</div>
-                <div style="font-size:12px;color:#5A6A7A;margin-top:4px;font-weight:600;">days (Avg)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:140px;align-content:center;">
+              <div style="text-align:center;border-right:1px solid #E0E8F0;padding-right:12px;">
+                <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">Plan to PR</div>
+                <div style="font-size:24px;font-weight:700;color:#1A648C;">5d</div>
               </div>
-              <div style="display:flex;gap:20px;justify-content:center;width:100%;font-size:12px;color:#5A6A7A;">
-                <div style="text-align:center;">
-                  <div style="font-size:14px;font-weight:600;color:#1C2D3E;">32d</div>
-                  <div style="font-size:10px;">Max</div>
-                </div>
-                <div style="text-align:center;">
-                  <div style="font-size:14px;font-weight:600;color:#1C2D3E;">16d</div>
-                  <div style="font-size:10px;">Min</div>
-                </div>
+              <div style="text-align:center;padding-left:12px;">
+                <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">PR to PO</div>
+                <div style="font-size:24px;font-weight:700;color:#1A648C;">7d</div>
+              </div>
+              <div style="text-align:center;border-right:1px solid #E0E8F0;padding-right:12px;">
+                <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">PO to Delivered</div>
+                <div style="font-size:24px;font-weight:700;color:#1A648C;">12d</div>
+              </div>
+              <div style="text-align:center;padding-left:12px;border-top:1px solid #E0E8F0;padding-top:12px;margin-top:12px;">
+                <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">Full Lead Time</div>
+                <div style="font-size:24px;font-weight:700;color:#508931;">24d</div>
               </div>
             </div>
           </div>
 
-          <!-- Subsection 4: Open POs with Extended Lead Time -->
+          <!-- Subsection 4: Late Deliveries -->
           <div class="card">
-            <div class="card-header"><div><div class="card-title">Open POs Extended Lead Time</div></div></div>
+            <div class="card-header"><div><div class="card-title">Late Deliveries</div></div></div>
             <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;gap:12px;">
               <div style="text-align:center;">
-                <div style="font-size:36px;font-weight:700;color:#E74C3C;">3</div>
-                <div style="font-size:12px;color:#5A6A7A;margin-top:4px;font-weight:600;">POs with >20 days</div>
-              </div>
-              <div style="font-size:12px;color:#8A96A3;text-align:center;">
-                Avg delay: 8 days
+                <div style="font-size:36px;font-weight:700;color:#A81E3B;">2</div>
+                <div style="font-size:12px;color:#5A6A7A;margin-top:4px;font-weight:600;">Deliveries >7 days late</div>
               </div>
             </div>
           </div>
@@ -3201,132 +3342,155 @@ function buildCountryPages() {
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px;">
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
             <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Rice Seed</div>
-            <div style="font-size:18px;font-weight:700;color:#005A8E;">1,200 MT</div>
+            <div style="font-size:18px;font-weight:700;color:#1A648C;">1,200 MT</div>
             <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$60,000</div>
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFBFC;">
             <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Wheat Seed</div>
-            <div style="font-size:18px;font-weight:700;color:#005A8E;">850 MT</div>
+            <div style="font-size:18px;font-weight:700;color:#1A648C;">850 MT</div>
             <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$38,250</div>
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
             <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Fertilizer (Urea)</div>
-            <div style="font-size:18px;font-weight:700;color:#005A8E;">2,150 MT</div>
+            <div style="font-size:18px;font-weight:700;color:#1A648C;">2,150 MT</div>
             <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$96,750</div>
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFBFC;">
             <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Tractors</div>
-            <div style="font-size:18px;font-weight:700;color:#005A8E;">12 units</div>
+            <div style="font-size:18px;font-weight:700;color:#1A648C;">12 units</div>
             <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$240,000</div>
           </div>
           <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
             <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Vaccines (FMD)</div>
-            <div style="font-size:18px;font-weight:700;color:#005A8E;">45,000 units</div>
+            <div style="font-size:18px;font-weight:700;color:#1A648C;">45,000 units</div>
             <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$67,500</div>
           </div>
         </div>
 
         <!-- Subsection 5: Procurement Orders (POs) Table -->
         <div class="card">
-          <div class="card-header"><div><div class="card-title">Procurement Orders (POs)</div></div></div>
+          <div class="card-header"><div><div class="card-title">Procurement Orders (POs)</div><button onclick="exportPOTableToExcel('${c.id}')" style="background:#5791C8;color:#fff;border:none;padding:6px 12px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;margin-left:auto;">📥 Export to Excel</button></div></div>
           <div style="overflow-x:auto;margin-bottom:16px;">
-            <table class="po-table" style="width:100%;border-collapse:collapse;font-size:12px;">
+            <table class="po-table" style="width:100%;border-collapse:collapse;font-size:11px;min-width:2500px;">
               <thead>
                 <tr style="background:#F5F7FA;border-bottom:2px solid #E0E6EB;">
-                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">PO Number</th>
-                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Issue Date</th>
-                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;">Supplier</th>
-                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;">Product</th>
-                  <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Category</th>
-                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Quantity</th>
-                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Unit Price</th>
-                  <th style="text-align:right;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Total Price</th>
-                  <th style="text-align:center;padding:12px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Status</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">PO Number</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Creation Year</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Issue Date</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Supplier</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Product</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Line Number</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Line Type</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Category</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Category Description</th>
+                  <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Quantity</th>
+                  <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Qty Delivered</th>
+                  <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Qty Remaining</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Unit</th>
+                  <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Unit Price</th>
+                  <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Total Value</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Incoterm</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Request Time of Delivery</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Destination</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Operating Unit</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Buying Unit</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Buyer</th>
+                  <th style="text-align:center;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr style="border-bottom:1px solid #E8EDF2;">
-                  <td style="padding:12px;color:#1C2D3E;">PO-2026-001</td>
-                  <td style="padding:12px;color:#5A6A7A;">15 Jan 2026</td>
-                  <td style="padding:12px;color:#1C2D3E;">ABC Agro Ltd</td>
-                  <td style="padding:12px;color:#1C2D3E;">Rice Seed</td>
-                  <td style="padding:12px;color:#5A6A7A;">Seeds</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">1,000 MT</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$50/MT</td>
-                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$50,000</td>
-                  <td style="text-align:center;padding:12px;"><span style="background:#27AE60;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Delivered</span></td>
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-001</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
+                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#508931;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">TBD</span></td>
                 </tr>
                 <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
-                  <td style="padding:12px;color:#1C2D3E;">PO-2026-002</td>
-                  <td style="padding:12px;color:#5A6A7A;">18 Jan 2026</td>
-                  <td style="padding:12px;color:#1C2D3E;">Global Seed Corp</td>
-                  <td style="padding:12px;color:#1C2D3E;">Wheat Seed</td>
-                  <td style="padding:12px;color:#5A6A7A;">Seeds</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">850 MT</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$45/MT</td>
-                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$38,250</td>
-                  <td style="text-align:center;padding:12px;"><span style="background:#0099CC;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">In Transit</span></td>
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-002</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
+                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#5791C8;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">TBD</span></td>
                 </tr>
                 <tr style="border-bottom:1px solid #E8EDF2;">
-                  <td style="padding:12px;color:#1C2D3E;">PO-2026-003</td>
-                  <td style="padding:12px;color:#5A6A7A;">20 Jan 2026</td>
-                  <td style="padding:12px;color:#1C2D3E;">FertilizeCo International</td>
-                  <td style="padding:12px;color:#1C2D3E;">Urea (Fertilizer)</td>
-                  <td style="padding:12px;color:#5A6A7A;">Fertilizer</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">2,150 MT</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$45/MT</td>
-                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$96,750</td>
-                  <td style="text-align:center;padding:12px;"><span style="background:#27AE60;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Delivered</span></td>
-                </tr>
-                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
-                  <td style="padding:12px;color:#1C2D3E;">PO-2026-004</td>
-                  <td style="padding:12px;color:#5A6A7A;">22 Jan 2026</td>
-                  <td style="padding:12px;color:#1C2D3E;">AgriMachinery Ltd</td>
-                  <td style="padding:12px;color:#1C2D3E;">Tractors</td>
-                  <td style="padding:12px;color:#5A6A7A;">Equipment</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">12 units</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$20K/unit</td>
-                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$240,000</td>
-                  <td style="text-align:center;padding:12px;"><span style="background:#F39C12;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Pending</span></td>
-                </tr>
-                <tr style="border-bottom:1px solid #E8EDF2;">
-                  <td style="padding:12px;color:#1C2D3E;">PO-2026-005</td>
-                  <td style="padding:12px;color:#5A6A7A;">25 Jan 2026</td>
-                  <td style="padding:12px;color:#1C2D3E;">VaxDirect Pharma</td>
-                  <td style="padding:12px;color:#1C2D3E;">FMD Vaccine</td>
-                  <td style="padding:12px;color:#5A6A7A;">Vaccines</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">45,000 units</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$1.50/unit</td>
-                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$67,500</td>
-                  <td style="text-align:center;padding:12px;"><span style="background:#27AE60;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Delivered</span></td>
-                </tr>
-                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
-                  <td style="padding:12px;color:#1C2D3E;">PO-2026-006</td>
-                  <td style="padding:12px;color:#5A6A7A;">28 Jan 2026</td>
-                  <td style="padding:12px;color:#1C2D3E;">Regional Supply Hub</td>
-                  <td style="padding:12px;color:#1C2D3E;">Legume Seed</td>
-                  <td style="padding:12px;color:#5A6A7A;">Seeds</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">500 MT</td>
-                  <td style="text-align:right;padding:12px;color:#5A6A7A;">$50/MT</td>
-                  <td style="text-align:right;padding:12px;color:#1C2D3E;font-weight:600;">$25,000</td>
-                  <td style="text-align:center;padding:12px;"><span style="background:#E74C3C;color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;">Cancelled</span></td>
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-003</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
+                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">TBD</span></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div style="background:#F5F7FA;padding:12px;border-radius:6px;font-size:12px;color:#1C2D3E;font-weight:600;">
-            <span style="display:inline-block;margin-right:20px;">Total POs: 6</span>
-            <span style="display:inline-block;margin-right:20px;color:#27AE60;">Delivered: 3</span>
-            <span style="display:inline-block;margin-right:20px;color:#0099CC;">In Transit: 1</span>
-            <span style="display:inline-block;margin-right:20px;color:#F39C12;">Pending: 1</span>
-            <span style="display:inline-block;color:#E74C3C;">Cancelled: 1</span>
+            <span style="display:inline-block;margin-right:20px;">Total POs: 3</span>
+            <span style="display:inline-block;margin-right:20px;color:#508931;">Delivered: 3</span>
+            <span style="display:inline-block;margin-right:20px;color:#5791C8;">In Transit: 1</span>
+            <span style="display:inline-block;margin-right:20px;color:#EF781F;">Pending: 1</span>
+            <span style="display:inline-block;color:#A81E3B;">Cancelled: 1</span>
           </div>
         </div>
       </div>
 
+      </div> <!-- END PROCUREMENT TAB -->
+
+      <!-- TAB: INVENTORY -->
+      <div id="inventory-${c.id}" class="tab-content">
+
       <!-- INVENTORY SECTION -->
       <div class="inventory-section" style="margin-top:24px;">
-        <div class="subsection-header">INVENTORY</div>
 
         <!-- Subsection 1: Inventory Status Overview (KPI Cards) -->
         <div class="card" style="margin-bottom:20px;">
@@ -3335,40 +3499,32 @@ function buildCountryPages() {
             <!-- KPI 1: On-Hand Stock -->
             <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
               <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">On-Hand Stock</div>
-              <div style="font-size:28px;font-weight:700;color:#005A8E;margin-bottom:4px;">${fmt(sc.inventory.onHand)}</div>
+              <div style="font-size:28px;font-weight:700;color:#1A648C;margin-bottom:4px;">${fmt(sc.inventory.onHand)}</div>
               <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">MT in storage</div>
+              <div style="margin-bottom:8px;padding:8px;background:#EBF5FF;border-radius:4px;font-size:11px;color:#5791C8;font-weight:600;">USD TBD</div>
               <div style="display:flex;align-items:center;height:6px;background:#E0E8F0;border-radius:3px;overflow:hidden;">
-                <div style="width:${pct(sc.inventory.onHand, sc.inventory.capacity)}%;background:#0099CC;height:100%;"></div>
+                <div style="width:${pct(sc.inventory.onHand + sc.inventory.inTransit, sc.inventory.capacity)}%;background:#5791C8;height:100%;"></div>
               </div>
-              <div style="font-size:10px;color:#8A96A3;margin-top:6px;text-align:right;">${pct(sc.inventory.onHand, sc.inventory.capacity)}% of capacity</div>
+              <div style="font-size:10px;color:#8A96A3;margin-top:6px;text-align:right;">${pct(sc.inventory.onHand + sc.inventory.inTransit, sc.inventory.capacity)}% of capacity</div>
             </div>
-            <!-- KPI 2: Inventory Turnover (Stock In - Stock Out) -->
+            <!-- KPI 2: On Wheels (In-Land Transport) -->
+            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">On Wheels</div>
+              <div style="font-size:28px;font-weight:700;color:#EF781F;margin-bottom:4px;">${fmt(sc.inventory.inTransit)}</div>
+              <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">MT in-land transport</div>
+              <div style="margin-bottom:8px;padding:8px;background:#FEF3E6;border-radius:4px;font-size:11px;color:#EF781F;font-weight:600;">USD TBD</div>
+              <div style="font-size:10px;color:#EF781F;background:#FEF3E6;padding:6px 8px;border-radius:4px;text-align:center;">
+                Currently on wheels / In transit
+              </div>
+            </div>
+            <!-- KPI 3: Inventory Turnover (Stock In - Stock Out) -->
             <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
               <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Stock Movement (30 days)</div>
-              <div style="font-size:28px;font-weight:700;color:#27AE60;margin-bottom:4px;">+230</div>
+              <div style="font-size:28px;font-weight:700;color:#508931;margin-bottom:4px;">+230</div>
               <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">MT net change</div>
-              <div style="font-size:11px;color:#27AE60;background:#EBF7ED;padding:6px 8px;border-radius:4px;text-align:center;">
+              <div style="font-size:11px;color:#508931;background:#EBF7ED;padding:6px 8px;border-radius:4px;text-align:center;">
                 850 in – 620 out = ↑ Inventory increased
               </div>
-            </div>
-            <!-- KPI 3: Days of Stock -->
-            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
-              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Days of Stock</div>
-              <div style="font-size:28px;font-weight:700;color:#3498DB;margin-bottom:4px;">~${Math.round((sc.inventory.onHand + sc.inventory.inTransit) / (sc.inventory.onHand > 0 ? sc.inventory.onHand / 30 : 1))}</div>
-              <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">days supply remaining</div>
-              <div style="font-size:10px;color:#3498DB;background:#EBF5FF;padding:6px 8px;border-radius:4px;text-align:center;">
-                Based on monthly consumption
-              </div>
-            </div>
-            <!-- KPI 4: Storage Capacity -->
-            <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
-              <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Storage Capacity</div>
-              <div style="font-size:28px;font-weight:700;color:#27AE60;margin-bottom:4px;">${fmt(sc.inventory.onHand + sc.inventory.inTransit)} / ${fmt(sc.inventory.capacity)}</div>
-              <div style="font-size:12px;color:#5A6A7A;margin-bottom:12px;">MT used / Total</div>
-              <div style="display:flex;align-items:center;height:6px;background:#E0E8F0;border-radius:3px;overflow:hidden;">
-                <div style="width:${pct(sc.inventory.onHand + sc.inventory.inTransit, sc.inventory.capacity)}%;background:#27AE60;height:100%;"></div>
-              </div>
-              <div style="font-size:10px;color:#8A96A3;margin-top:6px;text-align:right;">${pct(sc.inventory.onHand + sc.inventory.inTransit, sc.inventory.capacity)}% utilized</div>
             </div>
           </div>
         </div>
@@ -3428,13 +3584,63 @@ function buildCountryPages() {
 
       </div>
 
-      <!-- DISTRIBUTION SECTION (Placeholder) -->
+      </div> <!-- END INVENTORY TAB -->
+
+      <!-- TAB: DISTRIBUTION -->
+      <div id="distribution-${c.id}" class="tab-content">
+
+      <!-- DISTRIBUTION SECTION -->
       <div class="distribution-section" style="margin-top:24px;margin-bottom:24px;">
-        <div class="subsection-header">DISTRIBUTION</div>
-        <div class="card">
-          <div style="padding:40px;text-align:center;color:#5A6A7A;">
-            <div style="font-size:14px;font-weight:600;margin-bottom:8px;">Coming soon</div>
-            <div style="font-size:12px;">Distribution tracking and logistics features will be available in the next update.</div>
+
+        <!-- 1) Beneficiaries Target vs. Reached Chart -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><div><div class="card-title">Beneficiaries Target vs. Reached by Month</div><div class="card-subtitle">Distribution progress against monthly targets (by package)</div></div></div>
+          <div style="padding:24px;">
+            <div style="margin-bottom:16px;">
+              <label style="font-size:12px;font-weight:600;color:#1C2D3E;display:block;margin-bottom:8px;">Filter by Package:</label>
+              <select id="dist-chart-filter-${c.id}" style="padding:8px 12px;border:1px solid #CBD5E0;border-radius:6px;font-size:13px;cursor:pointer;" onchange="updateDistributionChart('${c.id}')">
+                <option value="total">Total (All Packages)</option>
+                <option value="agricultural">Agricultural Input Package</option>
+                <option value="equipment">Equipment & Infrastructure Package</option>
+                <option value="livestock">Livestock Health Package</option>
+              </select>
+            </div>
+            <div style="position:relative;height:300px;">
+              <canvas id="chart-distribution-${c.id}"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2) Release Orders Table -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><div><div class="card-title">Release Orders</div><div class="card-subtitle">Order tracking and distribution status</div></div></div>
+          <div class="table-wrap" style="padding:20px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <thead style="background:#F4F7FA;border-bottom:2px solid #E0E8F0;">
+                <tr>
+                  <th style="padding:12px;text-align:left;font-size:12px;font-weight:700;color:#1C2D3E;">Order ID</th>
+                  <th style="padding:12px;text-align:left;font-size:12px;font-weight:700;color:#1C2D3E;">Date</th>
+                  <th style="padding:12px;text-align:left;font-size:12px;font-weight:700;color:#1C2D3E;">Package Type</th>
+                  <th style="padding:12px;text-align:left;font-size:12px;font-weight:700;color:#1C2D3E;">Qty</th>
+                  <th style="padding:12px;text-align:left;font-size:12px;font-weight:700;color:#1C2D3E;">Location</th>
+                  <th style="padding:12px;text-align:left;font-size:12px;font-weight:700;color:#1C2D3E;">Status</th>
+                  <th style="padding:12px;text-align:left;font-size:12px;font-weight:700;color:#1C2D3E;">Planned Delivery</th>
+                  <th style="padding:12px;text-align:left;font-size:12px;font-weight:700;color:#1C2D3E;">Actual Delivery</th>
+                </tr>
+              </thead>
+              <tbody id="release-orders-table-${c.id}">
+                <!-- Release orders will be rendered here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3) Late Orders KPI -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:20px;">
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:20px;background:#FAFCFF;border-left:4px solid #A81E3B;">
+            <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:12px;">Late Orders</div>
+            <div style="font-size:36px;font-weight:800;color:#A81E3B;margin-bottom:8px;" id="late-orders-count-${c.id}">0</div>
+            <div style="font-size:12px;color:#5A6A7A;">Orders with >1 week delay from planned delivery</div>
           </div>
         </div>
       </div>
@@ -3458,14 +3664,13 @@ function buildCountryPages() {
           <div id="actions-list-${c.id}" style="margin-bottom:12px;">
             <!-- Actions will be rendered here -->
           </div>
-          <button onclick="addAction('${c.id}')" style="background:#0099CC;color:#fff;border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#005A8E'" onmouseout="this.style.background='#0099CC'">+ Add Action</button>
+          <button onclick="addAction('${c.id}')" style="background:#5791C8;color:#fff;border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1A648C'" onmouseout="this.style.background='#5791C8'">+ Add Action</button>
         </div>
       </div>
 
+      </div> <!-- END DISTRIBUTION TAB -->
+
       <div class="page-footer">
-        <span><b>FAO Office:</b> ${p.faoOffice}</span>
-        <span><b>Project Officer:</b> ${p.projectOfficer}</span>
-        <span><b>Next Distribution:</b> ${p.distributions.nextDist}</span>
         <span><b>Last Data Update:</b> ${c.lastUpdated || '—'}</span>
       </div>
     </div>`;
@@ -3496,7 +3701,7 @@ function openProcDrilldown_Country(countryId, cat, catLabel) {
 
   var STAGES = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
   var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
-  var COLORS = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var COLORS = ['#A81E3B','#EF781F','#3498DB','#7EC8E3','#508931'];
   var subCatsMap = {
     seeds: ['Rice Seed', 'Wheat Seed', 'Legume Seed'],
     fertilizer: ['Urea', 'DAP', 'Compound NPK'],
@@ -3573,7 +3778,7 @@ function openProcDrilldown_Items(countryId, cat, catLabel) {
 
   var STAGES = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
   var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
-  var COLORS = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+  var COLORS = ['#A81E3B','#EF781F','#3498DB','#7EC8E3','#508931'];
 
   var byCom = (c.procurement && c.procurement.byCommodity && c.procurement.byCommodity[cat]) || {};
 
@@ -3632,7 +3837,7 @@ function renderCountryCharts(c) {
   // Demand charts (circular by category)
   const demandCategories = ['seeds', 'fertilizer', 'machinery', 'vaccines'];
   const demandLabels = ['Seeds', 'Fertilizer', 'Machinery', 'Vaccines'];
-  const demandColors = ['#27AE60', '#F39C12', '#3498DB', '#E74C3C'];
+  const demandColors = ['#508931', '#EF781F', '#3498DB', '#A81E3B'];
 
   const subCatsMap = {
     seeds: ['Rice Seed', 'Wheat Seed', 'Legume Seed'],
@@ -3723,7 +3928,7 @@ function renderCountryCharts(c) {
         datasets: [{
           label: 'Demand Value (USD)',
           data: [seedsUsd, fertilizerUsd, machineryUsd, vaccinesUsd],
-          backgroundColor: ['#27AE60', '#F39C12', '#3498DB', '#E74C3C'],
+          backgroundColor: ['#508931', '#EF781F', '#3498DB', '#A81E3B'],
           borderWidth: 0
         }]
       },
@@ -3736,7 +3941,7 @@ function renderCountryCharts(c) {
           tooltip: {
             callbacks: {
               label: function(item) {
-                return ' $' + (item.raw / 1000000).toFixed(2) + 'M';
+                return ' $' + (item.raw / 1000).toFixed(0) + 'K';
               }
             }
           }
@@ -3745,7 +3950,7 @@ function renderCountryCharts(c) {
           x: {
             ticks: {
               callback: function(v) {
-                return '$' + (v / 1000000).toFixed(1) + 'M';
+                return '$' + (v / 1000).toFixed(0) + 'K';
               },
               font: { size: 10 }
             }
@@ -3763,7 +3968,7 @@ function renderCountryCharts(c) {
   if (procCanvas && c.procurement) {
     const STAGES = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
     const STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
-    const COLORS = ['#E74C3C','#F39C12','#3498DB','#7EC8E3','#27AE60'];
+    const COLORS = ['#A81E3B','#EF781F','#3498DB','#7EC8E3','#508931'];
     const COMM_LABELS = ['Seeds','Fertilizer','Machinery','Vaccines'];
     const COMM_KEYS = ['seeds','fertilizer','machinery','vaccines'];
 
@@ -3833,7 +4038,7 @@ function renderCountryCharts(c) {
       data: {
         labels: ['Pending', 'Confirmed', 'Shipped', 'Delivered'],
         datasets: [{ data: [o.pending, o.confirmed, o.shipped, o.delivered],
-          backgroundColor: ['#95A5A6','#3498DB','#9B59B6','#27AE60'], borderRadius: 6, borderSkipped: false }]
+          backgroundColor: ['#95A5A6','#3498DB','#9B59B6','#508931'], borderRadius: 6, borderSkipped: false }]
       },
       options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y',
         plugins: { legend: { display: false } },
@@ -3865,7 +4070,7 @@ function renderCountryCharts(c) {
         datasets: [{
           label: 'Inventory (MT)',
           data: [seedsInventory, fertilizerInventory, machineryInventory, vaccinesInventory],
-          backgroundColor: ['#27AE60', '#F39C12', '#3498DB', '#E74C3C'],
+          backgroundColor: ['#508931', '#EF781F', '#3498DB', '#A81E3B'],
           borderWidth: 0
         }]
       },
@@ -3981,7 +4186,7 @@ function renderCountryCharts(c) {
     let tableHtml = warehouseData.map((w, idx) => `
       <tr style="border-bottom:1px solid #E0E8F0;${idx % 2 === 0 ? 'background:#FAFCFF;' : ''}">
         <td style="padding:12px;color:var(--fao-dark);font-weight:600;">${w.name}</td>
-        <td style="padding:12px;color:#005A8E;font-weight:600;">${fmt(w.onHand)}</td>
+        <td style="padding:12px;color:#1A648C;font-weight:600;">${fmt(w.onHand)}</td>
         <td style="padding:12px;color:#5A6A7A;">${fmt(w.capacity)}</td>
         <td style="padding:12px;">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -4097,9 +4302,9 @@ function renderCountryCharts(c) {
 
         // Package type colors
         const packageColors = {
-          agri: '#27AE60',      // Green
-          equip: '#0099CC',     // Blue
-          livestock: '#E74C3C'  // Red
+          agri: '#508931',      // Green
+          equip: '#5791C8',     // Blue
+          livestock: '#A81E3B'  // Red
         };
 
         // Add circles for each location (proportional sizing)
@@ -4198,6 +4403,123 @@ function renderCountryCharts(c) {
       </tr>
     `).join('');
   }
+
+  // Distribution Section - Release Orders Table
+  const releaseOrdersTableEl = document.getElementById(`release-orders-table-${c.id}`);
+  if (releaseOrdersTableEl) {
+    const releaseOrdersData = [
+      {id: 'RO-001', date: '2026-03-15', package: 'Agricultural Input Package', qty: 'TBD', location: 'TBD', status: 'closed/distributed', plannedDel: 'TBD', actualDel: 'TBD'},
+      {id: 'RO-002', date: '2026-04-10', package: 'Equipment & Infrastructure Package', qty: 'TBD', location: 'TBD', status: 'open', plannedDel: 'TBD', actualDel: 'TBD'},
+      {id: 'RO-003', date: '2026-05-05', package: 'Livestock Health Package', qty: 'TBD', location: 'TBD', status: 'draft', plannedDel: 'TBD', actualDel: 'TBD'},
+      {id: 'RO-004', date: '2026-05-20', package: 'Agricultural Input Package', qty: 'TBD', location: 'TBD', status: 'closed/distributed', plannedDel: 'TBD', actualDel: 'TBD'},
+      {id: 'RO-005', date: '2026-06-12', package: 'Equipment & Infrastructure Package', qty: 'TBD', location: 'TBD', status: 'open', plannedDel: 'TBD', actualDel: 'TBD'}
+    ];
+
+    releaseOrdersTableEl.innerHTML = releaseOrdersData.map((order, idx) => {
+      const statusColor = order.status === 'closed/distributed' ? '#508931' : (order.status === 'open' ? '#EF781F' : '#CBD5E0');
+      return `
+        <tr style="border-bottom:1px solid #E8EDF2;${idx % 2 === 1 ? 'background:#FAFBFC;' : ''}">
+          <td style="padding:12px;color:#1C2D3E;font-weight:600;">${order.id}</td>
+          <td style="padding:12px;color:#5A6A7A;">${order.date}</td>
+          <td style="padding:12px;color:#5A6A7A;font-size:12px;">${order.package}</td>
+          <td style="padding:12px;color:#5A6A7A;">${order.qty}</td>
+          <td style="padding:12px;color:#5A6A7A;">${order.location}</td>
+          <td style="padding:12px;">
+            <span style="display:inline-block;padding:4px 10px;border-radius:12px;background:${statusColor};color:#fff;font-size:11px;font-weight:600;text-transform:capitalize;">${order.status}</span>
+          </td>
+          <td style="padding:12px;color:#5A6A7A;">${order.plannedDel}</td>
+          <td style="padding:12px;color:#5A6A7A;">${order.actualDel}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Distribution Section - Late Orders Counter
+  const lateOrdersEl = document.getElementById(`late-orders-count-${c.id}`);
+  if (lateOrdersEl) {
+    // Sample calculation: count orders where actual delivery is more than 7 days after planned
+    // For now, showing 0 as all data is TBD
+    lateOrdersEl.textContent = '0';
+  }
+
+  // Distribution Section - Beneficiaries Chart
+  const distChartCanvas = document.getElementById(`chart-distribution-${c.id}`);
+  if (distChartCanvas) {
+    // Create sample distribution data by month (March-September 2026)
+    const months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
+    const targetBenef = p.beneficiaries.target;
+
+    // Distribution of target across months
+    const monthlyTargetTotal = months.map((_, i) => Math.round(targetBenef / 7));
+    const monthlyReachedTotal = months.map((_, i) => Math.round((targetBenef / 7) * (0.4 + Math.random() * 0.5)));
+
+    // By package distribution
+    const monthlyTargetAgri = months.map(m => Math.round((targetBenef * 0.45) / 7));
+    const monthlyReachedAgri = months.map(m => Math.round((targetBenef * 0.45 / 7) * (0.4 + Math.random() * 0.5)));
+
+    const monthlyTargetEquip = months.map(m => Math.round((targetBenef * 0.35) / 7));
+    const monthlyReachedEquip = months.map(m => Math.round((targetBenef * 0.35 / 7) * (0.4 + Math.random() * 0.5)));
+
+    const monthlyTargetLivestock = months.map(m => Math.round((targetBenef * 0.20) / 7));
+    const monthlyReachedLivestock = months.map(m => Math.round((targetBenef * 0.20 / 7) * (0.4 + Math.random() * 0.5)));
+
+    window['_distChart_'+c.id] = new Chart(distChartCanvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: months,
+        datasets: [
+          {
+            label: 'Target Beneficiaries',
+            data: monthlyTargetTotal,
+            backgroundColor: 'rgba(0,153,204,0.3)',
+            borderColor: '#5791C8',
+            borderWidth: 1
+          },
+          {
+            label: 'Beneficiaries Reached',
+            data: monthlyReachedTotal,
+            backgroundColor: '#5791C8',
+            borderColor: '#5791C8',
+            borderWidth: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: undefined,
+        plugins: {
+          legend: { display: true, position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(item) {
+                return item.dataset.label + ': ' + fmt(item.raw);
+              }
+            }
+          }
+        },
+        scales: {
+          x: { stacked: false, ticks: { font: { size: 11 } } },
+          y: {
+            stacked: false,
+            ticks: {
+              callback: function(v) { return fmt(v); },
+              font: { size: 10 }
+            }
+          }
+        }
+      }
+    });
+
+    // Store data for filter changes
+    window['_distChartData_'+c.id] = {
+      total: { target: monthlyTargetTotal, reached: monthlyReachedTotal },
+      agricultural: { target: monthlyTargetAgri, reached: monthlyReachedAgri },
+      equipment: { target: monthlyTargetEquip, reached: monthlyReachedEquip },
+      livestock: { target: monthlyTargetLivestock, reached: monthlyReachedLivestock },
+      months: months
+    };
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -4236,6 +4558,26 @@ function sortTable(headerCell) {
 
   // Reorder rows in table
   rows.forEach(row => tbody.appendChild(row));
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DISTRIBUTION CHART FILTER FUNCTIONALITY
+// ═══════════════════════════════════════════════════════════════════════════
+function updateDistributionChart(countryId) {
+  const filterSelect = document.getElementById(`dist-chart-filter-${countryId}`);
+  const selectedFilter = filterSelect.value;
+  const chartData = window['_distChartData_'+countryId];
+  const chart = window['_distChart_'+countryId];
+
+  if (!chartData || !chart) return;
+
+  const packageData = chartData[selectedFilter];
+  const labels = ['Total (All Packages)', 'Agricultural Input Package', 'Equipment & Infrastructure Package', 'Livestock Health Package'];
+  const selectedLabel = labels.find((l, i) => (i === 0 && selectedFilter === 'total') || (i === 1 && selectedFilter === 'agricultural') || (i === 2 && selectedFilter === 'equipment') || (i === 3 && selectedFilter === 'livestock'));
+
+  chart.data.datasets[0].data = packageData.target;
+  chart.data.datasets[1].data = packageData.reached;
+  chart.update();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -4464,7 +4806,7 @@ function initMap() {
     drc:[-4.04,21.76], ethiopia:[9.15,40.49], haiti:[18.97,-72.29],
     honduras:[15.20,-86.24], myanmar:[21.92,95.96], syria:[34.80,38.99]
   };
-  const colors = { 'on-track':'#27AE60','at-risk':'#F39C12','delayed':'#E74C3C','not-started':'#888','critical':'#C0392B' };
+  const colors = { 'on-track':'#508931','at-risk':'#EF781F','delayed':'#A81E3B','not-started':'#888','critical':'#C0392B' };
   const maxBudget = Math.max(...countries.map(c => c.programmatic.budget.total));
   countries.forEach(c => {
     const latlng = coords[c.id];
