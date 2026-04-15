@@ -387,6 +387,11 @@
   .badge.approved { background:#E8F5E9; color:#2E7D32; }
   .badge.draft { background:#FFF8E1; color:#F57F17; }
   .badge.pending { background:#FFF3E0; color:#E65100; }
+  .badge.identification { background:#F3E5F5; color:#9B59B6; }
+  .badge.formulation { background:#E8F5E9; color:#508931; }
+  .badge.approval { background:#E3F2FD; color:#5791C8; }
+  .badge.implementation { background:#FFF8E1; color:#F39C12; }
+  .badge.closure { background:#FFE8E0; color:#E67E22; }
 
   /* ── DISTRIBUTION MODEL ── */
   .dist-model-box { background:#F0F7FF; border-left:3px solid #5791C8; padding:10px 14px; border-radius:0 8px 8px 0; font-size:13px; margin-top:8px; }
@@ -456,6 +461,32 @@
   .bc-over  { color:#A81E3B; font-weight:700; }
   .bc-under { color:#508931; font-weight:700; }
 
+  /* ── TIMELINE DRILL-DOWN ── */
+  [id^="timeline-drilldown-"] {
+    display:none; border-top:2px solid #E0E8F0; padding:20px;
+    background:#FAFCFF; border-radius:0 0 var(--radius) var(--radius);
+  }
+  [id^="timeline-drilldown-"].open { display:block !important; }
+  .timeline-legend-item {
+    cursor:pointer; transition:all 0.2s ease;
+    padding:8px 12px; border-radius:6px;
+  }
+  .timeline-legend-item:hover {
+    background:rgba(87, 145, 200, 0.1);
+    transform:translateY(-2px);
+  }
+  .timeline-subfase {
+    padding:12px 0; border-bottom:1px solid #E0E8F0;
+  }
+  .timeline-subfase:last-child { border-bottom:none; }
+  .subfase-name { font-weight:600; color:#1A648C; font-size:12px; margin-bottom:6px; }
+  .subfase-status {
+    display:inline-block; padding:3px 8px; border-radius:4px; font-size:11px;
+    font-weight:600;
+  }
+  .subfase-status.pending { background:#FFF3CD; color:#856404; }
+  .subfase-status.ongoing { background:#D1ECF1; color:#0C5460; }
+  .subfase-status.completed { background:#D4EDDA; color:#155724; }
 
   /* ── HERO-MAP ROW ── */
   .hero-map-row {
@@ -867,7 +898,7 @@ const countries =
       }
 },
     "demand": {"seeds": 1200, "fertilizer": 850, "machinery": 12, "vaccines": 45000},
-    "projectStatus": "Approved",
+    "projectStatus": "Project Approval",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -1031,7 +1062,7 @@ const countries =
       }
 },
     "demand": {"seeds": 800, "fertilizer": 600, "machinery": 8, "vaccines": 32000},
-    "projectStatus": "Draft",
+    "projectStatus": "Project Identification",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -1191,7 +1222,7 @@ const countries =
       }
 },
     "demand": {"seeds": 650, "fertilizer": 480, "machinery": 6, "vaccines": 28000},
-    "projectStatus": "Approved",
+    "projectStatus": "Project Approval",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -1345,7 +1376,7 @@ const countries =
       }
 },
     "demand": {"seeds": 1800, "fertilizer": 1200, "machinery": 18, "vaccines": 72000},
-    "projectStatus": "Pending Approval",
+    "projectStatus": "Project Formulation",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -1507,7 +1538,7 @@ const countries =
       }
 },
     "demand": {"seeds": 1600, "fertilizer": 1100, "machinery": 15, "vaccines": 65000},
-    "projectStatus": "Approved",
+    "projectStatus": "Project Approval",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -1663,7 +1694,7 @@ const countries =
       }
 },
     "demand": {"seeds": 750, "fertilizer": 520, "machinery": 7, "vaccines": 35000},
-    "projectStatus": "Draft",
+    "projectStatus": "Project Identification",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -1823,7 +1854,7 @@ const countries =
       }
 },
     "demand": {"seeds": 550, "fertilizer": 380, "machinery": 5, "vaccines": 22000},
-    "projectStatus": "Approved",
+    "projectStatus": "Project Approval",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -1977,7 +2008,7 @@ const countries =
       }
 },
     "demand": {"seeds": 1100, "fertilizer": 780, "machinery": 10, "vaccines": 48000},
-    "projectStatus": "Draft",
+    "projectStatus": "Project Identification",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -2139,7 +2170,7 @@ const countries =
       }
 },
     "demand": {"seeds": 1950, "fertilizer": 1350, "machinery": 20, "vaccines": 85000},
-    "projectStatus": "Approved",
+    "projectStatus": "Project Approval",
     "approvalPlans": [
       {
             "plan": "Demand Plan",
@@ -2390,6 +2421,66 @@ function exportPOTableToExcel(countryId) {
   XLSX.writeFile(wb, `ProcurementOrders_${countryName}_${timestamp}.xlsx`);
 }
 
+function exportPRTableToExcel(countryId) {
+  // Find the table in the procurement tab for this country
+  const countryPage = document.getElementById('page-' + countryId);
+  if (!countryPage) {
+    alert('Country page not found');
+    return;
+  }
+
+  const table = countryPage.querySelector('.pr-table');
+  if (!table) {
+    alert('Purchase Requests table not found');
+    return;
+  }
+
+  // Extract data from table
+  const headers = [];
+  const rows = [];
+
+  // Get headers
+  const headerCells = table.querySelectorAll('thead th');
+  headerCells.forEach(cell => {
+    headers.push(cell.textContent.trim());
+  });
+
+  // Get data rows
+  const bodyCells = table.querySelectorAll('tbody tr');
+  bodyCells.forEach(row => {
+    const rowData = [];
+    row.querySelectorAll('td').forEach(cell => {
+      rowData.push(cell.textContent.trim());
+    });
+    if (rowData.length > 0) {
+      rows.push(rowData);
+    }
+  });
+
+  // Create worksheet data
+  const wsData = [headers, ...rows];
+
+  // Create workbook and worksheet
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Purchase Requests');
+
+  // Set column widths for better readability
+  const colWidths = headers.map((h, idx) => {
+    const headerLen = h.length;
+    const dataLen = Math.max(...rows.map(r => (r[idx] || '').toString().length));
+    return { wch: Math.max(headerLen + 2, dataLen + 2) };
+  });
+  ws['!cols'] = colWidths;
+
+  // Get country name for filename
+  const countryName = document.querySelector('#nav-' + countryId)?.textContent.trim() || 'Country';
+  const timestamp = new Date().toISOString().split('T')[0];
+
+  // Download file
+  XLSX.writeFile(wb, `PurchaseRequests_${countryName}_${timestamp}.xlsx`);
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2403,7 +2494,7 @@ function statusColor(s) {
   return { 'on-track': '#508931', 'at-risk': '#EF781F', 'delayed': '#A81E3B', 'critical': '#C0392B', 'not-started': '#888' }[s] || '#888';
 }
 function projectStatusClass(s) {
-  return { 'Approved': 'approved', 'Draft': 'draft', 'Pending Approval': 'pending', 'Other': 'other' }[s] || 'other';
+  return { 'Project Identification': 'identification', 'Project Formulation': 'formulation', 'Project Approval': 'approval', 'Implementation & Monitoring': 'implementation', 'Evaluation & Closure': 'closure', 'Approved': 'approved', 'Draft': 'draft', 'Pending Approval': 'pending' }[s] || 'other';
 }
 function projectStatusLabel(s) { return s || '—'; }
 function progressFillClass(s) {
@@ -2439,16 +2530,17 @@ function buildHeroStats() {
   });
   document.getElementById('hero-budget').textContent  = fmtM(totalBudget);
   document.getElementById('hero-benes').textContent   = (totalBenes/1000000).toFixed(2) + 'M';
-  var nApproved = countries.filter(function(c){ return c.projectStatus === 'Approved'; }).length;
-  var nPending  = countries.filter(function(c){ return c.projectStatus === 'Pending Approval'; }).length;
-  var nDraft    = countries.filter(function(c){ return c.projectStatus === 'Draft' || !c.projectStatus; }).length;
+  var nIdent = countries.filter(function(c){ return c.projectStatus === 'Project Identification'; }).length;
+  var nForm  = countries.filter(function(c){ return c.projectStatus === 'Project Formulation'; }).length;
+  var nAppr  = countries.filter(function(c){ return c.projectStatus === 'Project Approval'; }).length;
+  var nImpl   = countries.filter(function(c){ return c.projectStatus === 'Implementation & Monitoring'; }).length;
+  var nEval  = countries.filter(function(c){ return c.projectStatus === 'Evaluation & Closure'; }).length;
   document.getElementById('hero-proj-status').innerHTML =
-    '<span style="color:#A8E6B0">' + nApproved + ' ✓</span> ' +
-    '<span style="opacity:0.6;font-size:13px;">Appr</span><br>' +
-    '<span style="color:#FECB72">' + nPending + ' ⏳</span> ' +
-    '<span style="opacity:0.6;font-size:13px;">Pend</span> &nbsp;' +
-    '<span style="color:#F0A080">' + nDraft + ' ✏</span> ' +
-    '<span style="opacity:0.6;font-size:13px;">Draft</span>';
+    '<span style="color:#9B59B6">' + nIdent + '</span> <span style="opacity:0.6;font-size:11px;">Ident</span> &nbsp; ' +
+    '<span style="color:#508931">' + nForm + '</span> <span style="opacity:0.6;font-size:11px;">Form</span> &nbsp; ' +
+    '<span style="color:#5791C8">' + nAppr + '</span> <span style="opacity:0.6;font-size:11px;">Appr</span><br>' +
+    '<span style="color:#F39C12">' + nImpl + '</span> <span style="opacity:0.6;font-size:11px;">Impl</span> &nbsp; ' +
+    '<span style="color:#E67E22">' + nEval + '</span> <span style="opacity:0.6;font-size:11px;">Eval</span>';
   document.getElementById('hero-status').textContent  = onTrackCount + '/9';
 }
 
@@ -2493,7 +2585,7 @@ function renderPortfolioTable() {
     sorted.sort(function(a, b) {
       var va, vb;
       if (_portSortKey === 'name')          { va = a.name; vb = b.name; }
-      else if (_portSortKey === 'status')   { var order = {'Approved':0,'Pending Approval':1,'Draft':2}; va = order[a.projectStatus]||3; vb = order[b.projectStatus]||3; }
+      else if (_portSortKey === 'status')   { var order = {'Project Identification':0,'Project Formulation':1,'Project Approval':2,'Implementation & Monitoring':3,'Evaluation & Closure':4}; va = order[a.projectStatus]||5; vb = order[b.projectStatus]||5; }
       else if (_portSortKey === 'budget')   { va = a.programmatic.budget.total; vb = b.programmatic.budget.total; }
       else if (_portSortKey === 'beneficiaries') { va = a.programmatic.beneficiaries.target; vb = b.programmatic.beneficiaries.target; }
       else if (_portSortKey === 'period')   { va = a.programmatic.distributions.totalMonths; vb = b.programmatic.distributions.totalMonths; }
@@ -2525,16 +2617,8 @@ function renderPortfolioTable() {
     return '<tr class="portfolio-row country-row" onclick="showPage(\'' + c.id + '\')">' +
       '<td><div class="pt-country"><span class="pt-flag">' + c.flag + '</span><div><div class="pt-name">' + c.name + '</div></div></div></td>' +
       '<td style="font-size:12px;color:#5A6A7A;">TBD</td>' +
-      '<td onclick="event.stopPropagation()">' +
-        '<div class="approval-trigger" id="apt-pt-' + c.id + '" onclick="toggleApproval(\'pt-' + c.id + '\',event)">' +
-          '<span class="badge ' + overallPsc + '">' + (c.projectStatus||'—') + ' ▾</span>' +
-          '<div class="approval-panel" id="ap-pt-' + c.id + '" onclick="event.stopPropagation()">' +
-            '<div class="ap-header">📋 SC Approval Plans — ' + c.name + '</div>' +
-            '<table class="ap-table"><thead><tr><th>Plan</th><th>Status</th><th>Owner</th><th>Notes</th></tr></thead>' +
-            '<tbody>' + plansHtml + '</tbody></table>' +
-            '<div class="ap-footer">💡 Click outside to close.</div>' +
-          '</div>' +
-        '</div>' +
+      '<td>' +
+        '<span class="badge ' + overallPsc + '">' + (c.projectStatus||'—') + '</span>' +
       '</td>' +
       '<td>' +
         '<div class="pt-budget-val">' + fmtM(p.budget.total) + '</div>' +
@@ -2667,32 +2751,69 @@ function renderProcChart() {
     };
   });
 
-  // Inline plugin: draw total label at end of each bar
+  // Plugin to draw percentage labels and totals
   var totalPlugin = {
     id: 'procTotals',
     afterDraw: function(chart) {
-      var ctx2 = chart.ctx;
-      var meta = chart.getDatasetMeta(chart.data.datasets.length - 1);
-      chart.data.datasets[0].data.forEach(function(_, i) {
-        var total = chart.data.datasets.reduce(function(s, ds){ return s + (ds.data[i]||0); }, 0);
-        var bar = meta.data[i];
-        if (!bar) return;
-        var x = chart.scales.x.getPixelForValue(total);
-        var y = bar.y;
-        ctx2.save();
-        ctx2.fillStyle = '#333';
-        ctx2.font = 'bold 10px Arial';
-        ctx2.textAlign = 'left';
-        ctx2.textBaseline = 'middle';
-        ctx2.fillText('$'+total.toFixed(1)+'M', x+5, y);
-        ctx2.restore();
-      });
+      var ctx = chart.ctx;
+      var xScale = chart.scales.x;
+      var yScale = chart.scales.y;
+
+      // Iterate through each data point (each country/bar)
+      for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
+        // Calculate total for this bar
+        var total = 0;
+        for (var j = 0; j < chart.data.datasets.length; j++) {
+          total += (chart.data.datasets[j].data[i] || 0);
+        }
+
+        if (total === 0) continue;
+
+        // Get the y position of the bar
+        var yPos = yScale.getPixelForValue(i);
+
+        // Draw total label
+        var xEnd = xScale.getPixelForValue(total);
+        ctx.save();
+        ctx.font = 'bold 12px Arial';
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('$' + total.toFixed(1) + 'M', xEnd + 8, yPos);
+        ctx.restore();
+
+        // Draw percentage for each segment
+        var cumPos = 0;
+        for (var j = 0; j < chart.data.datasets.length; j++) {
+          var value = chart.data.datasets[j].data[i] || 0;
+          if (value === 0) continue;
+
+          var pct = Math.round((value / total) * 100);
+          var segStart = xScale.getPixelForValue(cumPos);
+          var segEnd = xScale.getPixelForValue(cumPos + value);
+          var segWidth = segEnd - segStart;
+
+          // Only show percentage if segment is wide enough
+          if (segWidth > 45) {
+            var labelX = segStart + (segWidth / 2);
+
+            ctx.save();
+            ctx.font = 'bold 11px Arial';
+            ctx.fillStyle = '#fff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(pct + '%', labelX, yPos);
+            ctx.restore();
+          }
+
+          cumPos += value;
+        }
+      }
     }
   };
 
   new Chart(canvas, {
     type: 'bar',
-    plugins: [totalPlugin],
     data: { labels: labels, datasets: datasets },
     options: {
       indexAxis: 'y',
@@ -2704,6 +2825,7 @@ function renderProcChart() {
       },
       layout: { padding: { right: 70 } },
       plugins: {
+        procTotals: totalPlugin,
         legend: { display: false },
         tooltip: {
           callbacks: {
@@ -2914,6 +3036,7 @@ function buildCountryPages() {
         <button class="tab-button" onclick="switchTab(event, '${c.id}', 'procurement')">Procurement</button>
         <button class="tab-button" onclick="switchTab(event, '${c.id}', 'inventory')">Inventory</button>
         <button class="tab-button" onclick="switchTab(event, '${c.id}', 'distribution')">Distribution</button>
+        <button class="tab-button" onclick="switchTab(event, '${c.id}', 'notes')">Notes & Actions</button>
       </div>
 
       <!-- TAB: OVERVIEW -->
@@ -3016,26 +3139,32 @@ function buildCountryPages() {
 
           <!-- Legend -->
           <div style="display:flex;gap:24px;flex-wrap:wrap;padding:16px 0;border-top:1px solid #E0E8F0;margin-top:20px;">
-            <div style="display:flex;align-items:center;gap:8px;">
+            <div class="timeline-legend-item" style="display:flex;align-items:center;gap:8px;" onclick="openTimelineDrill(event, '${c.id}', 'identification')">
               <div style="width:14px;height:14px;background:#9B59B6;border-radius:50%;flex-shrink:0;"></div>
               <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Project Identification</span>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;">
+            <div class="timeline-legend-item" style="display:flex;align-items:center;gap:8px;" onclick="openTimelineDrill(event, '${c.id}', 'formulation')">
               <div style="width:14px;height:14px;background:#508931;border-radius:50%;flex-shrink:0;"></div>
               <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Project Formulation</span>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;">
+            <div class="timeline-legend-item" style="display:flex;align-items:center;gap:8px;" onclick="openTimelineDrill(event, '${c.id}', 'approval')">
               <div style="width:14px;height:14px;background:#5791C8;border-radius:50%;flex-shrink:0;"></div>
               <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Project Approval</span>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;">
+            <div class="timeline-legend-item" style="display:flex;align-items:center;gap:8px;" onclick="openTimelineDrill(event, '${c.id}', 'implementation')">
               <div style="width:14px;height:14px;background:#F39C12;border-radius:50%;flex-shrink:0;"></div>
               <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Implementation & Monitoring</span>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;">
+            <div class="timeline-legend-item" style="display:flex;align-items:center;gap:8px;" onclick="openTimelineDrill(event, '${c.id}', 'closure')">
               <div style="width:14px;height:14px;background:#E67E22;border-radius:50%;flex-shrink:0;"></div>
               <span style="font-size:11px;color:var(--fao-dark);font-weight:600;">Evaluation & Closure</span>
             </div>
+          </div>
+
+          <!-- Timeline Drill-down -->
+          <div id="timeline-drilldown-${c.id}">
+            <div style="font-weight:700;color:#1A648C;font-size:14px;margin-bottom:16px;" id="timeline-drilldown-title-${c.id}"></div>
+            <div id="timeline-drilldown-content-${c.id}"></div>
           </div>
         </div>
       </div>
@@ -3153,29 +3282,6 @@ function buildCountryPages() {
             </div>`).join('')}
         </div>
       </div>
-
-      <!-- Coordinator Notes -->
-      <div class="section-title" style="margin-top:4px;"><span class="dot" style="background:#7F8C8D"></span> Coordinator Notes</div>
-      <div class="card" style="margin-bottom:24px;">
-        <div class="card-header"><div><div class="card-title">Notes & Actions</div><div class="card-subtitle">Programme updates and action tracking</div></div></div>
-
-        <!-- Notes Section -->
-        <div style="margin-bottom:24px;">
-          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:10px;">📝 Notes</div>
-          <textarea class="comments-area" id="comments-${c.id}" placeholder="Enter any programme updates, observations, or general notes here..."></textarea>
-          <div class="save-note">💡 Notes are saved for this browser session only. Copy important notes before closing.</div>
-        </div>
-
-        <!-- Actions Section -->
-        <div>
-          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:12px;">📋 Actions</div>
-          <div id="actions-list-${c.id}" style="margin-bottom:12px;">
-            <!-- Actions will be rendered here -->
-          </div>
-          <button onclick="addAction('${c.id}')" style="background:#5791C8;color:#fff;border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1A648C'" onmouseout="this.style.background='#5791C8'">+ Add Action</button>
-        </div>
-      </div>
-
       </div> <!-- END OVERVIEW TAB -->
 
       <!-- TAB: DEMAND -->
@@ -3321,10 +3427,14 @@ function buildCountryPages() {
             </div>
           </div>
 
-          <!-- Subsection 3: Procurement Lead Time (Split into 3 stages top, Full Lead Time bottom) -->
+          <!-- Subsection 3: Procurement Lead Time (Average Lead Time top, then 3 stages) -->
           <div class="card">
             <div class="card-header"><div><div class="card-title">Procurement Lead Time</div></div></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;min-height:100px;align-content:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E0E8F0;">
+            <div style="text-align:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E0E8F0;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">Average Lead Time</div>
+              <div style="font-size:24px;font-weight:700;color:#508931;">24d</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;min-height:100px;align-content:center;">
               <div style="text-align:center;">
                 <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">Plan to PR</div>
                 <div style="font-size:24px;font-weight:700;color:#1A648C;">5d</div>
@@ -3338,20 +3448,27 @@ function buildCountryPages() {
                 <div style="font-size:24px;font-weight:700;color:#1A648C;">12d</div>
               </div>
             </div>
-            <div style="text-align:center;">
-              <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">Full Lead Time</div>
-              <div style="font-size:24px;font-weight:700;color:#508931;">24d</div>
-            </div>
           </div>
 
-          <!-- Subsection 4: Late Deliveries -->
+          <!-- Subsection 4: Deliveries at Risk -->
           <div class="card">
-            <div class="card-header"><div><div class="card-title">Late Deliveries</div></div></div>
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;gap:12px;">
-              <div style="text-align:center;">
-                <div style="font-size:36px;font-weight:700;color:#A81E3B;">2</div>
-                <div style="font-size:12px;color:#5A6A7A;margin-top:4px;font-weight:600;">Deliveries >7 days late</div>
+            <div class="card-header"><div><div class="card-title">Deliveries at Risk</div><span style="font-size:11px;color:#5A6A7A;font-weight:400;margin-left:auto;">Click an indicator to filter the table below</span></div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;">
+              <div style="text-align:center;padding:12px;border:1px solid #E0E8F0;border-radius:6px;cursor:pointer;background:#FFF8F6;transition:all 0.2s;" onclick="filterProcurementTable(null, 'late')" onmouseover="this.style.background='#FFE8E8';this.style.boxShadow='0 4px 12px rgba(168,30,59,0.15)'" onmouseout="this.style.background='#FFF8F6';this.style.boxShadow='none'">
+                <div style="font-size:24px;font-weight:700;color:#A81E3B;">3</div>
+                <div style="font-size:10px;color:#5A6A7A;margin-top:4px;font-weight:600;">Late Deliveries<br/>(&gt;1 days)</div>
               </div>
+              <div style="text-align:center;padding:12px;border:1px solid #E0E8F0;border-radius:6px;cursor:pointer;background:#FFF8F6;transition:all 0.2s;" onclick="filterProcurementTable(null, 'upcoming')" onmouseover="this.style.background='#FFF3CD';this.style.boxShadow='0 4px 12px rgba(243,156,18,0.15)'" onmouseout="this.style.background='#FFF8F6';this.style.boxShadow='none'">
+                <div style="font-size:24px;font-weight:700;color:#F39C12;">5</div>
+                <div style="font-size:10px;color:#5A6A7A;margin-top:4px;font-weight:600;">Upcoming Deliveries<br/>(within 7 days)</div>
+              </div>
+              <div style="text-align:center;padding:12px;border:1px solid #E0E8F0;border-radius:6px;cursor:pointer;background:#FFF8F6;transition:all 0.2s;" onclick="filterProcurementTable(null, 'short-lead')" onmouseover="this.style.background='#E7F3FF';this.style.boxShadow='0 4px 12px rgba(52,152,219,0.15)'" onmouseout="this.style.background='#FFF8F6';this.style.boxShadow='none'">
+                <div style="font-size:24px;font-weight:700;color:#3498DB;">8</div>
+                <div style="font-size:10px;color:#5A6A7A;margin-top:4px;font-weight:600;">Short Lead Time<br/>(within 30 days)</div>
+              </div>
+            </div>
+            <div style="padding:12px;background:#F0F4F8;border-radius:6px;border:1px solid #E0E8F0;text-align:center;">
+              <button onclick="filterProcurementTable(null, 'all')" style="background:#5791C8;color:#fff;border:none;padding:8px 16px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1A648C'" onmouseout="this.style.background='#5791C8'">Show All Procurement Orders</button>
             </div>
           </div>
         </div>
@@ -3382,6 +3499,8 @@ function buildCountryPages() {
                   <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Total Value</th>
                   <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Incoterm</th>
                   <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Request Time of Delivery</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Delivery Date</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Delivery Status</th>
                   <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Destination</th>
                   <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Operating Unit</th>
                   <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Buying Unit</th>
@@ -3408,6 +3527,8 @@ function buildCountryPages() {
                   <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$60,000</td>
                   <td style="padding:10px;color:#5A6A7A;">CIF</td>
                   <td style="padding:10px;color:#5A6A7A;">31-Jan-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">28-Jan-2026</td>
+                  <td style="padding:10px;"><span style="background:#508931;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">On Time</span></td>
                   <td style="padding:10px;color:#5A6A7A;">Dhaka</td>
                   <td style="padding:10px;color:#5A6A7A;">FAO</td>
                   <td style="padding:10px;color:#5A6A7A;">Procurement</td>
@@ -3432,6 +3553,8 @@ function buildCountryPages() {
                   <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$96,250</td>
                   <td style="padding:10px;color:#5A6A7A;">FOB</td>
                   <td style="padding:10px;color:#5A6A7A;">15-Mar-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">20-Mar-2026</td>
+                  <td style="padding:10px;"><span style="background:#F39C12;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Upcoming</span></td>
                   <td style="padding:10px;color:#5A6A7A;">Chittagong</td>
                   <td style="padding:10px;color:#5A6A7A;">FAO</td>
                   <td style="padding:10px;color:#5A6A7A;">Supply Chain</td>
@@ -3456,21 +3579,566 @@ function buildCountryPages() {
                   <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$240,000</td>
                   <td style="padding:10px;color:#5A6A7A;">CIF</td>
                   <td style="padding:10px;color:#5A6A7A;">05-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">10-Apr-2026</td>
+                  <td style="padding:10px;"><span style="background:#A81E3B;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Late (5 days)</span></td>
                   <td style="padding:10px;color:#5A6A7A;">Cox's Bazar</td>
                   <td style="padding:10px;color:#5A6A7A;">FAO</td>
                   <td style="padding:10px;color:#5A6A7A;">Equipment</td>
                   <td style="padding:10px;color:#5A6A7A;">R. Khan</td>
                   <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
                 </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-004</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">25-Feb-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Vaccine Labs Inc</td>
+                  <td style="padding:10px;color:#1C2D3E;">FMD Vaccine</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-004</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Vaccines</td>
+                  <td style="padding:10px;color:#5A6A7A;">Foot and Mouth Disease Vaccine</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">5000</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">4200</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">800</td>
+                  <td style="padding:10px;color:#5A6A7A;">Doses</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$0.50</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$2,500</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">10-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">08-Apr-2026</td>
+                  <td style="padding:10px;"><span style="background:#A81E3B;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Late (2 days)</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Dhaka</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Health</td>
+                  <td style="padding:10px;color:#5A6A7A;">Dr. Hassan</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#508931;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Delivered</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-005</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">01-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Water Solutions Ltd</td>
+                  <td style="padding:10px;color:#1C2D3E;">Water Pump</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-005</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Machinery</td>
+                  <td style="padding:10px;color:#5A6A7A;">Solar water pump</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">20</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">5</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">15</td>
+                  <td style="padding:10px;color:#5A6A7A;">units</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$3,000</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$60,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">FOB</td>
+                  <td style="padding:10px;color:#5A6A7A;">18-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">19-Apr-2026</td>
+                  <td style="padding:10px;"><span style="background:#F39C12;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Upcoming</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Sylhet</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Water</td>
+                  <td style="padding:10px;color:#5A6A7A;">J. Miraz</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#5791C8;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">In Transit</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-006</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">05-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Seed Traders Global</td>
+                  <td style="padding:10px;color:#1C2D3E;">Wheat Seed</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-006</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">Premium wheat seed</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">800</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">0</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">800</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$55</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$44,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">20-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">22-Apr-2026</td>
+                  <td style="padding:10px;"><span style="background:#F39C12;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Upcoming</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Rangpur</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">A. Begum</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-007</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">08-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Agri Chemicals Ltd</td>
+                  <td style="padding:10px;color:#1C2D3E;">DAP Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-007</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">Diammonium Phosphate</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1500</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">600</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">900</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$42</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$63,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">FOB</td>
+                  <td style="padding:10px;color:#5A6A7A;">25-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">28-Apr-2026</td>
+                  <td style="padding:10px;"><span style="background:#F39C12;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Upcoming</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Mymensingh</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">N. Roy</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-008</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">12-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Newcastle Supplies</td>
+                  <td style="padding:10px;color:#1C2D3E;">Newcastle Vaccine</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-008</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Vaccines</td>
+                  <td style="padding:10px;color:#5A6A7A;">Newcastle disease vaccine</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">3000</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1500</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1500</td>
+                  <td style="padding:10px;color:#5A6A7A;">Doses</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$0.75</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$2,250</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">22-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">24-Apr-2026</td>
+                  <td style="padding:10px;"><span style="background:#F39C12;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Upcoming</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Khulna</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Health</td>
+                  <td style="padding:10px;color:#5A6A7A;">V. Islam</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-009</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">15-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Heavy Machinery Corp</td>
+                  <td style="padding:10px;color:#1C2D3E;">Threshers</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-009</td>
+                  <td style="padding:10px;color:#5A6A7A;">Service</td>
+                  <td style="padding:10px;color:#5A6A7A;">Machinery</td>
+                  <td style="padding:10px;color:#5A6A7A;">Agricultural threshing machine</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">8</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">2</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">6</td>
+                  <td style="padding:10px;color:#5A6A7A;">units</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$8,500</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$68,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">30-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">03-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Barisal</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Equipment</td>
+                  <td style="padding:10px;color:#5A6A7A;">K. Dey</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-010</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">18-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Legume Global</td>
+                  <td style="padding:10px;color:#1C2D3E;">Legume Seed</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-010</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">High-grade legume seeds</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">600</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">300</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">300</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$48</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$28,800</td>
+                  <td style="padding:10px;color:#5A6A7A;">FOB</td>
+                  <td style="padding:10px;color:#5A6A7A;">02-May-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">05-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Jessore</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">R. Hossain</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-011</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">20-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Compound NPK Ltd</td>
+                  <td style="padding:10px;color:#1C2D3E;">Compound NPK</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-011</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">NPK compound fertilizer</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">900</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">0</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">900</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$40</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$36,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">08-May-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">12-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Gazipur</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">B. Saha</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-012</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">22-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">CBPP Solutions</td>
+                  <td style="padding:10px;color:#1C2D3E;">CBPP Vaccine</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-012</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Vaccines</td>
+                  <td style="padding:10px;color:#5A6A7A;">Contagious Bovine Pleuropneumonia vaccine</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">4000</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">2000</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">2000</td>
+                  <td style="padding:10px;color:#5A6A7A;">Doses</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$0.60</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$2,400</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">12-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">09-Apr-2026</td>
+                  <td style="padding:10px;"><span style="background:#A81E3B;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Late (3 days)</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Pabna</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Health</td>
+                  <td style="padding:10px;color:#5A6A7A;">T. Alam</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#508931;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Delivered</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-013</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">25-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Tractor Sales Ltd</td>
+                  <td style="padding:10px;color:#1C2D3E;">Tractors</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-013</td>
+                  <td style="padding:10px;color:#5A6A7A;">Service</td>
+                  <td style="padding:10px;color:#5A6A7A;">Machinery</td>
+                  <td style="padding:10px;color:#5A6A7A;">45HP agricultural tractor</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">10</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">3</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">7</td>
+                  <td style="padding:10px;color:#5A6A7A;">units</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$14,000</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$140,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">10-May-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">15-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Tangail</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Equipment</td>
+                  <td style="padding:10px;color:#5A6A7A;">H. Ahmed</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-014</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">28-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Urea Global</td>
+                  <td style="padding:10px;color:#1C2D3E;">Urea Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-014</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">Granular urea fertilizer</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">2000</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">800</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1200</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$44</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$88,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">FOB</td>
+                  <td style="padding:10px;color:#5A6A7A;">15-May-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">20-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Narayanganj</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">M. Karim</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-015</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">01-Apr-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Rice Seed Premium</td>
+                  <td style="padding:10px;color:#1C2D3E;">Rice Seed</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-015</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">Premium quality rice seed</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1000</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">400</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">600</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$52</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$52,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">20-May-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">25-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Noakhali</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">S. Chowdhury</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-016</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">04-Apr-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Water Pump Solutions</td>
+                  <td style="padding:10px;color:#1C2D3E;">Water Pump</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-016</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Machinery</td>
+                  <td style="padding:10px;color:#5A6A7A;">High-capacity water pump</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">25</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">10</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">15</td>
+                  <td style="padding:10px;color:#5A6A7A;">units</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$3,500</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$87,500</td>
+                  <td style="padding:10px;color:#5A6A7A;">FOB</td>
+                  <td style="padding:10px;color:#5A6A7A;">25-May-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">30-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Pirojpur</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Water</td>
+                  <td style="padding:10px;color:#5A6A7A;">F. Rahman</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-017</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">07-Apr-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Machinery Imports</td>
+                  <td style="padding:10px;color:#1C2D3E;">Tractors</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-017</td>
+                  <td style="padding:10px;color:#5A6A7A;">Service</td>
+                  <td style="padding:10px;color:#5A6A7A;">Machinery</td>
+                  <td style="padding:10px;color:#5A6A7A;">35HP compact tractor</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">6</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">5</td>
+                  <td style="padding:10px;color:#5A6A7A;">units</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$12,500</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$75,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">28-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">01-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Kushtia</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Equipment</td>
+                  <td style="padding:10px;color:#5A6A7A;">L. Mondal</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-018</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">10-Apr-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Seed Enterprises Ltd</td>
+                  <td style="padding:10px;color:#1C2D3E;">Legume Seed</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-018</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">Mixed legume seeds</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">700</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">200</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">500</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$50</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$35,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">FOB</td>
+                  <td style="padding:10px;color:#5A6A7A;">05-May-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">08-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Jashore</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">O. Biswas</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PO-2026-019</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">11-Apr-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Fertilizer Wholesalers</td>
+                  <td style="padding:10px;color:#1C2D3E;">Compound NPK</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-019</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">Premium NPK blend</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1100</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">300</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">800</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$41</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$45,100</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">12-May-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">15-May-2026</td>
+                  <td style="padding:10px;"><span style="background:#3498DB;color:white;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600;">Short Lead</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">Bogra</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">I. Khan</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
+                </tr>
               </tbody>
             </table>
           </div>
           <div style="background:#F5F7FA;padding:12px;border-radius:6px;font-size:12px;color:#1C2D3E;font-weight:600;">
-            <span style="display:inline-block;margin-right:20px;">Total POs: 3</span>
-            <span style="display:inline-block;margin-right:20px;color:#508931;">Delivered: 3</span>
-            <span style="display:inline-block;margin-right:20px;color:#5791C8;">In Transit: 1</span>
-            <span style="display:inline-block;margin-right:20px;color:#EF781F;">Pending: 1</span>
-            <span style="display:inline-block;color:#A81E3B;">Cancelled: 1</span>
+            <span style="display:inline-block;margin-right:20px;">Total POs: 19</span>
+            <span style="display:inline-block;margin-right:20px;color:#508931;">Delivered: 4</span>
+            <span style="display:inline-block;margin-right:20px;color:#5791C8;">In Transit: 2</span>
+            <span style="display:inline-block;margin-right:20px;color:#EF781F;">Pending: 10</span>
+            <span style="display:inline-block;color:#A81E3B;">Late: 3</span>
+          </div>
+        </div>
+
+        <!-- Purchase Requests (PRs) Table -->
+        <div class="card" style="margin-top:24px;">
+          <div class="card-header"><div><div class="card-title">Purchase Requests (PRs)</div><button onclick="exportPRTableToExcel('${c.id}')" style="background:#5791C8;color:#fff;border:none;padding:6px 12px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;margin-left:auto;">📥 Export to Excel</button></div></div>
+          <div style="overflow-x:auto;margin-bottom:16px;">
+            <table class="pr-table" style="width:100%;border-collapse:collapse;font-size:11px;min-width:2200px;">
+              <thead>
+                <tr style="background:#F5F7FA;border-bottom:2px solid #E0E6EB;">
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">PR Number</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Creation Year</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Issue Date</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Supplier</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Product</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Line Number</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Category</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Category Description</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Unit</th>
+                  <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Quantity</th>
+                  <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Unit Price</th>
+                  <th style="text-align:right;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Total Value</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Request Delivery Date</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Approval Date</th>
+                  <th style="text-align:left;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Approval</th>
+                  <th style="text-align:center;padding:10px;font-weight:600;color:#1C2D3E;white-space:nowrap;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PR-2026-001</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">08-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Kumar Enterprises</td>
+                  <td style="padding:10px;color:#1C2D3E;">Fertilizer NPK 15-15-15</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-PR-001</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">Nutrient compound for soil enhancement</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">500</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$45</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$22,500</td>
+                  <td style="padding:10px;color:#5A6A7A;">15-Feb-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">12-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">R. Patel</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#508931;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Approved</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PR-2026-002</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">12-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">AgroSupply Ltd</td>
+                  <td style="padding:10px;color:#1C2D3E;">Pest Control Agent</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-PR-002</td>
+                  <td style="padding:10px;color:#5A6A7A;">Chemicals</td>
+                  <td style="padding:10px;color:#5A6A7A;">Biological pesticide for field application</td>
+                  <td style="padding:10px;color:#5A6A7A;">L</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">2000</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$12</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$24,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">25-Feb-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">-</td>
+                  <td style="padding:10px;color:#5A6A7A;">-</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#F39C12;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending Approval</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PR-2026-003</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">18-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Harvest Solutions</td>
+                  <td style="padding:10px;color:#1C2D3E;">Agricultural Tools Kit</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-PR-003</td>
+                  <td style="padding:10px;color:#5A6A7A;">Equipment</td>
+                  <td style="padding:10px;color:#5A6A7A;">Complete toolkit for field operations</td>
+                  <td style="padding:10px;color:#5A6A7A;">Set</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">150</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$80</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$12,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">10-Mar-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">19-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">S. Kumar</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#508931;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Approved</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PR-2026-004</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">20-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">SeedTech Global</td>
+                  <td style="padding:10px;color:#1C2D3E;">Maize Hybrid Seed</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-PR-004</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">High-yield hybrid maize seed variety</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">800</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$55</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$44,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">05-Mar-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">-</td>
+                  <td style="padding:10px;color:#5A6A7A;">-</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#95A5A6;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Draft</span></td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PR-2026-005</td>
+                  <td style="padding:10px;color:#5A6A7A;">2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">25-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Packaging Solutions Inc</td>
+                  <td style="padding:10px;color:#1C2D3E;">Storage Containers 50L</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-PR-005</td>
+                  <td style="padding:10px;color:#5A6A7A;">Packaging</td>
+                  <td style="padding:10px;color:#5A6A7A;">Food-grade plastic storage containers</td>
+                  <td style="padding:10px;color:#5A6A7A;">Unit</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1000</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$8</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$8,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">15-Feb-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">26-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">J. Singh</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#508931;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Approved</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="background:#F5F7FA;padding:12px;border-radius:6px;font-size:12px;color:#1C2D3E;font-weight:600;">
+            <span style="display:inline-block;margin-right:20px;">Total PRs: 5</span>
+            <span style="display:inline-block;margin-right:20px;color:#508931;">Approved: 3</span>
+            <span style="display:inline-block;margin-right:20px;color:#F39C12;">Pending Approval: 1</span>
+            <span style="display:inline-block;color:#95A5A6;">Draft: 1</span>
           </div>
         </div>
       </div>
@@ -3602,7 +4270,31 @@ function buildCountryPages() {
           </div>
         </div>
 
-        <!-- 2) Release Orders Table -->
+        <!-- 2) Orders Status Indicators -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:16px;background:#FAFCFF;border-left:4px solid #3498DB;cursor:pointer;transition:all 0.2s;" onclick="filterReleaseOrdersTable(null, 'outstanding')" onmouseover="this.style.boxShadow='0 4px 12px rgba(52,152,219,0.15)'" onmouseout="this.style.boxShadow='none'">
+            <div style="font-size:10px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:10px;">Outstanding Orders</div>
+            <div style="font-size:32px;font-weight:800;color:#3498DB;margin-bottom:6px;" id="outstanding-orders-count-${c.id}">0</div>
+            <div style="font-size:11px;color:#5A6A7A;">Open or in progress</div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:16px;background:#FFF8F6;border-left:4px solid #F39C12;cursor:pointer;transition:all 0.2s;" onclick="filterReleaseOrdersTable(null, 'upcoming')" onmouseover="this.style.boxShadow='0 4px 12px rgba(243,156,18,0.15)'" onmouseout="this.style.boxShadow='none'">
+            <div style="font-size:10px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:10px;">Upcoming Orders</div>
+            <div style="font-size:32px;font-weight:800;color:#F39C12;margin-bottom:6px;" id="upcoming-orders-count-${c.id}">0</div>
+            <div style="font-size:11px;color:#5A6A7A;">Delivery within 7 days</div>
+          </div>
+          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:16px;background:#FFE8E8;border-left:4px solid #A81E3B;cursor:pointer;transition:all 0.2s;" onclick="filterReleaseOrdersTable(null, 'late')" onmouseover="this.style.boxShadow='0 4px 12px rgba(168,30,59,0.15)'" onmouseout="this.style.boxShadow='none'">
+            <div style="font-size:10px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:10px;">Late Orders</div>
+            <div style="font-size:32px;font-weight:800;color:#A81E3B;margin-bottom:6px;" id="late-orders-count-${c.id}">0</div>
+            <div style="font-size:11px;color:#5A6A7A;">Delayed >1 day from planned</div>
+          </div>
+        </div>
+
+        <!-- Show All Button -->
+        <div style="padding:12px;background:#F0F4F8;border-radius:6px;border:1px solid #E0E8F0;text-align:center;margin-bottom:20px;">
+          <button onclick="filterReleaseOrdersTable(null, 'all')" style="background:#5791C8;color:#fff;border:none;padding:8px 16px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1A648C'" onmouseout="this.style.background='#5791C8'">Show All Release Orders</button>
+        </div>
+
+        <!-- 3) Release Orders Table -->
         <div class="card" style="margin-bottom:20px;">
           <div class="card-header"><div><div class="card-title">Release Orders</div><div class="card-subtitle">Order tracking and distribution status</div></div></div>
           <div class="table-wrap" style="padding:20px;">
@@ -3625,19 +4317,44 @@ function buildCountryPages() {
             </table>
           </div>
         </div>
-
-        <!-- 3) Late Orders KPI -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:20px;">
-          <div style="border:1px solid #E0E8F0;border-radius:12px;padding:20px;background:#FAFCFF;border-left:4px solid #A81E3B;">
-            <div style="font-size:11px;color:#8A96A3;font-weight:600;text-transform:uppercase;margin-bottom:12px;">Late Orders</div>
-            <div style="font-size:36px;font-weight:800;color:#A81E3B;margin-bottom:8px;" id="late-orders-count-${c.id}">0</div>
-            <div style="font-size:12px;color:#5A6A7A;">Orders with >1 week delay from planned delivery</div>
-          </div>
-        </div>
       </div>
 
 
       </div> <!-- END DISTRIBUTION TAB -->
+
+      <!-- TAB: NOTES & ACTIONS -->
+      <div id="notes-${c.id}" class="tab-content">
+
+      <!-- Coordinator Notes -->
+      <div class="section-title" style="margin-top:4px;"><span class="dot" style="background:#7F8C8D"></span> Coordinator Notes</div>
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header"><div><div class="card-title">Notes & Actions</div><div class="card-subtitle">Programme updates, action tracking, and risk management</div></div></div>
+
+        <!-- Notes Section -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:10px;">📝 Notes</div>
+          <textarea class="comments-area" id="comments-${c.id}" placeholder="Enter any programme updates, observations, or general notes here..."></textarea>
+          <div class="save-note">💡 Notes are saved for this browser session only. Copy important notes before closing.</div>
+        </div>
+
+        <!-- Actions Section -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:12px;">📋 Actions</div>
+          <div id="actions-list-${c.id}" style="margin-bottom:12px;">
+            <!-- Actions will be rendered here -->
+          </div>
+          <button onclick="addAction('${c.id}')" style="background:#5791C8;color:#fff;border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1A648C'" onmouseout="this.style.background='#5791C8'">+ Add Action</button>
+        </div>
+
+        <!-- Risks Section -->
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:10px;">⚠️ Risks</div>
+          <textarea class="comments-area" id="risks-${c.id}" placeholder="Document any identified risks, mitigation strategies, and contingency plans..."></textarea>
+          <div class="save-note">💡 Risks are saved for this browser session only. Copy important information before closing.</div>
+        </div>
+      </div>
+
+      </div> <!-- END NOTES & ACTIONS TAB -->
 
       <div class="page-footer">
         <span><b>Last Data Update:</b> ${c.lastUpdated || '—'}</span>
@@ -3881,6 +4598,216 @@ function openProcDrilldown_Items(countryId, cat, catLabel) {
       }
     }
   });
+}
+
+function openTimelineDrill(event, countryId, phase) {
+  event.preventDefault();
+
+  var drilldownDiv = document.getElementById(`timeline-drilldown-${countryId}`);
+  var titleDiv = document.getElementById(`timeline-drilldown-title-${countryId}`);
+  var contentDiv = document.getElementById(`timeline-drilldown-content-${countryId}`);
+
+  if (!drilldownDiv || !titleDiv || !contentDiv) return;
+
+  // Define phase details with subfases
+  var phaseDetails = {
+    identification: {
+      title: 'Project Identification',
+      subfases: []
+    },
+    formulation: {
+      title: 'Project Formulation',
+      subfases: [
+        { name: 'Formulation of project documents (including procurement plan)', status: 'ongoing' }
+      ]
+    },
+    approval: {
+      title: 'Project Approval',
+      subfases: []
+    },
+    implementation: {
+      title: 'Implementation & Monitoring',
+      subfases: [
+        { name: 'Review and complete procurement plan', status: 'pending' },
+        { name: 'Prepare delivery/distribution plan', status: 'pending' },
+        { name: 'Sourcing and solicitation', status: 'pending' },
+        { name: 'Inbound logistics', status: 'pending' },
+        { name: 'Quality assurance', status: 'pending' },
+        { name: 'Inventory management', status: 'pending' },
+        { name: 'Outbound logistics', status: 'pending' }
+      ]
+    },
+    closure: {
+      title: 'Evaluation & Closure',
+      subfases: []
+    }
+  };
+
+  var phaseInfo = phaseDetails[phase];
+  if (!phaseInfo) return;
+
+  // Update title
+  titleDiv.textContent = phaseInfo.title + ' — Sub-phases';
+
+  // Render subfases
+  var html = '';
+  if (phaseInfo.subfases.length > 0) {
+    html = phaseInfo.subfases.map(function(sf) {
+      return `<div class="timeline-subfase">
+        <div class="subfase-name">${sf.name}</div>
+        <span class="subfase-status ${sf.status}">
+          ${sf.status === 'pending' ? '⏱️ Por iniciar' : sf.status === 'ongoing' ? '🔄 Em curso' : '✅ Concluído'}
+        </span>
+      </div>`;
+    }).join('');
+  } else {
+    html = '<div style="padding:12px 0;color:#5A6A7A;font-size:12px;">No sub-phases defined for this phase.</div>';
+  }
+
+  contentDiv.innerHTML = html;
+
+  // Toggle drill-down visibility
+  drilldownDiv.classList.toggle('open');
+}
+
+function filterProcurementTable(countryId, filterType) {
+  try {
+    // Find the table
+    var poTable = document.querySelector('.po-table');
+    if (!poTable) {
+      console.error('po-table not found');
+      return;
+    }
+
+    var tbody = poTable.querySelector('tbody');
+    if (!tbody) {
+      console.error('tbody not found');
+      return;
+    }
+
+    var rows = tbody.querySelectorAll('tr');
+
+    // Reset all rows first - show them all
+    for (var i = 0; i < rows.length; i++) {
+      rows[i].style.display = '';
+    }
+
+    // If 'all' filter, stop here
+    if (filterType === 'all') {
+      return;
+    }
+
+    // Otherwise filter based on delivery status
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var cells = row.querySelectorAll('td');
+
+      if (cells.length < 19) {
+        continue;
+      }
+
+      var statusCell = cells[18];
+      if (!statusCell) {
+        continue;
+      }
+
+      var statusText = statusCell.textContent;
+
+      var shouldHide = true;
+
+      if (filterType === 'late' && statusText.indexOf('Late') !== -1) {
+        shouldHide = false;
+      } else if (filterType === 'upcoming' && statusText.indexOf('Upcoming') !== -1) {
+        shouldHide = false;
+      } else if (filterType === 'short-lead' && statusText.indexOf('Short Lead') !== -1) {
+        shouldHide = false;
+      }
+
+      row.style.display = shouldHide ? 'none' : '';
+    }
+  } catch (e) {
+    console.error('Error in filterProcurementTable:', e);
+  }
+}
+
+function filterReleaseOrdersTable(countryId, filterType) {
+  try {
+    // Find the Release Orders table by looking for tbody with id containing "release-orders-table"
+    var tbody = null;
+    var allTbodies = document.querySelectorAll('tbody');
+
+    for (var j = 0; j < allTbodies.length; j++) {
+      if (allTbodies[j].id && allTbodies[j].id.includes('release-orders-table')) {
+        tbody = allTbodies[j];
+        break;
+      }
+    }
+
+    if (!tbody) {
+      console.error('Release Orders table tbody not found');
+      return;
+    }
+
+    var rows = tbody.querySelectorAll('tr');
+    console.log('Found ' + rows.length + ' rows in Release Orders table');
+
+    // Reset all rows first - show them all
+    for (var i = 0; i < rows.length; i++) {
+      rows[i].style.display = '';
+    }
+
+    // If 'all' filter, stop here
+    if (filterType === 'all') {
+      console.log('Showing all rows');
+      return;
+    }
+
+    // Filter based on order status (outstanding, upcoming, late)
+    console.log('Filtering by: ' + filterType);
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var orderStatus = row.getAttribute('data-order-status');
+
+      if (!orderStatus) {
+        console.log('Row ' + i + ' has no orderStatus');
+        continue;
+      }
+
+      var shouldHide = true;
+
+      if (filterType === 'outstanding' && orderStatus === 'outstanding') {
+        shouldHide = false;
+      } else if (filterType === 'upcoming' && orderStatus === 'upcoming') {
+        shouldHide = false;
+      } else if (filterType === 'late' && orderStatus === 'late') {
+        shouldHide = false;
+      }
+
+      row.style.display = shouldHide ? 'none' : '';
+      console.log('Row ' + i + ' (status: ' + orderStatus + ') - hide: ' + shouldHide);
+    }
+  } catch (e) {
+    console.error('Error in filterReleaseOrdersTable:', e);
+  }
+}
+
+function parseDate(dateStr) {
+  // Parse date in format "DD-Mon-YYYY" (e.g., "15-Apr-2026")
+  var months = {
+    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+    'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+  };
+
+  var parts = dateStr.split('-');
+  if (parts.length !== 3) return null;
+
+  var day = parseInt(parts[0], 10);
+  var month = months[parts[1]];
+  var year = parseInt(parts[2], 10);
+
+  if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
+
+  return new Date(year, month, day);
 }
 
 function renderCountryCharts(c) {
@@ -4484,39 +5411,85 @@ function renderCountryCharts(c) {
   // Distribution Section - Release Orders Table
   const releaseOrdersTableEl = document.getElementById(`release-orders-table-${c.id}`);
   if (releaseOrdersTableEl) {
-    const releaseOrdersData = [
+    const releaseOrdersRawData = [
       {id: 'RO-001', date: '2026-03-15', package: 'Agricultural Input Package', qty: '1250 MT', location: 'Dhaka', status: 'closed/distributed', plannedDel: '2026-03-31', actualDel: '2026-03-28'},
       {id: 'RO-002', date: '2026-04-10', package: 'Equipment & Infrastructure Package', qty: '25 units', location: 'Chittagong', status: 'open', plannedDel: '2026-04-30', actualDel: 'In progress'},
       {id: 'RO-003', date: '2026-05-05', package: 'Livestock Health Package', qty: '250,000 doses', location: 'Cox\'s Bazar', status: 'draft', plannedDel: '2026-05-20', actualDel: 'Pending'},
-      {id: 'RO-004', date: '2026-05-20', package: 'Agricultural Input Package', qty: '900 MT', location: 'Dhaka', status: 'closed/distributed', plannedDel: '2026-06-10', actualDel: '2026-06-08'},
-      {id: 'RO-005', date: '2026-06-12', package: 'Equipment & Infrastructure Package', qty: '15 units', location: 'Chittagong', status: 'open', plannedDel: '2026-07-05', actualDel: 'In progress'}
+      {id: 'RO-004', date: '2026-05-20', package: 'Agricultural Input Package', qty: '900 MT', location: 'Dhaka', status: 'closed/distributed', plannedDel: '2026-04-12', actualDel: '2026-06-12'},
+      {id: 'RO-005', date: '2026-06-12', package: 'Equipment & Infrastructure Package', qty: '15 units', location: 'Chittagong', status: 'open', plannedDel: '2026-04-20', actualDel: 'In progress'}
     ];
 
+    // Function to parse date and calculate order status based on planned delivery
+    function calculateOrderStatus(plannedDelStr) {
+      try {
+        const plannedDate = new Date(plannedDelStr);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        plannedDate.setHours(0, 0, 0, 0);
+
+        const diffTime = plannedDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) {
+          return 'late'; // Planned delivery is in the past
+        } else if (diffDays <= 7) {
+          return 'upcoming'; // Within next 7 days (0-7)
+        } else {
+          return 'outstanding'; // More than 7 days away
+        }
+      } catch (e) {
+        return 'outstanding'; // Default to outstanding if date parsing fails
+      }
+    }
+
+    // Calculate orderStatus dynamically for each order
+    const releaseOrdersData = releaseOrdersRawData.map(order => ({
+      ...order,
+      orderStatus: calculateOrderStatus(order.plannedDel)
+    }));
+
+    // Store data globally for filtering
+    window[`_releaseOrdersData_${c.id}`] = releaseOrdersData;
+
     releaseOrdersTableEl.innerHTML = releaseOrdersData.map((order, idx) => {
-      const statusColor = order.status === 'closed/distributed' ? '#508931' : (order.status === 'open' ? '#EF781F' : '#CBD5E0');
+      // Determine color based on orderStatus (outstanding, upcoming, late)
+      let statusColor = '#3498DB'; // outstanding - blue
+      let statusLabel = order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1);
+
+      if (order.orderStatus === 'upcoming') {
+        statusColor = '#F39C12'; // upcoming - orange
+      } else if (order.orderStatus === 'late') {
+        statusColor = '#A81E3B'; // late - red
+      }
+
       return `
-        <tr style="border-bottom:1px solid #E8EDF2;${idx % 2 === 1 ? 'background:#FAFBFC;' : ''}">
+        <tr style="border-bottom:1px solid #E8EDF2;${idx % 2 === 1 ? 'background:#FAFBFC;' : ''}" data-order-status="${order.orderStatus}">
           <td style="padding:12px;color:#1C2D3E;font-weight:600;">${order.id}</td>
           <td style="padding:12px;color:#5A6A7A;">${order.date}</td>
           <td style="padding:12px;color:#5A6A7A;font-size:12px;">${order.package}</td>
           <td style="padding:12px;color:#5A6A7A;">${order.qty}</td>
           <td style="padding:12px;color:#5A6A7A;">${order.location}</td>
           <td style="padding:12px;">
-            <span style="display:inline-block;padding:4px 10px;border-radius:12px;background:${statusColor};color:#fff;font-size:11px;font-weight:600;text-transform:capitalize;">${order.status}</span>
+            <span style="display:inline-block;padding:4px 10px;border-radius:12px;background:${statusColor};color:#fff;font-size:11px;font-weight:600;">${statusLabel}</span>
           </td>
           <td style="padding:12px;color:#5A6A7A;">${order.plannedDel}</td>
           <td style="padding:12px;color:#5A6A7A;">${order.actualDel}</td>
         </tr>
       `;
     }).join('');
-  }
 
-  // Distribution Section - Late Orders Counter
-  const lateOrdersEl = document.getElementById(`late-orders-count-${c.id}`);
-  if (lateOrdersEl) {
-    // Sample calculation: count orders where actual delivery is more than 7 days after planned
-    // For now, showing 0 as all data is TBD
-    lateOrdersEl.textContent = '0';
+    // Calculate and update order status indicators
+    const outstandingCount = releaseOrdersData.filter(o => o.orderStatus === 'outstanding').length;
+    const upcomingCount = releaseOrdersData.filter(o => o.orderStatus === 'upcoming').length;
+    const lateCount = releaseOrdersData.filter(o => o.orderStatus === 'late').length;
+
+    const outstandingEl = document.getElementById(`outstanding-orders-count-${c.id}`);
+    const upcomingEl = document.getElementById(`upcoming-orders-count-${c.id}`);
+    const lateEl = document.getElementById(`late-orders-count-${c.id}`);
+
+    if (outstandingEl) outstandingEl.textContent = outstandingCount;
+    if (upcomingEl) upcomingEl.textContent = upcomingCount;
+    if (lateEl) lateEl.textContent = lateCount;
   }
 
   // Distribution Section - Beneficiaries Chart
