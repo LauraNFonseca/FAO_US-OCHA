@@ -463,10 +463,18 @@
 
   /* ── TIMELINE DRILL-DOWN ── */
   [id^="timeline-drilldown-"] {
-    display:none; border-top:2px solid #E0E8F0; padding:20px;
+    display:none !important; border-top:2px solid #E0E8F0; padding:20px;
     background:#FAFCFF; border-radius:0 0 var(--radius) var(--radius);
+    margin-top:20px;
   }
-  [id^="timeline-drilldown-"].open { display:block !important; }
+  [id^="timeline-drilldown-"].open {
+    display:block !important;
+    animation: slideDown 0.3s ease;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 500px; }
+  }
   .timeline-legend-item {
     cursor:pointer; transition:all 0.2s ease;
     padding:8px 12px; border-radius:6px;
@@ -4602,12 +4610,26 @@ function openProcDrilldown_Items(countryId, cat, catLabel) {
 
 function openTimelineDrill(event, countryId, phase) {
   event.preventDefault();
+  console.log('Timeline drill clicked - country:', countryId, 'phase:', phase);
 
   var drilldownDiv = document.getElementById(`timeline-drilldown-${countryId}`);
   var titleDiv = document.getElementById(`timeline-drilldown-title-${countryId}`);
   var contentDiv = document.getElementById(`timeline-drilldown-content-${countryId}`);
 
-  if (!drilldownDiv || !titleDiv || !contentDiv) return;
+  console.log('Elements found:', { drilldownDiv: !!drilldownDiv, titleDiv: !!titleDiv, contentDiv: !!contentDiv });
+
+  if (!drilldownDiv || !titleDiv || !contentDiv) {
+    console.error('Missing elements for timeline drill');
+    return;
+  }
+
+  // Check if this phase is already open, if so close it
+  if (drilldownDiv.dataset.currentPhase === phase && drilldownDiv.classList.contains('open')) {
+    console.log('Closing phase:', phase);
+    drilldownDiv.classList.remove('open');
+    drilldownDiv.dataset.currentPhase = '';
+    return;
+  }
 
   // Define phase details with subfases
   var phaseDetails = {
@@ -4666,8 +4688,12 @@ function openTimelineDrill(event, countryId, phase) {
 
   contentDiv.innerHTML = html;
 
-  // Toggle drill-down visibility
-  drilldownDiv.classList.toggle('open');
+  // Show drill-down and remember current phase
+  console.log('Adding open class to drilldown');
+  drilldownDiv.classList.add('open');
+  drilldownDiv.dataset.currentPhase = phase;
+  console.log('Drilldown classList:', drilldownDiv.className);
+  console.log('Drilldown display:', window.getComputedStyle(drilldownDiv).display);
 }
 
 function filterProcurementTable(countryId, filterType) {
@@ -5019,7 +5045,14 @@ function renderCountryCharts(c) {
           tooltip: {
             callbacks: {
               label: function(item){
-                return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'K';
+                // Calcular o total para esta barra (commodity)
+                var total = 0;
+                for (var d = 0; d < item.chart.data.datasets.length; d++) {
+                  total += item.chart.data.datasets[d].data[item.dataIndex] || 0;
+                }
+                // Calcular a percentagem
+                var percentage = total > 0 ? ((item.raw / total) * 100).toFixed(1) : 0;
+                return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'K (' + percentage + '%)';
               }
             }
           }
