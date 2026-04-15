@@ -2998,14 +2998,14 @@ function buildCountryPages() {
             </div>
 
             <!-- Month labels below timeline -->
-            <div style="display:flex;justify-content:space-between;position:absolute;top:50px;left:0;right:0;width:100%;">
-              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">March</span>
-              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">April</span>
-              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">May</span>
-              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">June</span>
-              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">July</span>
-              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">August</span>
-              <span style="font-size:10px;font-weight:700;color:var(--fao-dark);">September</span>
+            <div style="position:absolute;top:40px;left:0;right:0;width:100%;height:20px;">
+              <span style="position:absolute;font-size:10px;font-weight:700;color:var(--fao-dark);white-space:nowrap;left:0%;transform:translateX(-50%);">March</span>
+              <span style="position:absolute;font-size:10px;font-weight:700;color:var(--fao-dark);white-space:nowrap;left:16.67%;transform:translateX(-50%);">April</span>
+              <span style="position:absolute;font-size:10px;font-weight:700;color:var(--fao-dark);white-space:nowrap;left:33.33%;transform:translateX(-50%);">May</span>
+              <span style="position:absolute;font-size:10px;font-weight:700;color:var(--fao-dark);white-space:nowrap;left:50%;transform:translateX(-50%);">June</span>
+              <span style="position:absolute;font-size:10px;font-weight:700;color:var(--fao-dark);white-space:nowrap;left:66.67%;transform:translateX(-50%);">July</span>
+              <span style="position:absolute;font-size:10px;font-weight:700;color:var(--fao-dark);white-space:nowrap;left:83.33%;transform:translateX(-50%);">August</span>
+              <span style="position:absolute;font-size:10px;font-weight:700;color:var(--fao-dark);white-space:nowrap;left:100%;transform:translateX(-50%);">September</span>
             </div>
           </div>
 
@@ -3266,7 +3266,7 @@ function buildCountryPages() {
         <div class="card-header">
           <div>
             <div class="card-title">Procurement Pipeline by Category</div>
-            <div class="card-subtitle">Total value by procurement stage per product category (Millions USD)</div>
+            <div class="card-subtitle">Total value by procurement stage per product category (Thousands USD)</div>
           </div>
         </div>
         <div id="proc-legend-row-${c.id}" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;padding:10px 16px;background:#F8FAFC;border-radius:8px;border:1px solid #E0E8F0;"></div>
@@ -3316,26 +3316,26 @@ function buildCountryPages() {
             </div>
           </div>
 
-          <!-- Subsection 3: Procurement Lead Time (Split into 3 stages) -->
+          <!-- Subsection 3: Procurement Lead Time (Split into 3 stages top, Full Lead Time bottom) -->
           <div class="card">
             <div class="card-header"><div><div class="card-title">Procurement Lead Time</div></div></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:140px;align-content:center;">
-              <div style="text-align:center;border-right:1px solid #E0E8F0;padding-right:12px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;min-height:100px;align-content:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E0E8F0;">
+              <div style="text-align:center;">
                 <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">Plan to PR</div>
                 <div style="font-size:24px;font-weight:700;color:#1A648C;">5d</div>
               </div>
-              <div style="text-align:center;padding-left:12px;">
+              <div style="text-align:center;">
                 <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">PR to PO</div>
                 <div style="font-size:24px;font-weight:700;color:#1A648C;">7d</div>
               </div>
-              <div style="text-align:center;border-right:1px solid #E0E8F0;padding-right:12px;">
+              <div style="text-align:center;">
                 <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">PO to Delivered</div>
                 <div style="font-size:24px;font-weight:700;color:#1A648C;">12d</div>
               </div>
-              <div style="text-align:center;padding-left:12px;border-top:1px solid #E0E8F0;padding-top:12px;margin-top:12px;">
-                <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">Full Lead Time</div>
-                <div style="font-size:24px;font-weight:700;color:#508931;">24d</div>
-              </div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:6px;">Full Lead Time</div>
+              <div style="font-size:24px;font-weight:700;color:#508931;">24d</div>
             </div>
           </div>
 
@@ -3352,33 +3352,6 @@ function buildCountryPages() {
         </div>
 
         <!-- Subsection 3: Procurement Volume and Value per Product (as simple indicators) -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px;">
-          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
-            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Rice Seed</div>
-            <div style="font-size:18px;font-weight:700;color:#1A648C;">1,200 MT</div>
-            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$60,000</div>
-          </div>
-          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFBFC;">
-            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Wheat Seed</div>
-            <div style="font-size:18px;font-weight:700;color:#1A648C;">850 MT</div>
-            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$38,250</div>
-          </div>
-          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
-            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Fertilizer (Urea)</div>
-            <div style="font-size:18px;font-weight:700;color:#1A648C;">2,150 MT</div>
-            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$96,750</div>
-          </div>
-          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFBFC;">
-            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Tractors</div>
-            <div style="font-size:18px;font-weight:700;color:#1A648C;">12 units</div>
-            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$240,000</div>
-          </div>
-          <div style="border:1px solid #E0E8F0;border-radius:8px;padding:16px;background:#FAFCFF;">
-            <div style="font-size:11px;color:#8A96A3;font-weight:600;margin-bottom:8px;">Vaccines (FMD)</div>
-            <div style="font-size:18px;font-weight:700;color:#1A648C;">45,000 units</div>
-            <div style="font-size:13px;color:#1C2D3E;font-weight:600;">$67,500</div>
-          </div>
-        </div>
 
         <!-- Subsection 5: Procurement Orders (POs) Table -->
         <div class="card">
@@ -3415,74 +3388,74 @@ function buildCountryPages() {
                 <tr style="border-bottom:1px solid #E8EDF2;">
                   <td style="padding:10px;color:#1C2D3E;">PO-2026-001</td>
                   <td style="padding:10px;color:#5A6A7A;">2026</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
-                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:center;padding:10px;"><span style="background:#508931;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">TBD</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">15-Jan-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Singh & Co.</td>
+                  <td style="padding:10px;color:#1C2D3E;">Rice Seed</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-001</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">High-quality rice seed</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1200</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1200</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">0</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$50</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$60,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">31-Jan-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">Dhaka</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Procurement</td>
+                  <td style="padding:10px;color:#5A6A7A;">M. Ahmed</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#508931;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Delivered</span></td>
                 </tr>
                 <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
                   <td style="padding:10px;color:#1C2D3E;">PO-2026-002</td>
                   <td style="padding:10px;color:#5A6A7A;">2026</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
-                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:center;padding:10px;"><span style="background:#5791C8;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">TBD</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">20-Feb-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Agro Traders Ltd</td>
+                  <td style="padding:10px;color:#1C2D3E;">Urea Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-002</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply</td>
+                  <td style="padding:10px;color:#5A6A7A;">Fertilizer</td>
+                  <td style="padding:10px;color:#5A6A7A;">Nitrogen-rich fertilizer</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">2500</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">1800</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">700</td>
+                  <td style="padding:10px;color:#5A6A7A;">MT</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$38.5</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$96,250</td>
+                  <td style="padding:10px;color:#5A6A7A;">FOB</td>
+                  <td style="padding:10px;color:#5A6A7A;">15-Mar-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">Chittagong</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Supply Chain</td>
+                  <td style="padding:10px;color:#5A6A7A;">S. Patel</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#5791C8;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">In Transit</span></td>
                 </tr>
                 <tr style="border-bottom:1px solid #E8EDF2;">
                   <td style="padding:10px;color:#1C2D3E;">PO-2026-003</td>
                   <td style="padding:10px;color:#5A6A7A;">2026</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
-                  <td style="padding:10px;color:#1C2D3E;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="padding:10px;color:#5A6A7A;">TBD</td>
-                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">TBD</span></td>
+                  <td style="padding:10px;color:#5A6A7A;">10-Mar-2026</td>
+                  <td style="padding:10px;color:#1C2D3E;">Farm Equipment Corp</td>
+                  <td style="padding:10px;color:#1C2D3E;">Tractors</td>
+                  <td style="padding:10px;color:#5A6A7A;">LN-003</td>
+                  <td style="padding:10px;color:#5A6A7A;">Service</td>
+                  <td style="padding:10px;color:#5A6A7A;">Machinery</td>
+                  <td style="padding:10px;color:#5A6A7A;">50HP agricultural tractor</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">15</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">8</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">7</td>
+                  <td style="padding:10px;color:#5A6A7A;">units</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$16,000</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;font-weight:600;">$240,000</td>
+                  <td style="padding:10px;color:#5A6A7A;">CIF</td>
+                  <td style="padding:10px;color:#5A6A7A;">05-Apr-2026</td>
+                  <td style="padding:10px;color:#5A6A7A;">Cox's Bazar</td>
+                  <td style="padding:10px;color:#5A6A7A;">FAO</td>
+                  <td style="padding:10px;color:#5A6A7A;">Equipment</td>
+                  <td style="padding:10px;color:#5A6A7A;">R. Khan</td>
+                  <td style="text-align:center;padding:10px;"><span style="background:#EF781F;color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;">Pending</span></td>
                 </tr>
               </tbody>
             </table>
@@ -3670,6 +3643,90 @@ function buildCountryPages() {
   });
 }
 
+function openProcDrilldown_Items_Direct(countryId, cat, catLabel) {
+  var panel = document.getElementById(`proc-drilldown-${countryId}`);
+  var title = document.getElementById(`proc-drilldown-title-${countryId}`);
+
+  // Toggle off if same category clicked again
+  if (panel.classList.contains('open') && panel.dataset.category === cat) {
+    panel.classList.remove('open');
+    panel.dataset.category = '';
+    return;
+  }
+
+  panel.dataset.category = cat;
+  panel.classList.add('open');
+  title.innerHTML = catLabel + ' — Breakdown by Product <span style="font-weight:400;font-size:12px;color:#5A6A7A">(click to close)</span>';
+
+  var c = countries.find(cn => cn.id === countryId);
+  if (!c) return;
+
+  var subCatsMap = {
+    seeds: ['Rice Seed', 'Wheat Seed', 'Legume Seed'],
+    fertilizer: ['Urea', 'DAP', 'Compound NPK'],
+    machinery: ['Tractors', 'Water Pumps', 'Threshers'],
+    vaccines: ['FMD Vaccine', 'CBPP Vaccine', 'Newcastle']
+  };
+  var subCats = subCatsMap[cat];
+
+  var STAGES = ['To be PRed', 'PRed', 'POed', 'Delivered to FAO', 'Distributed'];
+  var STAGE_KEYS = ['toBePRed','PRed','POed','deliveredToFAO','distributed'];
+  var COLORS = ['#A81E3B','#EF781F','#3498DB','#7EC8E3','#508931'];
+
+  var byCom = (c.procurement && c.procurement.byCommodity && c.procurement.byCommodity[cat]) || {};
+
+  // Simulate data distribution across items (equal distribution)
+  var ratios = [0.45, 0.35, 0.20];
+
+  var datasets = STAGE_KEYS.map(function(key, stageIdx) {
+    var stageTotal = (byCom[key] || 0);
+    return {
+      label: STAGES[stageIdx],
+      data: ratios.map(function(ratio) {
+        return Math.round((stageTotal * ratio) / 1000);
+      }),
+      backgroundColor: COLORS[stageIdx],
+      borderWidth: 0
+    };
+  });
+
+  var drillCanvas = document.getElementById(`chart-proc-drill-${countryId}`);
+  if (window['_procDrillChart_'+countryId]) {
+    window['_procDrillChart_'+countryId].destroy();
+  }
+
+  window['_procDrillChart_'+countryId] = new Chart(drillCanvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: subCats,
+      datasets: datasets
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      onClick: function(evt, elements) {
+        // Close on click
+        panel.classList.remove('open');
+        panel.dataset.category = '';
+      },
+      layout: { padding: { right: 50 } },
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 } } },
+        tooltip: { callbacks: {
+          label: function(item) {
+            return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'K';
+          }
+        }}
+      },
+      scales: {
+        x: { stacked: true, ticks: { callback: function(v){ return '$'+v.toFixed(0)+'K'; }, font:{size:10} } },
+        y: { stacked: true, ticks: { font:{size:11} } }
+      }
+    }
+  });
+}
+
 function openProcDrilldown_Country(countryId, cat, catLabel) {
   var panel = document.getElementById(`proc-drilldown-${countryId}`);
   var title = document.getElementById(`proc-drilldown-title-${countryId}`);
@@ -3738,7 +3795,7 @@ function openProcDrilldown_Country(countryId, cat, catLabel) {
         tooltip: { callbacks: {
           label: function(item) {
             var raw = (byCom[STAGE_KEYS[item.datasetIndex]]) || 0;
-            return ' ' + item.dataset.label + ': ' + item.raw + '%  ($' + (raw/1000000).toFixed(2) + 'M)';
+            return ' ' + item.dataset.label + ': ' + item.raw + '%  ($' + (raw/1000).toFixed(2) + 'K)';
           }
         }}
       },
@@ -3781,7 +3838,7 @@ function openProcDrilldown_Items(countryId, cat, catLabel) {
     return {
       label: STAGES[stageIdx],
       data: ratios.map(function(ratio) {
-        return Math.round((stageTotal * ratio) / 1000000);
+        return Math.round((stageTotal * ratio) / 1000);
       }),
       backgroundColor: COLORS[stageIdx],
       borderWidth: 0
@@ -3809,12 +3866,12 @@ function openProcDrilldown_Items(countryId, cat, catLabel) {
         legend: { position: 'bottom', labels: { font: { size: 10 } } },
         tooltip: { callbacks: {
           label: function(item) {
-            return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'M';
+            return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'K';
           }
         }}
       },
       scales: {
-        x: { stacked: true, ticks: { callback: function(v){ return '$'+v.toFixed(0)+'M'; }, font:{size:10} } },
+        x: { stacked: true, ticks: { callback: function(v){ return '$'+v.toFixed(0)+'K'; }, font:{size:10} } },
         y: { stacked: true, ticks: { font:{size:11} } }
       }
     }
@@ -3973,22 +4030,46 @@ function renderCountryCharts(c) {
         }).join('');
     }
 
-    // Build datasets (millions USD)
+    // Build datasets (thousands USD)
     const datasets = STAGE_KEYS.map(function(key, i) {
       return {
         label: STAGES[i],
         data: COMM_KEYS.map(function(ck){
           const byCom = (c.procurement && c.procurement.byCommodity) || {};
           const val = (byCom[ck] && byCom[ck][key]) || 0;
-          return val / 1000000;
+          return val / 1000;
         }),
         backgroundColor: COLORS[i],
         borderWidth: 0
       };
     });
 
+    // Plugin to draw total labels at end of each bar
+    const procTotalPlugin = {
+      id: 'procTotalLabels',
+      afterDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(chart.data.datasets.length - 1);
+        chart.data.datasets[0].data.forEach(function(_, i) {
+          const total = chart.data.datasets.reduce(function(s, ds){ return s + (ds.data[i]||0); }, 0);
+          const bar = meta.data[i];
+          if (!bar) return;
+          const x = chart.scales.x.getPixelForValue(total);
+          const y = bar.y;
+          ctx.save();
+          ctx.fillStyle = '#333';
+          ctx.font = 'bold 10px Arial';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('$'+total.toFixed(0)+'K', x+5, y);
+          ctx.restore();
+        });
+      }
+    };
+
     new Chart(procCanvas.getContext('2d'), {
       type: 'bar',
+      plugins: [procTotalPlugin],
       data: { labels: COMM_LABELS, datasets: datasets },
       options: {
         indexAxis: 'y',
@@ -3998,21 +4079,21 @@ function renderCountryCharts(c) {
           if (!elements || !elements.length) return;
           const catIdx = elements[0].index;
           const cat = COMM_KEYS[catIdx];
-          openProcDrilldown_Country(c.id, cat, COMM_LABELS[catIdx]);
+          openProcDrilldown_Items_Direct(c.id, cat, COMM_LABELS[catIdx]);
         },
-        layout: { padding: { right: 50 } },
+        layout: { padding: { right: 70 } },
         plugins: {
           legend: { display: false },
           tooltip: {
             callbacks: {
               label: function(item){
-                return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'M';
+                return ' ' + item.dataset.label + ': $' + item.raw.toFixed(2) + 'K';
               }
             }
           }
         },
         scales: {
-          x: { stacked: true, ticks: { callback: function(v){ return '$'+v.toFixed(0)+'M'; }, font:{size:10} } },
+          x: { stacked: true, ticks: { callback: function(v){ return '$'+v.toFixed(0)+'K'; }, font:{size:10} } },
           y: { stacked: true, ticks: { font:{size:11} } }
         }
       }
@@ -4367,16 +4448,16 @@ function renderCountryCharts(c) {
   // Inventory Status Table
   const invTableEl = document.getElementById(`inv-table-${c.id}`);
   if (invTableEl) {
-    // Create sample inventory data with TBD values
+    // Create sample inventory data with realistic values
     const inventoryData = [
-      {id: 'PROD-001', name: 'Rice Seed', category: 'Seeds', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
-      {id: 'PROD-002', name: 'Wheat Seed', category: 'Seeds', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
-      {id: 'PROD-003', name: 'Legume Seed', category: 'Seeds', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
-      {id: 'PROD-004', name: 'Urea Fertilizer', category: 'Fertilizer', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
-      {id: 'PROD-005', name: 'DAP Fertilizer', category: 'Fertilizer', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
-      {id: 'PROD-006', name: 'Water Pump', category: 'Equipment', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
-      {id: 'PROD-007', name: 'Garden Hoe', category: 'Equipment', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'},
-      {id: 'PROD-008', name: 'FMD Vaccine', category: 'Vaccines', description: 'TBD', unitPrice: 'TBD', quantity: 'TBD', inventoryValue: 'TBD', reorderLevel: 'TBD', location: 'TBD'}
+      {id: 'PROD-001', name: 'Rice Seed', category: 'Seeds', description: 'High-quality long grain', unitPrice: '$50', quantity: '1200 MT', inventoryValue: '$60,000', reorderLevel: '300 MT', location: 'Dhaka'},
+      {id: 'PROD-002', name: 'Wheat Seed', category: 'Seeds', description: 'Premium winter variety', unitPrice: '$45', quantity: '850 MT', inventoryValue: '$38,250', reorderLevel: '200 MT', location: 'Chittagong'},
+      {id: 'PROD-003', name: 'Legume Seed', category: 'Seeds', description: 'Mixed pulses blend', unitPrice: '$55', quantity: '450 MT', inventoryValue: '$24,750', reorderLevel: '100 MT', location: 'Dhaka'},
+      {id: 'PROD-004', name: 'Urea Fertilizer', category: 'Fertilizer', description: '46% nitrogen content', unitPrice: '$38.5', quantity: '2500 MT', inventoryValue: '$96,250', reorderLevel: '500 MT', location: 'Chittagong'},
+      {id: 'PROD-005', name: 'DAP Fertilizer', category: 'Fertilizer', description: '18-46-0 composition', unitPrice: '$42', quantity: '1800 MT', inventoryValue: '$75,600', reorderLevel: '400 MT', location: 'Dhaka'},
+      {id: 'PROD-006', name: 'Water Pump', category: 'Equipment', description: '2-inch submersible', unitPrice: '$1,200', quantity: '45 units', inventoryValue: '$54,000', reorderLevel: '10 units', location: 'Cox\'s Bazar'},
+      {id: 'PROD-007', name: 'Garden Hoe', category: 'Equipment', description: 'Traditional steel blade', unitPrice: '$12', quantity: '3200 units', inventoryValue: '$38,400', reorderLevel: '500 units', location: 'Dhaka'},
+      {id: 'PROD-008', name: 'FMD Vaccine', category: 'Vaccines', description: 'Live attenuated vaccine', unitPrice: '$1.50', quantity: '450,000 doses', inventoryValue: '$675,000', reorderLevel: '50,000 doses', location: 'Chittagong'}
     ];
 
     // Render inventory data in table
@@ -4399,11 +4480,11 @@ function renderCountryCharts(c) {
   const releaseOrdersTableEl = document.getElementById(`release-orders-table-${c.id}`);
   if (releaseOrdersTableEl) {
     const releaseOrdersData = [
-      {id: 'RO-001', date: '2026-03-15', package: 'Agricultural Input Package', qty: 'TBD', location: 'TBD', status: 'closed/distributed', plannedDel: 'TBD', actualDel: 'TBD'},
-      {id: 'RO-002', date: '2026-04-10', package: 'Equipment & Infrastructure Package', qty: 'TBD', location: 'TBD', status: 'open', plannedDel: 'TBD', actualDel: 'TBD'},
-      {id: 'RO-003', date: '2026-05-05', package: 'Livestock Health Package', qty: 'TBD', location: 'TBD', status: 'draft', plannedDel: 'TBD', actualDel: 'TBD'},
-      {id: 'RO-004', date: '2026-05-20', package: 'Agricultural Input Package', qty: 'TBD', location: 'TBD', status: 'closed/distributed', plannedDel: 'TBD', actualDel: 'TBD'},
-      {id: 'RO-005', date: '2026-06-12', package: 'Equipment & Infrastructure Package', qty: 'TBD', location: 'TBD', status: 'open', plannedDel: 'TBD', actualDel: 'TBD'}
+      {id: 'RO-001', date: '2026-03-15', package: 'Agricultural Input Package', qty: '1250 MT', location: 'Dhaka', status: 'closed/distributed', plannedDel: '2026-03-31', actualDel: '2026-03-28'},
+      {id: 'RO-002', date: '2026-04-10', package: 'Equipment & Infrastructure Package', qty: '25 units', location: 'Chittagong', status: 'open', plannedDel: '2026-04-30', actualDel: 'In progress'},
+      {id: 'RO-003', date: '2026-05-05', package: 'Livestock Health Package', qty: '250,000 doses', location: 'Cox\'s Bazar', status: 'draft', plannedDel: '2026-05-20', actualDel: 'Pending'},
+      {id: 'RO-004', date: '2026-05-20', package: 'Agricultural Input Package', qty: '900 MT', location: 'Dhaka', status: 'closed/distributed', plannedDel: '2026-06-10', actualDel: '2026-06-08'},
+      {id: 'RO-005', date: '2026-06-12', package: 'Equipment & Infrastructure Package', qty: '15 units', location: 'Chittagong', status: 'open', plannedDel: '2026-07-05', actualDel: 'In progress'}
     ];
 
     releaseOrdersTableEl.innerHTML = releaseOrdersData.map((order, idx) => {
