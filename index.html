@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GSCMTF | US-OCHA Global Supply Chain Dashboard</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
 function updateInventoryAlertsBuckets() {
   document.querySelectorAll('.page').forEach(page => {
     if (page.offsetParent === null) return; // Skip hidden pages
@@ -220,7 +221,8 @@ function clearInventoryFilter(countryId) {
 
 </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
 function updateInventoryAlertsBuckets() {
   document.querySelectorAll('.page').forEach(page => {
     if (page.offsetParent === null) return; // Skip hidden pages
@@ -435,7 +437,8 @@ function clearInventoryFilter(countryId) {
 }
 
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
 function updateInventoryAlertsBuckets() {
   document.querySelectorAll('.page').forEach(page => {
     if (page.offsetParent === null) return; // Skip hidden pages
@@ -1461,7 +1464,7 @@ function clearInventoryFilter(countryId) {
     <div class="card" style="margin-bottom:24px;">
       <div class="card-header">
         <div>
-          <div class="card-title">Procurement Pipeline by Country</div>
+          <div class="card-title">Pipeline by Country</div>
           <div class="card-subtitle">Total value by procurement stage (Millions USD) — click a country bar to see commodity detail</div>
         </div>
       </div>
@@ -3758,20 +3761,20 @@ function buildCountryPages() {
           </div>
         </div>
 
-        <h3 style="margin-bottom:12px;margin-top:20px;font-size:14px;font-weight:600;">📊 Inventory Alerts</h3>
+        <h3 style="margin-bottom:12px;margin-top:20px;font-size:14px;font-weight:600;">📊 Inventory</h3>
         
         <div style="margin-bottom:24px;">
           <div style="font-size:13px;font-weight:600;color:#1C2D3E;margin-bottom:12px;">AGED STOCK (3+ MONTHS)</div>
           <div style="font-size:11px;color:#5A6A7A;margin-bottom:12px;">→ Click to filter inventory</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
             <div style="padding:20px;border:1px solid #E0E8F0;border-radius:8px;background:#FFFFFF;cursor:pointer;text-align:center;" onclick="filterInventoryByAge('${c.id}', '3-6');">
-              <div style="font-size:28px;font-weight:700;color:#A81E3B;margin-bottom:6px;">2,450</div>
-              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
+              <div id="aged-3-6-${c.id}" style="font-size:28px;font-weight:700;color:#A81E3B;margin-bottom:6px;">$0</div>
+              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">USD</div>
               <div style="font-size:11px;color:#666;margin-top:6px;">Idled 3-6 months</div>
             </div>
             <div style="padding:20px;border:1px solid #E0E8F0;border-radius:8px;background:#FFFFFF;cursor:pointer;text-align:center;" onclick="filterInventoryByAge('${c.id}', '6+');">
-              <div style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">680</div>
-              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
+              <div id="aged-6plus-${c.id}" style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">$0</div>
+              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">USD</div>
               <div style="font-size:11px;color:#666;margin-top:6px;">Idled 6+ months</div>
             </div>
           </div>
@@ -3782,13 +3785,13 @@ function buildCountryPages() {
           <div style="font-size:11px;color:#5A6A7A;margin-bottom:12px;">→ Click to filter inventory</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div style="padding:20px;border:1px solid #E0E8F0;border-radius:8px;background:#FFFFFF;cursor:pointer;text-align:center;" onclick="filterInventoryByClosure('${c.id}', '1-3');">
-              <div style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">1,200</div>
-              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
+              <div id="closure-1-3-value-${c.id}" style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">1,200</div>
+              <div id="closure-1-3-unit-${c.id}" style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
               <div style="font-size:11px;color:#666;margin-top:6px;">3 months to closure</div>
             </div>
             <div style="padding:20px;border:1px solid #E0E8F0;border-radius:8px;background:#FFFFFF;cursor:pointer;text-align:center;" onclick="filterInventoryByClosure('${c.id}', 'under1');">
-              <div style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">450</div>
-              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
+              <div id="closure-under1-value-${c.id}" style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">450</div>
+              <div id="closure-under1-unit-${c.id}" style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
               <div style="font-size:11px;color:#666;margin-top:6px;">1 month to closure</div>
             </div>
           </div>
@@ -4969,13 +4972,13 @@ function buildCountryPages() {
           <div style="font-size:11px;color:#5A6A7A;margin-bottom:12px;">→ Click to filter inventory</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
             <div style="padding:20px;border:1px solid #E0E8F0;border-radius:8px;background:#FFFFFF;cursor:pointer;text-align:center;" onclick="filterInventoryByAge('${c.id}', '3-6');">
-              <div style="font-size:28px;font-weight:700;color:#A81E3B;margin-bottom:6px;">2,450</div>
-              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
+              <div id="aged-3-6-${c.id}" style="font-size:28px;font-weight:700;color:#A81E3B;margin-bottom:6px;">$0</div>
+              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">USD</div>
               <div style="font-size:11px;color:#666;margin-top:6px;">Idled 3-6 months</div>
             </div>
             <div style="padding:20px;border:1px solid #E0E8F0;border-radius:8px;background:#FFFFFF;cursor:pointer;text-align:center;" onclick="filterInventoryByAge('${c.id}', '6+');">
-              <div style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">680</div>
-              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
+              <div id="aged-6plus-${c.id}" style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">$0</div>
+              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">USD</div>
               <div style="font-size:11px;color:#666;margin-top:6px;">Idled 6+ months</div>
             </div>
           </div>
@@ -4986,24 +4989,23 @@ function buildCountryPages() {
           <div style="font-size:11px;color:#5A6A7A;margin-bottom:12px;">→ Click to filter inventory</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div style="padding:20px;border:1px solid #E0E8F0;border-radius:8px;background:#FFFFFF;cursor:pointer;text-align:center;" onclick="filterInventoryByClosure('${c.id}', '1-3');">
-              <div style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">1,200</div>
-              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
+              <div id="closure-1-3-value-${c.id}" style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">1,200</div>
+              <div id="closure-1-3-unit-${c.id}" style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
               <div style="font-size:11px;color:#666;margin-top:6px;">3 months to closure</div>
             </div>
             <div style="padding:20px;border:1px solid #E0E8F0;border-radius:8px;background:#FFFFFF;cursor:pointer;text-align:center;" onclick="filterInventoryByClosure('${c.id}', 'under1');">
-              <div style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">450</div>
-              <div style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
+              <div id="closure-under1-value-${c.id}" style="font-size:28px;font-weight:700;color:#E67E22;margin-bottom:6px;">450</div>
+              <div id="closure-under1-unit-${c.id}" style="font-size:12px;color:#5A6A7A;font-weight:600;">units</div>
               <div style="font-size:11px;color:#666;margin-top:6px;">1 month to closure</div>
             </div>
           </div>
         </div>
 
-
-        <!-- Subsection 2: Inventory Status (Product Details Table) -->
-        <div class="card" style="margin-bottom:20px;margin-top:40px;">
-          <div class="card-header"><div><div class="card-title">Inventory Status</div><div class="card-subtitle">Detailed product inventory breakdown with stock levels and reorder information</div></div></div>
-          <div style="margin-bottom:16px;padding:20px;">
-            <table class="inv-table" style="width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;">
+        <!-- Inventory Products Table -->
+        <div class="card" style="margin-bottom:24px;margin-top:40px;">
+          <div class="card-header"><div><div class="card-title">Inventory Products</div><div class="card-subtitle">Complete product inventory with stock levels and reorder information</div></div><button onclick="clearAgedInventoryFilter()" style="padding:8px 16px;background:#E0E6EB;border:none;border-radius:4px;cursor:pointer;font-size:12px;color:#1C2D3E;font-weight:600;margin-right:16px;">Show All</button></div>
+          <div style="margin-bottom:16px;padding:20px;overflow-x:auto;">
+            <table id="inv-products-${c.id}" style="width:100%;border-collapse:collapse;font-size:11px;">
               <thead>
                 <tr style="background:#F5F7FA;border-bottom:2px solid #E0E6EB;">
                   <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;">Product ID</th>
@@ -5018,7 +5020,7 @@ function buildCountryPages() {
                   <th style="text-align:left;padding:12px;font-weight:600;color:#1C2D3E;">Location</th>
                 </tr>
               </thead>
-              <tbody id="inv-table-${c.id}">
+              <tbody>
                 <tr style="border-bottom:1px solid #E8EDF2;">
                   <td style="padding:10px;color:#1C2D3E;">PROD-001</td>
                   <td style="padding:10px;color:#1C2D3E;">Rice Seed</td>
@@ -5114,6 +5116,30 @@ function buildCountryPages() {
                   <td style="text-align:right;padding:10px;color:#5A6A7A;">$675,000</td>
                   <td style="text-align:right;padding:10px;color:#1C2D3E;">50,000 doses</td>
                   <td style="padding:10px;color:#5A6A7A;">Chittagong</td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;">
+                  <td style="padding:10px;color:#1C2D3E;">PROD-009</td>
+                  <td style="padding:10px;color:#1C2D3E;">Newcastle Vaccine</td>
+                  <td style="padding:10px;color:#5A6A7A;">Vaccines</td>
+                  <td style="padding:10px;color:#5A6A7A;">Newcastle disease vaccine</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$0.75</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;">300,000 doses</td>
+                  <td style="padding:10px;color:#1C2D3E;">10-Feb-2026</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$225,000</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;">30,000 doses</td>
+                  <td style="padding:10px;color:#5A6A7A;">Khulna</td>
+                </tr>
+                <tr style="border-bottom:1px solid #E8EDF2;background:#FAFBFC;">
+                  <td style="padding:10px;color:#1C2D3E;">PROD-010</td>
+                  <td style="padding:10px;color:#1C2D3E;">Maize Seed</td>
+                  <td style="padding:10px;color:#5A6A7A;">Seeds</td>
+                  <td style="padding:10px;color:#5A6A7A;">Hybrid variety</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$60</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;">750 MT</td>
+                  <td style="padding:10px;color:#1C2D3E;">05-Dec-2025</td>
+                  <td style="text-align:right;padding:10px;color:#5A6A7A;">$45,000</td>
+                  <td style="text-align:right;padding:10px;color:#1C2D3E;">150 MT</td>
+                  <td style="padding:10px;color:#5A6A7A;">Sylhet</td>
                 </tr>
               </tbody>
             </table>
@@ -5632,17 +5658,63 @@ function filterProcurementTable(filterType, status) {
 
 function filterReleaseOrdersTable(filterType, status) {
   const visiblePage = Array.from(document.querySelectorAll('.page')).find(page => page.offsetParent !== null);
-  if (!visiblePage) return;
-  const tbody = visiblePage.querySelector('#release-orders-table-' + visiblePage.id.replace('page-', ''));
-  if (!tbody) return;
+  if (!visiblePage) {
+    console.log('No visible page found');
+    return;
+  }
+
+  const countryId = visiblePage.id.replace('page-', '');
+  console.log('Country ID:', countryId);
+
+  const tbody = visiblePage.querySelector('#release-orders-table-' + countryId);
+  if (!tbody) {
+    console.log('No tbody found for ID: release-orders-table-' + countryId);
+    return;
+  }
+
   const rows = tbody.querySelectorAll('tr');
+  console.log('Total rows found:', rows.length);
+
+  let outstandingCount = 0;
+  let upcomingCount = 0;
+  let lateCount = 0;
+
+  // Primeiro, contar TODOS os registos por status (antes de filtrar a visualização)
+  rows.forEach((row, idx) => {
+    const rowStatus = row.getAttribute('data-order-status');
+    console.log(`Row ${idx}: status="${rowStatus}"`);
+    if (rowStatus === 'outstanding') outstandingCount++;
+    else if (rowStatus === 'upcoming') upcomingCount++;
+    else if (rowStatus === 'late') lateCount++;
+  });
+
+  console.log('Counts - Outstanding:', outstandingCount, 'Upcoming:', upcomingCount, 'Late:', lateCount);
+
+  // Depois, mostrar ou ocultar linhas baseado no status solicitado
   rows.forEach(row => {
+    const rowStatus = row.getAttribute('data-order-status');
+
     if (status === 'all') {
+      row.style.display = '';
+    } else if (rowStatus === status) {
       row.style.display = '';
     } else {
       row.style.display = 'none';
     }
   });
+
+  // Atualizar os números dos buckets com os totais REAIS (não apenas visíveis)
+  const outstandingEl = document.getElementById(`outstanding-orders-count-${countryId}`);
+  const upcomingEl = document.getElementById(`upcoming-orders-count-${countryId}`);
+  const lateEl = document.getElementById(`late-orders-count-${countryId}`);
+
+  console.log('Element found - Outstanding:', !!outstandingEl, 'Upcoming:', !!upcomingEl, 'Late:', !!lateEl);
+
+  if (outstandingEl) outstandingEl.textContent = outstandingCount;
+  if (upcomingEl) upcomingEl.textContent = upcomingCount;
+  if (lateEl) lateEl.textContent = lateCount;
+
+  console.log('Filter applied:', status, 'Outstanding:', outstandingCount, 'Upcoming:', upcomingCount, 'Late:', lateCount);
 }
 
 function parseDate(dateStr) {
@@ -6037,11 +6109,20 @@ function renderCountryCharts(c) {
       const capacity = Math.round(sc.inventory.capacity / locations.length);
       const util = Math.round((onHand / capacity) * 100);
 
+      // Expected arrivals in 2 and 4 weeks
+      const arrivals2weeks = Math.round(capacity * 0.25); // 25% of capacity
+      const arrivals4weeks = Math.round(capacity * 0.35); // 35% of capacity
+
+      const util2weeks = Math.round(((onHand + arrivals2weeks) / capacity) * 100);
+      const util4weeks = Math.round(((onHand + arrivals2weeks + arrivals4weeks) / capacity) * 100);
+
       return {
         name: loc,
         onHand: onHand,
         capacity: capacity,
         utilization: util,
+        utilization2weeks: util2weeks,
+        utilization4weeks: util4weeks,
         coords: countryCoords[loc] || [0, 0],
         lastUpdated: c.lastUpdated || '—'
       };
@@ -6054,11 +6135,29 @@ function renderCountryCharts(c) {
         <td style="padding:12px;color:#1A648C;font-weight:600;">${fmt(w.onHand)}</td>
         <td style="padding:12px;color:#5A6A7A;">${fmt(w.capacity)}</td>
         <td style="padding:12px;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div style="display:flex;align-items:center;height:6px;background:#E0E8F0;border-radius:3px;overflow:hidden;flex:1;min-width:60px;">
-              <div style="width:${w.utilization}%;background:#A0A9B8;height:100%;"></div>
+          <div style="display:flex;align-items:center;gap:8px;flex-direction:column;width:100%;">
+            <div style="display:flex;align-items:center;gap:8px;width:100%;">
+              <div style="display:flex;align-items:center;height:20px;background:#E0E8F0;border-radius:4px;overflow:hidden;flex:1;min-width:80px;border:1px solid #D0D8E0;">
+                <div style="width:${w.utilization}%;background:#27AE60;height:100%;transition:width 0.3s;"></div>
+                <div style="width:${Math.max(0, w.utilization2weeks - w.utilization)}%;background:#1A5490;height:100%;transition:width 0.3s;"></div>
+                <div style="width:${Math.max(0, w.utilization4weeks - w.utilization2weeks)}%;background:#5DADE2;height:100%;transition:width 0.3s;"></div>
+              </div>
+              <span style="font-weight:600;color:#1C2D3E;min-width:40px;font-size:12px;">${w.utilization4weeks}%</span>
             </div>
-            <span style="font-weight:600;color:#1C2D3E;min-width:35px;">${w.utilization}%</span>
+            <div style="display:flex;gap:16px;font-size:11px;width:100%;">
+              <div style="display:flex;align-items:center;gap:4px;">
+                <div style="width:12px;height:12px;background:#27AE60;border-radius:2px;"></div>
+                <span style="color:#5A6A7A;">Now: ${w.utilization}%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <div style="width:12px;height:12px;background:#1A5490;border-radius:2px;"></div>
+                <span style="color:#5A6A7A;">+2w: ${w.utilization2weeks}%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <div style="width:12px;height:12px;background:#5DADE2;border-radius:2px;"></div>
+                <span style="color:#5A6A7A;">+4w: ${w.utilization4weeks}%</span>
+              </div>
+            </div>
           </div>
         </td>
         <td style="padding:12px;color:#5A6A7A;font-size:12px;">${w.lastUpdated}</td>
@@ -7379,12 +7478,251 @@ function filterInventoryByClosure(countryId, timeRange) {
 function clearInventoryFilter(countryId) {
   const table = document.getElementById('inv-table-' + countryId);
   if (!table) return;
-  
+
   const rows = table.querySelectorAll('tr');
   rows.forEach(row => {
     row.style.display = '';
   });
 }
+
+function parseDate(dateStr) {
+  // Parse dates in format "DD-Mon-YYYY" like "15-Oct-2023"
+  const months = {
+    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+    'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+  };
+
+  const parts = dateStr.trim().split('-');
+  if (parts.length !== 3) return null;
+
+  const day = parseInt(parts[0]);
+  const month = months[parts[1]];
+  const year = parseInt(parts[2]);
+
+  if (isNaN(day) || month === undefined || isNaN(year)) return null;
+
+  return new Date(year, month, day);
+}
+
+function updateAgedStockBuckets() {
+  // Find ALL Inventory Products tables in the document (not just visible ones)
+  const tables = document.querySelectorAll('table[id*="inv-products"]');
+
+  tables.forEach(table => {
+    const tableId = table.id; // e.g., "inv-products-${c.id}" or "inv-products-global"
+
+    const rows = table.querySelectorAll('tbody tr');
+    const today = new Date();
+
+    let aged3to6m = 0;
+    let aged6plusm = 0;
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 8) return;
+
+      // Column 6: Receipt Date, Column 7: Inventory Value
+      const receiptDateStr = cells[6].textContent.trim();
+      const inventoryValueStr = cells[7].textContent.trim();
+
+      if (!receiptDateStr || !inventoryValueStr) return;
+
+      try {
+        const receiptDate = parseDate(receiptDateStr);
+        if (!receiptDate || isNaN(receiptDate.getTime())) return;
+
+        const daysOld = Math.floor((today - receiptDate) / (1000 * 60 * 60 * 24));
+        const monthsOld = Math.floor(daysOld / 30);
+
+        // Parse USD value (remove $ and commas)
+        const valueNum = parseFloat(inventoryValueStr.replace(/[$,]/g, '')) || 0;
+
+        if (monthsOld >= 6) {
+          aged6plusm += valueNum;
+        } else if (monthsOld >= 3) {
+          aged3to6m += valueNum;
+        }
+      } catch (e) {}
+    });
+
+    // Find the parent container (could be .page, .tab-content, or any ancestor)
+    let container = table.closest('.page') || table.closest('.tab-content') || document;
+
+    // Find the aged stock bucket divs within the same container
+    const aged36divs = container.querySelectorAll('[id*="aged-3-6"]');
+    const aged6pdivs = container.querySelectorAll('[id*="aged-6plus"]');
+
+    aged36divs.forEach(div => {
+      div.textContent = '$' + aged3to6m.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+    });
+
+    aged6pdivs.forEach(div => {
+      div.textContent = '$' + aged6plusm.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+    });
+  });
+}
+
+function filterAgedInventoryTable(ageRange) {
+  // Find all Inventory Products tables
+  const tables = document.querySelectorAll('table[id*="inv-products"]');
+
+  tables.forEach(table => {
+    const rows = table.querySelectorAll('tbody tr');
+    const today = new Date();
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 8) {
+        row.style.display = '';
+        return;
+      }
+
+      const receiptDateStr = cells[6].textContent.trim();
+      if (!receiptDateStr) {
+        row.style.display = '';
+        return;
+      }
+
+      try {
+        const receiptDate = parseDate(receiptDateStr);
+        if (!receiptDate || isNaN(receiptDate.getTime())) {
+          row.style.display = '';
+          return;
+        }
+
+        const daysOld = Math.floor((today - receiptDate) / (1000 * 60 * 60 * 24));
+        const monthsOld = Math.floor(daysOld / 30);
+
+        let shouldShow = false;
+        if (ageRange === '3-6' && monthsOld >= 3 && monthsOld < 6) {
+          shouldShow = true;
+        } else if (ageRange === '6+' && monthsOld >= 6) {
+          shouldShow = true;
+        }
+
+        row.style.display = shouldShow ? '' : 'none';
+      } catch (e) {
+        row.style.display = '';
+      }
+    });
+  });
+}
+
+function clearAgedInventoryFilter() {
+  // Find all Inventory Products tables and show all rows
+  const tables = document.querySelectorAll('table[id*="inv-products"]');
+
+  tables.forEach(table => {
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+      row.style.display = '';
+    });
+  });
+}
+
+function updateClosureStockBuckets() {
+  // Find ALL Inventory Products tables in the document
+  const tables = document.querySelectorAll('table[id*="inv-products"]');
+
+  // Project closure date: October 1, 2026
+  const projectClosureDate = new Date(2026, 9, 1); // Month is 0-indexed, so 9 = October
+
+  tables.forEach(table => {
+    const rows = table.querySelectorAll('tbody tr');
+
+    let under1mUSD = 0;
+    let closure1to3mUSD = 0;
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 8) return;
+
+      // Column 6: Receipt Date, Column 7: Inventory Value
+      const receiptDateStr = cells[6].textContent.trim();
+      const inventoryValueStr = cells[7].textContent.trim();
+
+      if (!receiptDateStr || !inventoryValueStr) return;
+
+      try {
+        const receiptDate = parseDate(receiptDateStr);
+        if (!receiptDate || isNaN(receiptDate.getTime())) return;
+
+        // Calculate days until project closure (from receipt date until Oct 1, 2026)
+        const daysUntilClosure = Math.floor((projectClosureDate - receiptDate) / (1000 * 60 * 60 * 24));
+
+        // Parse USD value (remove $ and commas)
+        const valueNum = parseFloat(inventoryValueStr.replace(/[$,]/g, '')) || 0;
+
+        // Stock Close to Project Closure categorization
+        // Under 1 month until closure: between 0-30 days
+        if (daysUntilClosure >= 0 && daysUntilClosure < 30) {
+          under1mUSD += valueNum;
+        }
+        // 1-3 months until closure: between 30-90 days
+        else if (daysUntilClosure >= 30 && daysUntilClosure < 90) {
+          closure1to3mUSD += valueNum;
+        }
+      } catch (e) {}
+    });
+
+    // Extract the country ID from the table ID
+    const tableId = table.id; // e.g., "inv-products-${c.id}"
+    const countryId = tableId.replace('inv-products-', '');
+
+    // Update ALL divs with matching IDs (using attribute selector to handle template literals)
+    // This will update both alerts and inventory tabs
+    const closure3mValueDivs = document.querySelectorAll('[id="closure-1-3-value-' + countryId + '"]');
+    const closure3mUnitDivs = document.querySelectorAll('[id="closure-1-3-unit-' + countryId + '"]');
+    const closureUnder1ValueDivs = document.querySelectorAll('[id="closure-under1-value-' + countryId + '"]');
+    const closureUnder1UnitDivs = document.querySelectorAll('[id="closure-under1-unit-' + countryId + '"]');
+
+    const formattedClosure3m = '$' + closure1to3mUSD.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+    const formattedClosureUnder1 = '$' + under1mUSD.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+
+    // Update 3 months to closure buckets (1-3 months)
+    closure3mValueDivs.forEach(div => {
+      div.textContent = formattedClosure3m;
+    });
+    closure3mUnitDivs.forEach(div => {
+      div.textContent = 'USD';
+    });
+
+    // Update under 1 month to closure buckets
+    closureUnder1ValueDivs.forEach(div => {
+      div.textContent = formattedClosureUnder1;
+    });
+    closureUnder1UnitDivs.forEach(div => {
+      div.textContent = 'USD';
+    });
+  });
+}
+
+function attachAgedStockBucketListeners() {
+  // Find all aged stock bucket divs and attach click listeners
+  const aged36Divs = document.querySelectorAll('[id*="aged-3-6"]');
+  const aged6pDivs = document.querySelectorAll('[id*="aged-6plus"]');
+
+  aged36Divs.forEach(div => {
+    div.style.cursor = 'pointer';
+    div.addEventListener('click', () => {
+      filterAgedInventoryTable('3-6');
+    });
+  });
+
+  aged6pDivs.forEach(div => {
+    div.style.cursor = 'pointer';
+    div.addEventListener('click', () => {
+      filterAgedInventoryTable('6+');
+    });
+  });
+}
+
+// Call update functions on page load
+setTimeout(() => {
+  updateAgedStockBuckets();
+  updateClosureStockBuckets();
+  attachAgedStockBucketListeners();
+}, 1000);
 
 </script>
 </body>
