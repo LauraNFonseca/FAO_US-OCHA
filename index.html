@@ -744,7 +744,7 @@
       <div class="card-header">
         <div>
           <div class="card-title">Country Portfolio</div>
-          <div class="card-subtitle">Click a column header to sort &nbsp;·&nbsp; Click a row to open the country page &nbsp;·&nbsp; Click the status badge to view approval plans</div>
+          <div class="card-subtitle">Click a column header to sort &nbsp;·&nbsp; Click a row to open the country page</div>
         </div>
       </div>
       <div class="table-wrap" style="overflow:visible;">
@@ -4685,8 +4685,19 @@ function openTimelineDrill(event, countryId, phase) {
 
 function filterProcurementTable(countryId, filterType) {
   try {
-    // Find the table
-    var poTable = document.querySelector('.po-table');
+    // Find the table - first try within visible pages, then fall back to global search
+    var poTable = null;
+    var pages = document.querySelectorAll('.page');
+    for (var p = 0; p < pages.length; p++) {
+      var table = pages[p].querySelector('.po-table');
+      if (table && pages[p].offsetParent !== null) { // offsetParent is null if element is hidden
+        poTable = table;
+        break;
+      }
+    }
+    if (!poTable) {
+      poTable = document.querySelector('.po-table');
+    }
     if (!poTable) {
       console.error('po-table not found');
       return;
@@ -4745,14 +4756,28 @@ function filterProcurementTable(countryId, filterType) {
 
 function filterReleaseOrdersTable(countryId, filterType) {
   try {
-    // Find the Release Orders table by looking for tbody with id containing "release-orders-table"
+    // Find the Release Orders table - first try within visible pages, then fall back to global search
     var tbody = null;
-    var allTbodies = document.querySelectorAll('tbody');
-
-    for (var j = 0; j < allTbodies.length; j++) {
-      if (allTbodies[j].id && allTbodies[j].id.includes('release-orders-table')) {
-        tbody = allTbodies[j];
-        break;
+    var pages = document.querySelectorAll('.page');
+    for (var p = 0; p < pages.length; p++) {
+      if (pages[p].offsetParent !== null) { // offsetParent is null if element is hidden
+        var tbs = pages[p].querySelectorAll('tbody');
+        for (var j = 0; j < tbs.length; j++) {
+          if (tbs[j].id && tbs[j].id.includes('release-orders-table')) {
+            tbody = tbs[j];
+            break;
+          }
+        }
+        if (tbody) break;
+      }
+    }
+    if (!tbody) {
+      var allTbodies = document.querySelectorAll('tbody');
+      for (var j = 0; j < allTbodies.length; j++) {
+        if (allTbodies[j].id && allTbodies[j].id.includes('release-orders-table')) {
+          tbody = allTbodies[j];
+          break;
+        }
       }
     }
 
